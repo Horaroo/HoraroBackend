@@ -4,17 +4,20 @@ from .models import UserProfile, Schedules, BlockUser, NumberWeek
 
 @admin.register(UserProfile)
 class AdminUserProfile(admin.ModelAdmin):
-    pass
+    fields = ('username', 'group', 'telegram_id')
+    search_fields = ('username', 'group')
 
 
 @admin.register(Schedules)
 class AdminSchedules(admin.ModelAdmin):
-    pass
+    fields = ('group', )
+    search_fields = ('group', )
 
 
 @admin.register(BlockUser)
 class AdminBlocUser(admin.ModelAdmin):
-    pass
+    fields = ('username', 'group')
+    search_fields = ('username', 'group')
 
 
 @admin.register(NumberWeek)
