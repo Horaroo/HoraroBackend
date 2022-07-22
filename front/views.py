@@ -7,7 +7,7 @@ import requests
 from api.models import UserProfile
 from django.contrib.auth.models import User
 
-HOST = '0.0.0.0:8000'
+HOST = 'https://webdstu.herokuapp.com'
 
 NAME_DAYS = {'Понедельник': 'monday',
              'Вторник': 'tuesday',
@@ -34,8 +34,6 @@ def get_schedules(data: dict) -> tuple:
               data['fourth_type_pair'][0],
               data['fourth_teacher'][0],
               data['fourth_aud'][0]]
-
-
 
     return first, second, third, fourth
 
@@ -70,10 +68,10 @@ class SignInView(View):
             password = request.POST['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                usr = requests.get(f'http://{HOST}/api/v1/user/{user}/', json={'user': True}).json()
+                usr = requests.get(f'{HOST}/api/v1/user/{user}/', json={'user': True}).json()
                 if usr['user']['last_login'] is None:
                     user_id = User.objects.get(username=user).pk
-                    requests.post(f'http://{HOST}/api/v1/create-schedules/', json={'group': user_id})
+                    requests.post(f'{HOST}/api/v1/create-schedules/', json={'group': user_id})
                 login(request, user)
                 return HttpResponseRedirect('/')
         return render(request, 'front/signin.html', context={
@@ -90,7 +88,7 @@ class First(View):
         data = dict(request.POST)
         day = data['day'][0]
         field = 'first_' + NAME_DAYS[day]
-        requests.patch(f'http://{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
+        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
 
         return render(request, 'front/first.html', context={'success': day})
 
@@ -106,7 +104,7 @@ class Second(View):
 
         field = 'second_' + NAME_DAYS[day]
 
-        requests.patch(f'http://{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
+        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
 
         return render(request, 'front/second.html', context={'success': day})
 
@@ -121,7 +119,7 @@ class Third(View):
         day = data['day'][0]
         field = 'third_' + NAME_DAYS[day]
 
-        requests.patch(f'http://{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
+        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
 
         return render(request, 'front/third.html', context={'success': day})
 
@@ -137,7 +135,7 @@ class Fourth(View):
 
         field = 'fourth_' + NAME_DAYS[day]
 
-        requests.patch(f'http://{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
+        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
 
         return render(request, 'front/fourth.html', context={'success': day})
 
