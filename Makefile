@@ -2,7 +2,6 @@
 SHELL := /bin/bash
 
 local_up:
-
 	docker-compose build --parallel
 	docker-compose up
 
