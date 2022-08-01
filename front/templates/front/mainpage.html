@@ -10,8 +10,7 @@
 <body>
 {% include './navbar.html' %}
 {% if not user.is_authenticated %}
-    <h1>Необходимо авторизоваться.</h1>
-{% else %}
+<h1 style="display: flex; align-items: center; justify-content: center;">Необходимо авторизоваться</h1>{% else %}
     <h1>Я есть главная страница.</h1>
 {% endif %}
 </body>
