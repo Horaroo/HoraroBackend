@@ -56,6 +56,6 @@ class Schedules(models.Model):
     group = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.group.username
+        return self.group.userprofile.group
 
 
