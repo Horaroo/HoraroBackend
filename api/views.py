@@ -18,7 +18,7 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         UserProfile(user=user, telegram_id=request.data['telegram_id'], group=request.data['group']).save()
-        return HttpResponse(status=200)
+        return HttpResponse(status=201)
 
 
 # update schedules
@@ -92,7 +92,10 @@ class BlockUserAPI(APIView):
     def post(self, request):
         try:
             group = UserProfile.objects.get(group=request.data['username'])
-            user = User.objects.get(username=group.user.username)
+            if not group:
+                raise User.DoesNotExist
+
+            user = User.objects.get(pk=group.user.pk)
             BlockUser.objects.create(telegram_id=user.userprofile.telegram_id,
                                      username=user.username)
             user.delete()
@@ -106,7 +109,7 @@ class BlockUserAPI(APIView):
         username = request.data.get('username')
         try:
             BlockUser.objects.get(username=username).delete()
-            return Response({'message': f'{username} успешно разблокирован!'})
+            return Response({'message': f'"{username}" успешно разблокирован!'})
 
         except BlockUser.DoesNotExist:
             return Response({'message': f'Пользователь с именем "{username}" не заблокирован!'})

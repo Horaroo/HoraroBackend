@@ -11,10 +11,10 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='signup'),
     path('update-schedules/<group>/', SchedulesApiUpdate.as_view()),
     path('create-schedules/', SchedulesAPICreate.as_view()),
-    path('user/<slug>/', UserAPIView.as_view()),  # Нужно переименовать
+    path('user/<slug>/', UserAPIView.as_view()),  # TODO: need to rename
     path('group/<slug>/', SchedulesAPIView.as_view()),
     path('change_password/<slug>/', UserChangeAPIView.as_view()),
     path('group/', GroupsAPIView.as_view()),  #
-    path('number-week/<pk>/', NumberWeekAPI.as_view()),  # Для того чтобы узнать/обновить номер недели
-    path('block-user/', BlockUserAPI.as_view()),  # Для того чтобы посмотреть/заблокировать пользователя
+    path('number-week/<pk>/', NumberWeekAPI.as_view()),  # To check/update the week number
+    path('block-user/', BlockUserAPI.as_view()),  # To view/block a user
 ]
