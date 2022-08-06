@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from .serializers import *
 from .models import UserProfile
 from django.shortcuts import get_object_or_404
-from django.http import Http404
 from django.http import HttpResponse
+from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
 
 
 class RegisterView(generics.GenericAPIView):
@@ -18,7 +18,7 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         UserProfile(user=user, telegram_id=request.data['telegram_id'], group=request.data['group']).save()
-        return HttpResponse(status=201)
+        return HttpResponse(status=HTTP_201_CREATED)
 
 
 # update schedules
@@ -26,7 +26,7 @@ class SchedulesApiUpdate(generics.UpdateAPIView):
     queryset = Schedules.objects.all()
     serializer_class = SchedulesSerializer
     lookup_field = 'group'
-    # permission_classes = (permissions.IsAuthenticated, )  # new
+    # permission_classes = (permissions.IsAuthenticated, )  # TODO
 
 
 # create field in the table
@@ -41,14 +41,14 @@ class UserAPIView(APIView):
 
         if request.data.get('telegram_id', False):
             get_object_or_404(UserProfile.objects.filter(telegram_id=slug).values())
-            return HttpResponse(status=200)
+            return HttpResponse(status=HTTP_200_OK)
 
         elif request.data.get('user', False):
             res = get_object_or_404(User.objects.filter(username=slug).values())
             return Response({'user': res})
 
         get_object_or_404(UserProfile.objects.filter(group=slug).values())
-        return HttpResponse(status=200)
+        return HttpResponse(status=HTTP_200_OK)
 
 
 class UserChangeAPIView(APIView):
@@ -113,43 +113,3 @@ class BlockUserAPI(APIView):
 
         except BlockUser.DoesNotExist:
             return Response({'message': f'Пользователь с именем "{username}" не заблокирован!'})
-
-
-
-# class UserAPIView(generics.ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#     search_fields = ['username']
-#     filter_backends = (filters.SearchFilter,)
-
-#
-# class UserAPIUpdate(generics.UpdateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-
-# class PicturesViewSet(viewsets.ModelViewSet):
-#     queryset = Pictures.objects.all()
-#     search_fields = ['name_picture']
-#     filter_backends = (filters.SearchFilter,)
-#     serializer_class = PicturesSerializer
-#     permission_classes = (IsAuthenticated, )
-#
-#     # def get_queryset(self):
-#     #     return Pictures.objects.all()[:3]
-#
-#     # @action(method=['get'], detail=True)
-#     # def name_url(self, request, pk=None):
-#     #     qst = Genres.objects.get(pk=pk)
-#     #     return Response({'res': qst})
-#
-#
-# class GenresAPIView(generics.ListAPIView):
-#     queryset = Genres.objects.all()
-#     serializer_class = GenresSerializer
-#
-#
-# class AuthorsAPIView(generics.ListAPIView):
-#     queryset = Authors.objects.all()
-#     serializer_class = AuthorsSerializer
-
-
