@@ -24,6 +24,7 @@ class SignInView(View):
 
     def post(self, request, *args, **kwargs):
         form = SignInForm(request.POST)
+        flag = False
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
@@ -32,9 +33,12 @@ class SignInView(View):
                 usr = requests.get(f'{HOST}/api/v1/user/{user}/', json={'user': True}).json()
                 if usr['user']['last_login'] is None:
                     user_id = User.objects.get(username=user).pk
+                    flag = True
+                    login(request, user)
                     requests.post(f'{HOST}/api/v1/create-schedules/', json={'group': user_id},
                                   auth=HTTPBasicAuth(username, password))
-                login(request, user)
+                if not flag:
+                    login(request, user)
                 return HttpResponseRedirect('/')
         return render(request, 'front/signin.html', context={
             'form': form,
