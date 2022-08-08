@@ -10,7 +10,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
 
 
 class RegisterView(generics.GenericAPIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny, )
     serializer_class = RegisterSerializer
 
     def post(self, request, *args,  **kwargs):
@@ -26,13 +26,14 @@ class SchedulesApiUpdate(generics.UpdateAPIView):
     queryset = Schedules.objects.all()
     serializer_class = SchedulesSerializer
     lookup_field = 'group'
-    # permission_classes = (permissions.IsAuthenticated, )  # TODO
+    permission_classes = (permissions.IsAuthenticated, )
 
 
 # create field in the table
 class SchedulesAPICreate(generics.CreateAPIView):
     queryset = Schedules.objects.all()
     serializer_class = SchedulesSerializer
+    permission_classes = (permissions.IsAdminUser, )
 
 
 # To check when creating for the presence of a user with this name
@@ -52,6 +53,8 @@ class UserAPIView(APIView):
 
 
 class UserChangeAPIView(APIView):
+    permission_classes = (permissions.IsAdminUser, )
+
     def post(self, request, slug):
         user = User.objects.get(pk=UserProfile.objects.get(telegram_id=slug).user_id).username
         group = UserProfile.objects.get(telegram_id=slug).group
@@ -83,9 +86,12 @@ class SchedulesAPIView(APIView):
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
     queryset = NumberWeek.objects.all()
     serializer_class = NumberWeekSerializer
+    permission_classes = (permissions.IsAdminUser, )
 
 
 class BlockUserAPI(APIView):
+    permission_classes = (permissions.IsAdminUser, )
+
     def get(self, request):
         return Response({'block': BlockUser.objects.all().values()})
 
