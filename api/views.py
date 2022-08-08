@@ -33,11 +33,13 @@ class SchedulesApiUpdate(generics.UpdateAPIView):
 class SchedulesAPICreate(generics.CreateAPIView):
     queryset = Schedules.objects.all()
     serializer_class = SchedulesSerializer
-    permission_classes = (permissions.IsAdminUser, )
+    permission_classes = (permissions.IsAuthenticated, )
 
 
 # To check when creating for the presence of a user with this name
 class UserAPIView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
     def get(self, request, slug):
 
         if request.data.get('telegram_id', False):
@@ -65,12 +67,16 @@ class UserChangeAPIView(APIView):
 
 
 class GroupsAPIView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
     def get(self, request):
         return Response({'groups': UserProfile.objects.values('group')})
 
 
 # To view schedules
 class SchedulesAPIView(APIView):
+    permission_classes = (permissions.AllowAny, )
+
     def get(self, request, slug):
         user = get_object_or_404(UserProfile.objects.filter(group=slug))
         if request.data.get('field', False):
