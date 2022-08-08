@@ -2,7 +2,7 @@
 SHELL := /bin/bash
 
 local_up:
-	docker-compose build --parallel
+	docker-compose build
 	docker-compose up
 
 local_restart:
