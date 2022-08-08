@@ -1,5 +1,5 @@
 
-HOST = 'http://abulaysov.ru'
+HOST = 'https://abulaysov.ru'
 # HOST = 'http://127.0.0.1:8000'
 NAME_DAYS = {'Понедельник': 'monday',
              'Вторник': 'tuesday',

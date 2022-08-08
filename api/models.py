@@ -6,6 +6,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,)
     group = models.TextField()
     telegram_id = models.IntegerField()
+    moderator = models.TextField(default=False)
 
     def __str__(self):
         return self.user.username
