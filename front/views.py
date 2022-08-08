@@ -4,49 +4,10 @@ from .forms import SignInForm
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 import requests
+from requests.auth import HTTPBasicAuth
 from api.models import UserProfile
 from django.contrib.auth.models import User
-
-HOST = 'https://webdstu.herokuapp.com'
-
-NAME_DAYS = {'Понедельник': 'monday',
-             'Вторник': 'tuesday',
-             'Среда': 'wednesday',
-             'Четверг': 'thursday',
-             'Пятница': 'friday',
-             'Суббота': 'saturday'}
-
-
-def get_schedules(data: dict) -> tuple:
-    first = [data['first_subject'][0],
-             data['first_type_pair'][0],
-             data['first_teacher'][0],
-             data['first_aud'][0]]
-    second = [data['second_subject'][0],
-              data['second_type_pair'][0],
-              data['second_teacher'][0],
-              data['second_aud'][0]]
-    third = [data['third_subject'][0],
-             data['third_type_pair'][0],
-             data['third_teacher'][0],
-             data['third_aud'][0]]
-    fourth = [data['fourth_subject'][0],
-              data['fourth_type_pair'][0],
-              data['fourth_teacher'][0],
-              data['fourth_aud'][0]]
-
-    return first, second, third, fourth
-
-
-def schedules(data: dict) -> str:
-    result = ''
-    for i, value in enumerate(get_schedules(data), 1):
-        if value[0].strip() == '':
-            result += f'{i}) {"-" * 10}'
-        else:
-            result += f'{i}) {" ".join(value)}'
-        result += '\n\n'
-    return result
+from .helper import HOST, get_schedules, get_url_for_update, NAME_DAYS, schedules
 
 
 class MainPage(View):
@@ -71,7 +32,8 @@ class SignInView(View):
                 usr = requests.get(f'{HOST}/api/v1/user/{user}/', json={'user': True}).json()
                 if usr['user']['last_login'] is None:
                     user_id = User.objects.get(username=user).pk
-                    requests.post(f'{HOST}/api/v1/create-schedules/', json={'group': user_id})
+                    requests.post(f'{HOST}/api/v1/create-schedules/', json={'group': user_id},
+                                  auth=HTTPBasicAuth(username, password))
                 login(request, user)
                 return HttpResponseRedirect('/')
         return render(request, 'front/signin.html', context={
@@ -88,8 +50,7 @@ class First(View):
         data = dict(request.POST)
         day = data['day'][0]
         field = 'first_' + NAME_DAYS[day]
-        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
-
+        requests.patch(get_url_for_update(request.user.pk), json={field: schedules(data)})
         return render(request, 'front/first.html', context={'success': day})
 
 
@@ -101,11 +62,8 @@ class Second(View):
     def post(self, request):
         data = dict(request.POST)
         day = data['day'][0]
-
         field = 'second_' + NAME_DAYS[day]
-
-        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
-
+        requests.patch(get_url_for_update(request.user.pk), json={field: schedules(data)})
         return render(request, 'front/second.html', context={'success': day})
 
 
@@ -118,9 +76,7 @@ class Third(View):
         data = dict(request.POST)
         day = data['day'][0]
         field = 'third_' + NAME_DAYS[day]
-
-        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
-
+        requests.patch(get_url_for_update(request.user.pk), json={field: schedules(data)})
         return render(request, 'front/third.html', context={'success': day})
 
 
@@ -132,10 +88,7 @@ class Fourth(View):
     def post(self, request):
         data = dict(request.POST)
         day = data['day'][0]
-
         field = 'fourth_' + NAME_DAYS[day]
-
-        requests.patch(f'{HOST}/api/v1/update-schedules/{request.user.pk}/', json={field: schedules(data)})
-
+        requests.patch(get_url_for_update(request.user.pk), json={field: schedules(data)})
         return render(request, 'front/fourth.html', context={'success': day})
 

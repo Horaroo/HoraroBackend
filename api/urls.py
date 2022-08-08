@@ -9,7 +9,7 @@ urlpatterns = [
     # path("", include(router.urls)),
     path('drf-auth/', include('rest_framework.urls')),
     path('register/', RegisterView.as_view(), name='signup'),
-    path('update-schedules/<group>/', SchedulesApiUpdate.as_view()),
+    path('update-schedules/va312/ase4/<group>/', SchedulesApiUpdate.as_view()),
     path('create-schedules/', SchedulesAPICreate.as_view()),
     path('user/<slug>/', UserAPIView.as_view()),  # TODO: need to rename
     path('group/<slug>/', SchedulesAPIView.as_view()),

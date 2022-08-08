@@ -26,7 +26,6 @@ class SchedulesApiUpdate(generics.UpdateAPIView):
     queryset = Schedules.objects.all()
     serializer_class = SchedulesSerializer
     lookup_field = 'group'
-    permission_classes = (permissions.IsAuthenticated, )
 
 
 # create field in the table
