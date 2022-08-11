@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   web:
-    build: .
+    build: ./
     restart: always
     command:
         python /code/manage.py runserver 0.0.0.0:8000
@@ -23,6 +23,17 @@ services:
       - "5432:5432"
     environment:
       - ./.env
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 123
+    ports:
+      - 5050:80
+
 
 volumes:
   data_dir:
