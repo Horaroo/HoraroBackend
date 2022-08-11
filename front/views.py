@@ -5,7 +5,6 @@ from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 import requests
 from requests.auth import HTTPBasicAuth
-from api.models import UserProfile
 from django.contrib.auth.models import User
 from .helper import HOST, get_schedules, get_url_for_update, NAME_DAYS, schedules
 

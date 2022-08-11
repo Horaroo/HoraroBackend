@@ -8,4 +8,6 @@ api/migrations/__pycache__
 config/__pycache__
 __pycache__
 .env
+db.sqlite3
+data.json
 datadir
