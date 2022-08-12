@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv('debug'))
 
-CSRF_TRUSTED_ORIGINS = ["http://abulaysov.ru", "http://www.abulaysov.ru"]  # TODO
+CSRF_TRUSTED_ORIGINS = ["https://abulaysov.ru", "https://www.abulaysov.ru"]  # TODO
 ALLOWED_HOSTS = ['*']
 
 # Application definition
