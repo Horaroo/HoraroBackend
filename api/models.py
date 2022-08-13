@@ -1,23 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,)
-    group = models.TextField()
-    telegram_id = models.IntegerField()
-    moderator = models.TextField(default=False)
-
-    def __str__(self):
-        return self.user.username
-
-
-class BlockUser(models.Model):
-    telegram_id = models.IntegerField()
-    username = models.TextField(default='')
-
-    def __str__(self):
-        return self.username
+from users.models import CustomUser
 
 
 class NumberWeek(models.Model):
@@ -54,9 +36,9 @@ class Schedules(models.Model):
     fourth_thursday = models.TextField(default='Поле не заполнено')
     fourth_friday = models.TextField(default='Поле не заполнено')
     fourth_saturday = models.TextField(default='Поле не заполнено')
-    group = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.group.userprofile.group
+        return self.group.group
 
 

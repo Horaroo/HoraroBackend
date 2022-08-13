@@ -1,48 +1,49 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from users.models import CustomUser
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from django.http.response import HttpResponse
 from .models import *
 
 
-class RegisterSerializer(serializers.ModelSerializer):
-
+class RegisterCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = (
+            "id",
             "username",
             "password",
+            "group",
+            "email"
         )
-        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         username = validated_data["username"]
         password = validated_data["password"]
-        user = User(username=username)
+        group = validated_data["group"]
+        email = validated_data["email"]
+        name = CustomUser.objects.filter(username__iexact=username.lower())
+        if bool(name):
+            raise serializers.ValidationError({'username': 'Groups with this name already exist.'},
+                                              code=HTTP_400_BAD_REQUEST)
+        groups = CustomUser.objects.filter(group__iexact=group.lower())
+        if bool(groups):
+            raise serializers.ValidationError({'group': 'Groups with this name already exist.'},
+                                              code=HTTP_400_BAD_REQUEST)
+        user = CustomUser(username=username, email=email, group=group)
         user.set_password(password)
         user.save()
         return user
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = '__all__'
+        model = CustomUser
+        fields = ('id', 'username', 'group')
 
 
 class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
-        fields = '__all__'
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = '__all__'
-
-
-class BlockUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BlockUser
         fields = '__all__'
 
 
