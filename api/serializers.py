@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 import users.models
 from users.models import CustomUser
 from rest_framework.status import HTTP_400_BAD_REQUEST
@@ -40,16 +39,19 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
 
 class TokenSerializer(serializers.ModelSerializer):
     auth_token = serializers.CharField(source="key")
+    id = serializers.CharField(source="user.pk")
+    username = serializers.CharField(source="user")
+    group = serializers.CharField(source="user.group")
 
     class Meta:
-        model = users.models.CustomToken
-        fields = ("auth_token", "user")
+        model = djoser_settings.TOKEN_MODEL
+        fields = ("auth_token", "id", "username", 'group')
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'group')
+        fields = ('id', 'username', 'group', 'email')
 
 
 class SchedulesSerializer(serializers.ModelSerializer):

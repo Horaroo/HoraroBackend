@@ -62,7 +62,7 @@ class UserAPIView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def get(self, request):
-        return Response({'message': 'cool'})
+        return Response({'response': 'success'})
 #     permission_classes = (permissions.AllowAny, )
 #
 #     def get(self, request, slug):

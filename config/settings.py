@@ -15,6 +15,7 @@ import os
 
 import rest_framework.permissions
 from dotenv import load_dotenv
+from djoser.constants import Messages
 
 
 load_dotenv()
@@ -162,10 +163,9 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'users.authentication.CustomTokenAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ]
 }
 
@@ -178,6 +178,10 @@ DJOSER = {
         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
+
+
+Messages.INVALID_CREDENTIALS_ERROR = 'Введены не корректные данные.'
+Messages.INVALID_PASSWORD_ERROR = 'Введен не правильный пароль.'
 
 LOGOUT_REDIRECT_URL = "/"
 
