@@ -1,8 +1,11 @@
 from rest_framework import serializers
+
+import users.models
 from users.models import CustomUser
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from django.http.response import HttpResponse
 from .models import *
+from djoser.conf import settings as djoser_settings
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
@@ -33,6 +36,14 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    auth_token = serializers.CharField(source="key")
+
+    class Meta:
+        model = users.models.CustomToken
+        fields = ("auth_token", "user")
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

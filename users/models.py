@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from .validators import UnicodeUsernameValidator, UnicodeGroupValidator, email_validator
-
+from django.db import models
+import binascii
+import os
 
 class CustomUser(AbstractUser):
 
@@ -29,3 +31,24 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class CustomToken(models.Model):
+
+    key = models.CharField("Key", max_length=40, primary_key=True)
+
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE, verbose_name="user"
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = self.generate_key()
+        return super(CustomToken, self).save(*args, **kwargs)
+
+    def generate_key(self):
+        return binascii.hexlify(os.urandom(20)).decode()
+
+    def __str__(self):
+        return f'Token: {self.key}'

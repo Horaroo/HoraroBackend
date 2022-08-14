@@ -12,7 +12,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='signup'),
     path('update-schedules/va312/ase4/<group>/', SchedulesApiUpdate.as_view()),
     path('create-schedules/', SchedulesAPICreate.as_view()),
-    path('user/<slug>/', UserAPIView.as_view()),  # TODO: need to rename
+    # path('user/<slug>/', UserAPIView.as_view()),  # TODO: need to rename
     path('group/<slug>/', SchedulesAPIView.as_view()),
     path('change_password/<slug>/', UserChangeAPIView.as_view()),
     path('group/', GroupsAPIView.as_view()),  #
@@ -20,5 +20,6 @@ urlpatterns = [
     # path('block-user/', BlockUserAPI.as_view()),  # To view/block a user
     path(r'auth/detail/', include('djoser.urls')),
     path(r'auth/', include('djoser.urls.authtoken')),
+    path('test/', UserAPIView.as_view()),
 
 ]

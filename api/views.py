@@ -58,8 +58,11 @@ class ChangePasswordAPI(generics.GenericAPIView):
 
 # To check when creating for the presence of a user with this name
 class UserAPIView(APIView):
-    pass
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
+    def get(self, request):
+        return Response({'message': 'cool'})
 #     permission_classes = (permissions.AllowAny, )
 #
 #     def get(self, request, slug):

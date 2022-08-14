@@ -162,20 +162,20 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'users.authentication.CustomTokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ]
 }
 
 DJOSER = {
     'SERIALIZERS': {
-         'user_create': 'api.serializers.RegisterCustomUserSerializer'
+        'user_create': 'api.serializers.RegisterCustomUserSerializer',
+        'token': 'api.serializers.TokenSerializer',
     },
     'PERMISSIONS': {
-        # 'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-        'user': ['rest_framework.permissions.AllowAny'],
-        'user_delete': ['rest_framework.permissions.IsAuthenticated'],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
 
