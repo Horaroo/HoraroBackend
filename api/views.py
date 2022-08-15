@@ -6,7 +6,6 @@ from .serializers import *
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
-from .helpers import send_message_to_mail
 from django.http import Http404
 from rest_framework.authentication import TokenAuthentication
 
@@ -40,20 +39,6 @@ class SchedulesAPICreate(generics.CreateAPIView):
     serializer_class = SchedulesSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
-
-class ChangePasswordAPI(generics.GenericAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-
-    def get(self, request, *args, **kwargs):
-        to_email = request.data.get('email')
-        # try:
-        #     to_email = CustomUser.objects.get(email=request_email)
-        # except CustomUser.DoesNotExist:
-        #     raise Http404("Email не найден")
-
-        send_message_to_mail(to_email=to_email)
-        return Response({"message": f"Инструкция для сброса пароля отправлена на {to_email}"})
 
 
 # To check when creating for the presence of a user with this name

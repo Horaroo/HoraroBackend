@@ -1,10 +1,16 @@
-from django.core.mail import send_mail, EmailMessage
+from django.contrib.auth.tokens import default_token_generator
+from templated_mail.mail import BaseEmailMessage
+from djoser import utils
+from djoser.conf import settings
 
 
-def send_message_to_mail(to_email):
-    m = EmailMessage(
-        subject='Subject',
-        from_email='abulaysovv@mail.ru',
-        to=[to_email],
-    )
-    m.send()
+class CustomPasswordResetEmail(BaseEmailMessage):
+    template_name = "api/password_reset.html"
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        user = context.get("user")
+        context["uid"] = utils.encode_uid(user.pk)
+        context["token"] = default_token_generator.make_token(user)
+        context["url"] = settings.PASSWORD_RESET_CONFIRM_URL.format(**context)
+        return context

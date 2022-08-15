@@ -173,6 +173,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",
     'SERIALIZERS': {
         'user_create': 'api.serializers.RegisterCustomUserSerializer',
         'token': 'api.serializers.TokenSerializer',
@@ -193,7 +194,11 @@ DJOSER = {
             "token_create": ["rest_framework.permissions.AllowAny"],
             "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
 
-    }
+    },
+    'EMAIL':
+        {
+            'password_reset': 'api.helpers.CustomPasswordResetEmail',
+        }
 }
 
 
@@ -211,5 +216,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'userdstu@gmail.com'
-EMAIL_HOST_PASSWORD = 'EmhLRmpvMMZF47w'
+# EMAIL_HOST_USER = 'userdstu@gmail.com'
+EMAIL_HOST_USER = 'abulaysovv@gmail.com'
+# EMAIL_HOST_PASSWORD = 'EmhLRmpvMMZF47w'
+EMAIL_HOST_PASSWORD = 'sgvsgczdmjbvbvbl'
