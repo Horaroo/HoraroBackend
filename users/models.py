@@ -13,19 +13,19 @@ class CustomUser(AbstractUser):
             "unique": "Логин занят.",
         })
 
-    group = models.CharField(max_length=10,
-                             unique=True,
-                             validators=[UnicodeGroupValidator()],
-                             error_messages={
-                                 "unique": "Группа с таким именем уже зарегистрирована."
-                             })
+    # group = models.CharField(max_length=10,
+    #                          unique=True,
+    #                          validators=[UnicodeGroupValidator()],
+    #                          error_messages={
+    #                              "unique": "Группа с таким именем уже зарегистрирована."
+    #                          })
 
-    # group = models.ForeignKey('Group',
-    #                           on_delete=models.CASCADE,
-    #                           unique=True,
-    #                           error_messages={
-    #                                "unique": "Группа с таким именем уже зарегистрирована.",
-    #                           })
+    group = models.ForeignKey('Group',
+                              on_delete=models.CASCADE,
+                              unique=True,
+                              error_messages={
+                                   "unique": "Группа с таким именем уже зарегистрирована.",
+                              })
 
     email = models.EmailField(models.EmailField.description,
                               unique=True,
