@@ -31,7 +31,7 @@ class GroupsViewSet(mixins.RetrieveModelMixin,
 
     queryset = Group.objects.all()
     permission_classes = (permissions.AllowAny, )
-    pagination_class = LimitOffsetPagination
+    # pagination_class = LimitOffsetPagination
     serializer_class = GroupSerializer
 
     def get_queryset(self):
