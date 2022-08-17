@@ -35,8 +35,8 @@ class GroupsViewSet(mixins.RetrieveModelMixin,
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        if self.request.data.get('q'):
-            queryset = self.queryset.filter(name__startswith=self.request.data['q'].upper())
+        if self.request.query_params.get('q'):
+            queryset = self.queryset.filter(name__startswith=self.request.query_params.get('q').upper())
             return queryset[:5] if queryset else None
         else:
             return self.queryset.filter(~Q(name='root'))[:5]
