@@ -37,9 +37,9 @@ class GroupsViewSet(mixins.RetrieveModelMixin,
     def get_queryset(self):
         if self.request.data.get('q'):
             queryset = self.queryset.filter(name__startswith=self.request.data['q'].upper())
-            return queryset if queryset else None
+            return queryset[:5] if queryset else None
         else:
-            return self.queryset.filter(~Q(name='root'))
+            return self.queryset.filter(~Q(name='root'))[:5]
 
 
 class SchedulesAPIView(APIView):
