@@ -8,22 +8,23 @@ from rest_framework.pagination import LimitOffsetPagination
 from users.models import Group, CustomUser
 from rest_framework import mixins
 from django.db.models import Q
+from .models import Schedule
 
 
 # update schedules
-class SchedulesApiUpdate(generics.UpdateAPIView):
-    queryset = Schedules.objects.all()
-    serializer_class = SchedulesSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, )
-    lookup_field = 'group'
-
-
-class SchedulesAPICreate(generics.CreateAPIView):
-    queryset = Schedules.objects.all()
-    serializer_class = SchedulesSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-
+# class SchedulesApiUpdate(generics.UpdateAPIView):
+#     queryset = Schedules.objects.all()
+#     serializer_class = SchedulesSerializer
+#     permission_classes = (permissions.IsAuthenticated, )
+#     authentication_classes = (TokenAuthentication, )
+#     lookup_field = 'group'
+#
+#
+# class SchedulesAPICreate(generics.CreateAPIView):
+#     queryset = Schedules.objects.all()
+#     serializer_class = SchedulesSerializer
+#     permission_classes = (permissions.IsAuthenticated, )
+#
 
 class GroupsViewSet(mixins.RetrieveModelMixin,
                     mixins.ListModelMixin,
@@ -42,8 +43,11 @@ class GroupsViewSet(mixins.RetrieveModelMixin,
             return self.queryset.filter(~Q(name='root'))[:5]
 
 
-class SchedulesAPIView(APIView):
-    pass
+class ScheduleViewSet(mixins.CreateModelMixin,
+                      viewsets.GenericViewSet):
+
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
