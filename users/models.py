@@ -20,12 +20,12 @@ class CustomUser(AbstractUser):
     #                              "unique": "Группа с таким именем уже зарегистрирована."
     #                          })
 
-    group = models.ForeignKey('Group',
-                              on_delete=models.CASCADE,
-                              unique=True,
-                              error_messages={
+    group = models.OneToOneField('Group',
+                                 on_delete=models.CASCADE,
+                                 unique=True,
+                                 error_messages={
                                    "unique": "Группа с таким именем уже зарегистрирована.",
-                              })
+                                 })
 
     email = models.EmailField(models.EmailField.description,
                               unique=True,
@@ -48,7 +48,7 @@ class Faculty(models.Model):
 
 class Group(models.Model):
 
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=20)
     faculty = models.ForeignKey(Faculty,
                                 on_delete=models.CASCADE)
 
