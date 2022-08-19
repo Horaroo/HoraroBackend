@@ -202,7 +202,7 @@ DJOSER = {
 }
 
 
-Messages.INVALID_CREDENTIALS_ERROR = 'Введены не корректные данные.'
+Messages.INVALID_CREDENTIALS_ERROR = 'Вы ввели неправильный логин или пароль!'
 Messages.INVALID_PASSWORD_ERROR = 'Введен не правильный пароль.'
 
 LOGOUT_REDIRECT_URL = "/"

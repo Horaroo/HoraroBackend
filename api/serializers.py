@@ -19,7 +19,7 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         username = validated_data["username"]
         password = validated_data["password"]
-        group = int(validated_data["group"])
+        group = validated_data["group"]
         email = validated_data["email"]
         name = CustomUser.objects.filter(username__iexact=username.lower())
         # if bool(name):
