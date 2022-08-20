@@ -21,7 +21,7 @@ class AdminCustomUser(UserAdmin):
             },
         ),
     )
-    list_display = ['username', 'group', 'email', 'is_staff']
+    list_display = ['id', 'username', 'group', 'email', 'is_staff']
     search_fields = ['username', 'group', 'email']
 
 
@@ -32,5 +32,5 @@ class AdminFaculty(admin.ModelAdmin):
 
 @admin.register(Group)
 class AdminGroup(admin.ModelAdmin):
-    list_display = ['name', 'faculty']
+    list_display = ['id', 'name', 'faculty']
     search_fields = ['name', 'faculty']

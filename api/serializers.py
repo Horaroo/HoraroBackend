@@ -3,6 +3,7 @@ from users.models import CustomUser, Group
 from .models import *
 from djoser.conf import settings as djoser_settings
 from django.db.models import Q
+from rest_framework.status import HTTP_400_BAD_REQUEST
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
@@ -21,14 +22,11 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
         password = validated_data["password"]
         group = validated_data["group"]
         email = validated_data["email"]
-        name = CustomUser.objects.filter(username__iexact=username.lower())
-        # if bool(name):
-        #     raise serializers.ValidationError({'username': 'Groups with this name already exist.'},
-        #                                       code=HTTP_400_BAD_REQUEST)
-        # groups = CustomUser.objects.filter(group__iexact=group.lower())
-        # if bool(groups):
-        #     raise serializers.ValidationError({'group': 'Имя с'},
-        #                                       code=HTTP_400_BAD_REQUEST)
+        groups = CustomUser.objects.filter(group=group)
+        if bool(groups):
+            raise serializers.ValidationError({'group': ['Группа с таким именем уже зарегистрирована.']},
+                                              code=HTTP_400_BAD_REQUEST)
+
         user = CustomUser(username=username, email=email, group=group)
         user.set_password(password)
         user.save()
