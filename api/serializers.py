@@ -4,6 +4,8 @@ from .models import *
 from djoser.conf import settings as djoser_settings
 from django.db.models import Q
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from djoser.serializers import UserFunctionsMixin
+from djoser.compat import get_user_email, get_user_email_field_name
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
@@ -42,6 +44,22 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = djoser_settings.TOKEN_MODEL
         fields = ("auth_token", "id", "username", 'group')
+
+
+class SendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin):
+    default_error_messages = {
+        "email_not_found": djoser_settings.CONSTANTS.messages.EMAIL_NOT_FOUND
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        if not CustomUser.objects.filter(email=kwargs['data']['email']):
+            raise serializers.ValidationError({'email': ['Почта не зарегистрирована.']},
+                                              code=HTTP_400_BAD_REQUEST)
+
+        super().__init__(*args, **kwargs)
+        self.email_field = get_user_email_field_name(CustomUser)
+        self.fields[self.email_field] = serializers.EmailField()
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

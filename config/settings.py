@@ -177,6 +177,7 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'api.serializers.RegisterCustomUserSerializer',
         'token': 'api.serializers.TokenSerializer',
+        'password_reset': 'api.serializers.SendEmailResetSerializer',
     },
 
     'PERMISSIONS': {
