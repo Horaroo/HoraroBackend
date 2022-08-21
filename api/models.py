@@ -6,7 +6,7 @@ class NumberWeek(models.Model):
     number = models.IntegerField()
 
     def __str__(self):
-        return self.number
+        return str(self.number)
 
 
 class Week(models.Model):
