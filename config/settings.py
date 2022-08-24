@@ -77,7 +77,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://abulaysov.ru',
     'https://abulaysov.ru',
     "http://127.0.0.1:3000",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    'http://abulaysov.ru:3000',
+    'https://abulaysov.ru:3000',
 ]
 
 
