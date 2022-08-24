@@ -33,9 +33,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('debug'))
 
 CSRF_TRUSTED_ORIGINS = ["https://abulaysov.ru",
-                        "https://www.abulaysov.ru",
-                        "http://127.0.0.1:3000",
-                        "http://localhost:3000"]  # TODO
+                        "https://www.abulaysov.ru"]  # TODO
 
 ALLOWED_HOSTS = ['*']
 
@@ -60,8 +58,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,22 +72,8 @@ ROOT_URLCONF = 'config.urls'
 
 
 CORS_ALLOWED_ORIGINS = [
-    'http://abulaysov.ru',
-    'https://abulaysov.ru',
-    "http://127.0.0.1:3000",
     "http://localhost:3000",
-    'http://abulaysov.ru:3000',
-    'https://abulaysov.ru:3000',
-]
-
-
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
+    "http://127.0.0.1:8000",
 ]
 
 
