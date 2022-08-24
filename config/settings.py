@@ -68,6 +68,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+CORS_ALLOWED_ORIGINS = [
+    'http://abulaysov.ru',
+    'https://abulaysov.ru',
+]
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -89,18 +99,6 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(
 )
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
