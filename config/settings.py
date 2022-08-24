@@ -90,7 +90,10 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+  'http://localhost:3000',
+)
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
