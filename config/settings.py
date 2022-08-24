@@ -69,12 +69,21 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
 CORS_ALLOWED_ORIGINS = [
     'http://abulaysov.ru',
     'https://abulaysov.ru',
+    "http://127.0.0.1:3000",
+    "http://localhost:3000"
+]
+
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
 
 
