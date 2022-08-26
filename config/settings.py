@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'djoser',
     'drf_yasg',
     'api.apps.ApiConfig',
-    'front.apps.FrontConfig',
     'users.apps.UsersConfig',
 ]
 
