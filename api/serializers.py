@@ -5,7 +5,7 @@ from djoser.conf import settings as djoser_settings
 from django.db.models import Q
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from djoser.serializers import UserFunctionsMixin
-from djoser.compat import get_user_email, get_user_email_field_name
+from djoser.compat import get_user_email_field_name
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):

@@ -32,8 +32,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv('debug'))
 
-CSRF_TRUSTED_ORIGINS = ["https://abulaysov.ru",
-                        "https://www.abulaysov.ru"]  # TODO
+CSRF_TRUSTED_ORIGINS = [
+    "https://abulaysov.ru",
+    "https://www.abulaysov.ru",
+    "https://api.abulaysov.ru",
+    "https://www.api.abulaysov.ru",
+]
 
 ALLOWED_HOSTS = ['*']
 
@@ -70,12 +74,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://abulaysov.ru",
-    "https://abulaysov.ru",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://abulaysov.ru",
+#     "https://abulaysov.ru",
+#     "http://api.abulaysov.ru",
+#     "https://api.abulaysov.ru",
+# ]
 
 
 TEMPLATES = [
