@@ -24,7 +24,7 @@ from .models import Schedule
 #     queryset = Schedules.objects.all()
 #     serializer_class = SchedulesSerializer
 #     permission_classes = (permissions.IsAuthenticated, )
-#
+
 
 class GroupsViewSet(mixins.RetrieveModelMixin,
                     mixins.ListModelMixin,
@@ -58,5 +58,21 @@ class NumberWeekAPI(generics.RetrieveUpdateAPIView):
 
 class GroupApiView(APIView):
     def get(self, request):
-        q = CustomUser.objects.filter(~Q(name='root')).values('group__name', 'group__faculty__name')
+        q = CustomUser.objects.filter(~Q(username='root')).values('group__name', 'group__faculty__name')
         return Response(q)
+
+
+class TypeListView(generics.ListAPIView):
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
+
+
+class GetScheduleView(generics.RetrieveAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+
+    def retrieve(self, request, week, day, number, *args, **kwargs):
+        instance = self.queryset.filter(group=self.request.query_params.get('group'),
+                                        week=week, day=day, number_pair=number)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)

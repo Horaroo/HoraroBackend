@@ -46,14 +46,14 @@ class TokenSerializer(serializers.ModelSerializer):
         fields = ("auth_token", "id", "username", 'group')
 
 
-class SendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin):
+class CustomSendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin):
     default_error_messages = {
         "email_not_found": djoser_settings.CONSTANTS.messages.EMAIL_NOT_FOUND
     }
 
     def __init__(self, *args, **kwargs):
 
-        if not CustomUser.objects.filter(email=kwargs['data']['email']):
+        if kwargs.get('data') and not CustomUser.objects.filter(email=kwargs['data']['email']):
             raise serializers.ValidationError({'email': ['Почта не зарегистрирована.']},
                                               code=HTTP_400_BAD_REQUEST)
 
@@ -108,3 +108,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
             return instance
         else:
             return Schedule.objects.create(**validated_data)
+
+
+class TypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Type
+        fields = '__all__'
