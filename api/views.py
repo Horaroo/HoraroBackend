@@ -71,8 +71,12 @@ class GetScheduleView(generics.RetrieveAPIView):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
 
-    def retrieve(self, request, week, day, number, *args, **kwargs):
-        instance = self.queryset.filter(group=self.request.query_params.get('group'),
-                                        week=week, day=day, number_pair=number)
+    def retrieve(self, request, *args, **kwargs):
+        group = CustomUser.objects.filter(group__name=self.request.query_params.get('group')).first()
+        instance = self.queryset.filter(group=group.pk,
+                                        week=kwargs.get('week'),
+                                        day=kwargs.get('day'),
+                                        number_pair=kwargs.get('number')).first()
+
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
