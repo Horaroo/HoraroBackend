@@ -42,3 +42,5 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f'{self.number_pair}: {self.subject} - {self.group.group.name}'
+
+

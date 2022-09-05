@@ -1,29 +1,13 @@
-from rest_framework import generics, filters, viewsets
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.pagination import LimitOffsetPagination
 from users.models import Group, CustomUser
 from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
-
-
-# update schedules
-# class SchedulesApiUpdate(generics.UpdateAPIView):
-#     queryset = Schedules.objects.all()
-#     serializer_class = SchedulesSerializer
-#     permission_classes = (permissions.IsAuthenticated, )
-#     authentication_classes = (TokenAuthentication, )
-#     lookup_field = 'group'
-#
-#
-# class SchedulesAPICreate(generics.CreateAPIView):
-#     queryset = Schedules.objects.all()
-#     serializer_class = SchedulesSerializer
-#     permission_classes = (permissions.IsAuthenticated, )
 
 
 class GroupsViewSet(mixins.RetrieveModelMixin,
@@ -32,7 +16,6 @@ class GroupsViewSet(mixins.RetrieveModelMixin,
 
     queryset = Group.objects.all()
     permission_classes = (permissions.AllowAny, )
-    # pagination_class = LimitOffsetPagination
     serializer_class = GroupSerializer
 
     def get_queryset(self):
@@ -48,6 +31,8 @@ class ScheduleViewSet(mixins.CreateModelMixin,
 
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
@@ -77,6 +62,9 @@ class GetScheduleView(generics.RetrieveAPIView):
                                         week=kwargs.get('week'),
                                         day=kwargs.get('day'),
                                         number_pair=kwargs.get('number')).first()
+
+        if not bool(instance):
+            return Response({})
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
