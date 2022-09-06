@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Faculty, Group
+from .models import CustomUser
 
 
 @admin.register(CustomUser)
@@ -24,14 +24,3 @@ class AdminCustomUser(UserAdmin):
     list_display = ['id', 'username', 'group', 'email', 'is_staff']
     search_fields = ['username', 'group', 'email']
     list_display_links = ['id', 'username']
-
-
-@admin.register(Faculty)
-class AdminFaculty(admin.ModelAdmin):
-    list_display = ['name']
-
-
-@admin.register(Group)
-class AdminGroup(admin.ModelAdmin):
-    list_display = ['id', 'name', 'faculty']
-    search_fields = ['name', 'faculty']

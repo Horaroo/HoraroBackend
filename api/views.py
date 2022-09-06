@@ -4,26 +4,10 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.authentication import TokenAuthentication
-from users.models import Group, CustomUser
+from users.models import CustomUser
 from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
-
-
-class GroupsViewSet(mixins.RetrieveModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
-
-    queryset = Group.objects.all()
-    permission_classes = (permissions.AllowAny, )
-    serializer_class = GroupSerializer
-
-    def get_queryset(self):
-        if self.request.query_params.get('q'):
-            queryset = self.queryset.filter(name__startswith=self.request.query_params.get('q').upper())
-            return queryset[:5] if queryset else None
-        else:
-            return self.queryset.filter(~Q(name='root'))[:5]
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,

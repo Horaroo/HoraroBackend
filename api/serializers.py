@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from users.models import CustomUser, Group
 from .models import *
 from djoser.conf import settings as djoser_settings
 from django.db.models import Q
@@ -72,12 +71,6 @@ class NumberWeekSerializer(serializers.ModelSerializer):
     class Meta:
         model = NumberWeek
         fields = '__all__'
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['id', 'name']
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
