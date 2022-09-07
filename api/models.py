@@ -31,7 +31,7 @@ class Day(models.Model):
 
 
 class Schedule(models.Model):
-    number_pair = models.IntegerField()
+    number_pair = models.IntegerField(blank=True, null=True)
     subject = models.TextField()
     teacher = models.TextField()
     audience = models.TextField()
