@@ -24,3 +24,19 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class TelegramUser(models.Model):
+    telegram_id = models.TextField(unique=True)
+
+    def __str__(self):
+        return self.telegram_id
+
+
+class GroupUserTelegram(models.Model):
+    token = models.TextField()
+    group = models.TextField()
+    user = models.ManyToManyField(TelegramUser)
+
+    def __str__(self):
+        return f'{self.group}'

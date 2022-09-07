@@ -4,10 +4,11 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.authentication import TokenAuthentication
-from users.models import CustomUser
+from users.models import CustomUser, TelegramUser, GroupUserTelegram
 from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
+from rest_framework import status
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -41,7 +42,7 @@ class GetScheduleView(generics.RetrieveAPIView):
     queryset = Schedule.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        group = CustomUser.objects.filter(group__name=self.request.query_params.get('group')).first()
+        group = CustomUser.objects.filter(group=self.request.query_params.get('group')).first()
         instance = self.queryset.filter(group=group.pk,
                                         week=kwargs.get('week'),
                                         day=kwargs.get('day'),
@@ -49,6 +50,31 @@ class GetScheduleView(generics.RetrieveAPIView):
 
         if not bool(instance):
             return Response({})
-
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class TelegramUserCreate(generics.CreateAPIView):
+    queryset = TelegramUser.objects.all()
+    serializer_class = TelegramUserSerializer
+
+
+class GroupUserCreateOrDelete(generics.CreateAPIView,
+                              generics.DestroyAPIView,
+                              generics.ListAPIView):
+
+    queryset = GroupUserTelegram.objects.all()
+    serializer_class = GroupUserTelegramSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        telegram_id = self.request.query_params.get('telegram_id')
+        token = self.request.query_params.get('token')
+        try:
+            self.queryset.get(user__telegram_id=telegram_id, token=token).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except GroupUserTelegram.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get_queryset(self):
+        telegram_id = self.request.query_params.get('telegram_id')
+        return self.queryset.filter(user__telegram_id=telegram_id).values()

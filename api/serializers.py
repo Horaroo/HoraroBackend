@@ -5,6 +5,8 @@ from django.db.models import Q
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from djoser.serializers import UserFunctionsMixin
 from djoser.compat import get_user_email_field_name
+from users.models import TelegramUser, GroupUserTelegram
+from django.shortcuts import get_object_or_404
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
@@ -107,3 +109,30 @@ class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = '__all__'
+
+
+class TelegramUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TelegramUser
+        fields = ['telegram_id']
+
+
+class GroupUserTelegramSerializer(serializers.ModelSerializer):
+    telegram_id = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = GroupUserTelegram
+        fields = ['group', 'telegram_id', 'token']
+
+    def create(self, validated_data):
+        user = get_object_or_404(TelegramUser, telegram_id=validated_data.get('telegram_id'))
+        obj = GroupUserTelegram.objects.filter(user=user, group=validated_data['group'], token=validated_data['token'])
+        if obj:
+            raise serializers.ValidationError(code=HTTP_400_BAD_REQUEST)
+        instance = GroupUserTelegram(group=validated_data['group'], token=validated_data['token'])
+        instance.save()
+        instance.user.add(user)
+        return instance
+
+
+
