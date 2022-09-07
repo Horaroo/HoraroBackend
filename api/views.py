@@ -42,7 +42,7 @@ class GetScheduleView(generics.RetrieveAPIView):
     queryset = Schedule.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        group = CustomUser.objects.filter(group=self.request.query_params.get('group')).first()
+        group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
         instance = self.queryset.filter(group=group.pk,
                                         week=kwargs.get('week'),
                                         day=kwargs.get('day'),
