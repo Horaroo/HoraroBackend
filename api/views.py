@@ -100,5 +100,5 @@ class ScheduleViewList(generics.ListAPIView):
 
         if not bool(instances):
             return Response({})
-        serializer = self.get_serializer(instances)
+        serializer = self.serializer_class(instances, many=True)
         return Response(serializer.data)
