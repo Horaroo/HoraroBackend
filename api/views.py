@@ -78,3 +78,27 @@ class GroupUserCreateOrDelete(generics.CreateAPIView,
     def get_queryset(self):
         telegram_id = self.request.query_params.get('telegram_id')
         return self.queryset.filter(user__telegram_id=telegram_id).values()
+
+
+class ScheduleViewList(generics.ListAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
+        if self.request.query_params.get('day'):
+            instances = self.queryset.filter(group=group.pk,
+                                             week=self.request.query_params.get('week'),
+                                             day=self.request.query_params.get('day'))
+
+        elif self.request.query_params.get('week'):
+            instances = self.queryset.filter(group=group.pk,
+                                             week=self.request.query_params.get('week'))
+
+        else:
+            instances = self.queryset.filter(group=group.pk)
+
+        if not bool(instances):
+            return Response({})
+        serializer = self.get_serializer(instances)
+        return Response(serializer.data)
