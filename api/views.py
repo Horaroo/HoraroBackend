@@ -28,7 +28,7 @@ class NumberWeekAPI(generics.RetrieveUpdateAPIView):
 
 class GroupApiView(APIView):
     def get(self, request):
-        q = CustomUser.objects.filter(~Q(username='root')).values('username', 'group')
+        q = CustomUser.objects.filter(~Q(username='root')).values('username', 'group', 'verified')
         return Response(q)
 
 

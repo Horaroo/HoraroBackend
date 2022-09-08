@@ -22,6 +22,8 @@ class CustomUser(AbstractUser):
                                   "unique": "Такая почта уже используется.",
                               })
 
+    verified = models.BooleanField(default=False)
+
     def __str__(self):
         return self.username
 
