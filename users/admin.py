@@ -21,7 +21,7 @@ class AdminCustomUser(UserAdmin):
             },
         ),
     )
-    list_display = ['id', 'username', 'group', 'email', 'is_staff']
+    list_display = ['id', 'username', 'group', 'email', 'verified', 'is_staff']
     search_fields = ['username', 'group', 'email']
     list_display_links = ['id', 'username']
 
