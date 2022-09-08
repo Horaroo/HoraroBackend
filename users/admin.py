@@ -10,7 +10,7 @@ class AdminCustomUser(UserAdmin):
             'fields': ('username', 'password', 'group', 'email')
         }),
         ('Advanced options', {
-            'fields': ('is_staff', 'groups'),
+            'fields': ('is_staff', 'groups', 'verified'),
         }),
     )
     add_fieldsets = (
