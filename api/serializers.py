@@ -114,7 +114,7 @@ class TypeSerializer(serializers.ModelSerializer):
 class TelegramUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TelegramUser
-        fields = ['telegram_id', 'is_moder']
+        fields = ['telegram_id', 'username', 'is_moder']
 
 
 class GroupUserTelegramSerializer(serializers.ModelSerializer):

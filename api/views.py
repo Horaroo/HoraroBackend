@@ -55,7 +55,12 @@ class GetScheduleView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-class TelegramUserListOrCreate(generics.ListCreateAPIView):
+class TelegramUserListOrUpdateOrCreate(
+    generics.CreateAPIView,
+    generics.UpdateAPIView,
+    generics.DestroyAPIView,
+    generics.ListAPIView,
+):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
