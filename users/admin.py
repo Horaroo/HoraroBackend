@@ -28,7 +28,7 @@ class AdminCustomUser(UserAdmin):
 
 @admin.register(TelegramUser)
 class AdminTelegramUser(admin.ModelAdmin):
-    pass
+    list_display = ['telegram_id', 'is_moder']
 
 
 @admin.register(GroupUserTelegram)
