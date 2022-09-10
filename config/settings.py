@@ -17,7 +17,6 @@ import rest_framework.permissions
 from dotenv import load_dotenv
 from djoser.constants import Messages
 
-
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,10 +32,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('debug'))
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://abulaysov.ru",
-    "https://www.abulaysov.ru",
-    "https://api.abulaysov.ru",
-    "https://www.api.abulaysov.ru",
+    "https://horaro.net",
+    "https://www.horaro.net",
+    "https://api.horaro.net",
+    "https://www.horaro.net",
 ]
 
 ALLOWED_HOSTS = ['*']
@@ -188,6 +187,8 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "reset_password/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
     'SERIALIZERS': {
         'user_create': 'api.serializers.RegisterCustomUserSerializer',
         'token': 'api.serializers.TokenSerializer',
@@ -213,6 +214,7 @@ DJOSER = {
     'EMAIL':
         {
             'password_reset': 'api.helpers.CustomPasswordResetEmail',
+            'activation': 'api.helpers.CustomActivationEmail',
         }
 }
 
@@ -231,7 +233,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
-# EMAIL_HOST_USER = 'userdstu@gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = 'EmhLRmpvMMZF47w'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
