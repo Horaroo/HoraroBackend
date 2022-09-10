@@ -14,7 +14,7 @@ class CustomUser(AbstractUser):
         })
 
     group = models.CharField(max_length=15)
-
+    is_active = models.BooleanField(default=False)
     email = models.EmailField(models.EmailField.description,
                               unique=True,
                               validators=[email_validator],

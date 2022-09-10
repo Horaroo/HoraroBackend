@@ -1,0 +1,18 @@
+{% load i18n %}
+
+{% block subject %}
+Активация аккаунта на horaro
+
+{% endblock subject %}
+
+{% block html_body %}
+<p>Вы получили это письмо, потому что вам нужно завершить процесс активации учетной записи на <a href="https://horaro.net">horaro.net</a></p>
+
+<p>Пожалуйста, перейдите на следующую страницу, чтобы активировать учетную запись:</p>
+<p><a href="https://horaro.net/{{ url|safe }}">horaro.net/{{ url|safe }}</a></p>
+
+<p>Спасибо, что используете наше приложение!</p>
+
+<p><i>С уважением команда horaro.</i></p>
+
+{% endblock html_body %}
