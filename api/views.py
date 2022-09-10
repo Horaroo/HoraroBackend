@@ -9,21 +9,22 @@ from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
 from rest_framework import status
+from .filters import TelegramUsersFilter
+from django_filters import rest_framework as filters
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
-
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, )
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
     queryset = NumberWeek.objects.all()
     serializer_class = NumberWeekSerializer
-    permission_classes = (permissions.IsAdminUser, )
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class GroupApiView(APIView):
@@ -54,15 +55,16 @@ class GetScheduleView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-class TelegramUserCreate(generics.CreateAPIView):
+class TelegramUserListOrCreate(generics.ListCreateAPIView):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TelegramUsersFilter
 
 
-class GroupUserCreateOrDelete(generics.CreateAPIView,
-                              generics.DestroyAPIView,
-                              generics.ListAPIView):
-
+class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
+                                    generics.DestroyAPIView,
+                                    generics.ListAPIView):
     queryset = GroupUserTelegram.objects.all()
     serializer_class = GroupUserTelegramSerializer
 
