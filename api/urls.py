@@ -14,7 +14,7 @@ urlpatterns = [
     path(r'list/group/', GroupApiView.as_view()),
     path('type-pair/', TypeListView.as_view()),
     path('get-pair/<int:week>/<int:day>/<int:number>/', GetScheduleView.as_view()),
-    path('telegram/detail/user/', TelegramUserCreate.as_view()),
+    path('telegram/detail/user/', TelegramUserView.as_view()),
     path('telegram/detail/group/', GroupUserCreateOrDelete.as_view()),
-    path('get-schedule/', ScheduleViewList.as_view())
+    path('get-schedule/', ScheduleViewList.as_view()),
 ]

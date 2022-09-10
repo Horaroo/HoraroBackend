@@ -9,6 +9,8 @@ from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
 from rest_framework import status
+from .filters import TelegramUsersFilter
+from django_filters import rest_framework as filters
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -54,9 +56,11 @@ class GetScheduleView(generics.RetrieveAPIView):
         return Response(serializer.data)
 
 
-class TelegramUserCreate(generics.CreateAPIView):
+class TelegramUserView(generics.ListCreateAPIView):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TelegramUsersFilter
 
 
 class GroupUserCreateOrDelete(generics.CreateAPIView,
