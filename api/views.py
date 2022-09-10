@@ -65,6 +65,7 @@ class TelegramUserListOrUpdateOrCreate(
     serializer_class = TelegramUserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TelegramUsersFilter
+    lookup_filed = 'telegram_id'
 
 
 class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
