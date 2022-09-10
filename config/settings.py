@@ -32,10 +32,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(os.getenv('debug'))
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://abulaysov.ru",
-    "https://www.abulaysov.ru",
-    "https://api.abulaysov.ru",
-    "https://www.api.abulaysov.ru",
+    "https://horaro.net",
+    "https://www.horaro.net",
+    "https://api.horaro.net",
+    "https://www.horaro.net",
 ]
 
 ALLOWED_HOSTS = ['*']
