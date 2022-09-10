@@ -30,6 +30,7 @@ class CustomUser(AbstractUser):
 
 class TelegramUser(models.Model):
     telegram_id = models.TextField(unique=True)
+    username = models.TextField()
     is_moder = models.BooleanField(default=False)
 
     def __str__(self):
