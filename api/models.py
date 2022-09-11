@@ -41,7 +41,7 @@ class Schedule(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.number_pair}: {self.subject} - {self.group.group.name}'
+        return f'{self.number_pair}: {self.subject} - {self.group.group}'
 
 
 class Event(models.Model):
