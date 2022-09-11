@@ -44,3 +44,12 @@ class Schedule(models.Model):
         return f'{self.number_pair}: {self.subject} - {self.group.group.name}'
 
 
+class Event(models.Model):
+    title = models.TextField()
+    description = models.TextField()
+    image = models.ImageField(blank=True)
+    is_main = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

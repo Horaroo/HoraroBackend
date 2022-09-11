@@ -4,6 +4,7 @@ from .views import *
 
 router = SimpleRouter()
 router.register('schedule', ScheduleViewSet)
+router.register('events', EventDetailOrList)
 
 urlpatterns = [
     path("", include(router.urls)),
