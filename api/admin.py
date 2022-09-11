@@ -36,4 +36,4 @@ class AdminNumberWeek(admin.ModelAdmin):
 
 @admin.register(Event)
 class AdminEvent(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'created_at']
