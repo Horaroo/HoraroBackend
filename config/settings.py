@@ -76,10 +76,8 @@ ROOT_URLCONF = 'config.urls'
 CORS_ALLOW_ALL_ORIGINS = True
 
 # CORS_ALLOWED_ORIGINS = [
-#     "http://abulaysov.ru",
-#     "https://abulaysov.ru",
-#     "http://api.abulaysov.ru",
-#     "https://api.abulaysov.ru",
+#     "https://horaro.net",
+#     "https://api.horaro.net",
 # ]
 
 
@@ -156,7 +154,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
