@@ -10,7 +10,7 @@ class AdminCustomUser(UserAdmin):
             'fields': ('username', 'password', 'group', 'email')
         }),
         ('Advanced options', {
-            'fields': ('is_staff', 'groups', 'verified'),
+            'fields': ('is_staff', 'groups', 'verified', 'is_active'),
         }),
     )
     add_fieldsets = (
@@ -21,9 +21,9 @@ class AdminCustomUser(UserAdmin):
             },
         ),
     )
-    list_display = ['id', 'username', 'group', 'email', 'verified', 'is_staff']
+    list_display = ['username', 'group', 'email', 'verified', 'is_staff', 'is_active']
     search_fields = ['username', 'group', 'email']
-    list_display_links = ['id', 'username']
+    list_display_links = ['username']
 
 
 @admin.register(TelegramUser)
