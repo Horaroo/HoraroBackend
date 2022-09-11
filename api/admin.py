@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import NumberWeek, Schedule, Day, Week, Type
+from .models import NumberWeek, Schedule, Day, Week, Type, Event
 
 
 @admin.register(Schedule)
@@ -33,3 +33,7 @@ class AdminType(admin.ModelAdmin):
 class AdminNumberWeek(admin.ModelAdmin):
     pass
 
+
+@admin.register(Event)
+class AdminEvent(admin.ModelAdmin):
+    list_display = ['title', 'created_at']

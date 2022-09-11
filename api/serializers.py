@@ -135,4 +135,7 @@ class GroupUserTelegramSerializer(serializers.ModelSerializer):
         return instance
 
 
-
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'image', 'is_main', 'created_at']

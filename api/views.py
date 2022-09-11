@@ -110,3 +110,8 @@ class ScheduleViewList(generics.ListAPIView):
             return Response({})
         serializer = self.serializer_class(instances, many=True)
         return Response(serializer.data)
+
+
+class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
