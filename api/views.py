@@ -9,7 +9,7 @@ from rest_framework import mixins
 from django.db.models import Q
 from .models import Schedule
 from rest_framework import status
-from .filters import TelegramUsersFilter
+from .filters import TelegramUsersFilter, EventFilter
 from django_filters import rest_framework as filters
 
 
@@ -115,3 +115,6 @@ class ScheduleViewList(generics.ListAPIView):
 class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EventFilter
+
