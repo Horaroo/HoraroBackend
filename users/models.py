@@ -38,9 +38,19 @@ class TelegramUser(models.Model):
 
 
 class GroupUserTelegram(models.Model):
+    """
+    Было поздно ночью 1:31, решил написать такое, так как при изменении token и group полей, логику бота нужно
+    переписывать, а на это времени сейчас пока что нет, с уважением Абулайсов А.
+    """
     token = models.TextField()
     group = models.TextField()
     user = models.ManyToManyField(TelegramUser)
+    owner_token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.group}'
+
+    def save(self, *args, **kwargs):
+        self.owner_token = CustomUser.objects.get(username=self.token)
+        super().save(*args, **kwargs)
+
