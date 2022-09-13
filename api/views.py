@@ -38,21 +38,31 @@ class TypeListView(generics.ListAPIView):
     serializer_class = TypeSerializer
 
 
-class GetScheduleView(generics.RetrieveAPIView):
+class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
+    def get_instance(self, request, *args, **kwargs):
         group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
         instance = self.queryset.filter(group=group.pk,
                                         week=kwargs.get('week'),
                                         day=kwargs.get('day'),
                                         number_pair=kwargs.get('number')).first()
+        return instance
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_instance(request, *args, **kwargs)
         if not bool(instance):
             return Response({})
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_instance(request, *args, **kwargs)
+        if not bool(instance):
+            return Response({})
+        instance.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
 
 
 class TelegramUserListOrUpdateOrCreate(
