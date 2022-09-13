@@ -11,6 +11,7 @@ from .models import Schedule
 from rest_framework import status
 from .filters import TelegramUsersFilter, EventFilter
 from django_filters import rest_framework as filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -41,6 +42,7 @@ class TypeListView(generics.ListAPIView):
 class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_instance(self, request, *args, **kwargs):
         group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
@@ -127,4 +129,3 @@ class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
     serializer_class = EventSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter
-
