@@ -11,6 +11,7 @@ from .models import Schedule
 from rest_framework import status
 from .filters import TelegramUsersFilter, EventFilter
 from django_filters import rest_framework as filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -38,21 +39,33 @@ class TypeListView(generics.ListAPIView):
     serializer_class = TypeSerializer
 
 
-class GetScheduleView(generics.RetrieveAPIView):
+class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
 
-    def retrieve(self, request, *args, **kwargs):
+    def get_instance(self, request, *args, **kwargs):
         group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
         instance = self.queryset.filter(group=group.pk,
                                         week=kwargs.get('week'),
                                         day=kwargs.get('day'),
                                         number_pair=kwargs.get('number')).first()
+        return instance
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_instance(request, *args, **kwargs)
         if not bool(instance):
             return Response({})
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_instance(request, *args, **kwargs)
+        if not bool(instance):
+            return Response({})
+        instance.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
 
 
 class TelegramUserListOrUpdateOrCreate(
@@ -101,7 +114,7 @@ class ScheduleViewList(generics.ListAPIView):
 
         elif self.request.query_params.get('week'):
             instances = self.queryset.filter(group=group.pk,
-                                             week=self.request.query_params.get('week'))
+                                             week=self.request.query_params.get('week')).order_by('day')
 
         else:
             instances = self.queryset.filter(group=group.pk)
@@ -117,4 +130,3 @@ class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
     serializer_class = EventSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter
-
