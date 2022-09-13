@@ -43,6 +43,7 @@ class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
 
     def get_instance(self, request, *args, **kwargs):
         group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
@@ -113,7 +114,7 @@ class ScheduleViewList(generics.ListAPIView):
 
         elif self.request.query_params.get('week'):
             instances = self.queryset.filter(group=group.pk,
-                                             week=self.request.query_params.get('week'))
+                                             week=self.request.query_params.get('week')).order_by('day')
 
         else:
             instances = self.queryset.filter(group=group.pk)
