@@ -55,5 +55,7 @@ class Event(models.Model):
         return self.title
 
     def picture(self):
-        return 'api.horaro.net' + self.image.url
-
+        if self.image:
+            return 'api.horaro.net' + self.image.url
+        else:
+            return ""
