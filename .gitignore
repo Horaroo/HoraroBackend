@@ -14,4 +14,4 @@ datadir
 .github
 .github/workflows
 .github/workflows/deploy.yml
-
+media
