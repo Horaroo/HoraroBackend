@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser
+from django.contrib.sites.models import Site
 
 
 class NumberWeek(models.Model):
@@ -56,6 +57,6 @@ class Event(models.Model):
 
     def picture(self):
         if self.image:
-            return 'api.horaro.net' + self.image.url
+            return Site.objects.get_current().domain + self.image.url
         else:
-            return ""
+            return None
