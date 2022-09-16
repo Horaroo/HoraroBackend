@@ -1,11 +1,11 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 
 class BaseUserFactory(DjangoModelFactory):
     class Meta:
-        model = User
+        model = CustomUser
 
 
 class ActiveUserFactory(BaseUserFactory):
