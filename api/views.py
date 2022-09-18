@@ -34,7 +34,7 @@ class ScheduleViewSet(mixins.CreateModelMixin,
             resp = self.queryset.filter(subject__istartswith=query, group=group).values('subject')
         else:
             resp = self.queryset.filter(audience__istartswith=query, group=group).values('audience')
-        return Response({'results': resp})
+        return Response({'results': resp.distinct()})
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
