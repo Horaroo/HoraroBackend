@@ -6,7 +6,7 @@ from .serializers import *
 from rest_framework.authentication import TokenAuthentication
 from users.models import CustomUser, TelegramUser, GroupUserTelegram
 from rest_framework import mixins
-from django.db.models import Q
+from django.db.models import Q, F
 from .models import Schedule
 from rest_framework import status
 from .filters import TelegramUsersFilter, EventFilter
@@ -29,11 +29,11 @@ class ScheduleViewSet(mixins.CreateModelMixin,
         group = CustomUser.objects.get(username=username)
         query = request.GET.get('q')
         if request.GET.get('teacher'):
-            resp = self.queryset.filter(teacher__istartswith=query, group=group).values('teacher')
+            resp = self.queryset.filter(teacher__istartswith=query, group=group).values(name=F('teacher'))
         elif request.GET.get('subject'):
-            resp = self.queryset.filter(subject__istartswith=query, group=group).values('subject')
+            resp = self.queryset.filter(subject__istartswith=query, group=group).values(name=F('subject'))
         else:
-            resp = self.queryset.filter(audience__istartswith=query, group=group).values('audience')
+            resp = self.queryset.filter(audience__istartswith=query, group=group).values(name=F('audience'))
         return Response({'results': resp.distinct()})
 
 
