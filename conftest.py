@@ -1,7 +1,5 @@
 import pytest
-from rest_framework.test import RequestsClient, APIClient
-from faker import Faker
-from random import randint
+from rest_framework.test import APIClient
 from api.tests import factories
 
 

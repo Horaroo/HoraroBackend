@@ -12,6 +12,7 @@ from rest_framework import status
 from .filters import TelegramUsersFilter, EventFilter
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import action
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -20,6 +21,20 @@ class ScheduleViewSet(mixins.CreateModelMixin,
     serializer_class = ScheduleSerializer
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
+
+    @action(detail=False,
+            methods=['get'],
+            url_path=r'detail/(?P<username>\w+)')
+    def get_info(self, request, username):
+        group = CustomUser.objects.get(username=username)
+        query = request.GET.get('q')
+        if request.GET.get('teacher'):
+            resp = self.queryset.filter(teacher__istartswith=query, group=group).values('teacher')
+        elif request.GET.get('subject'):
+            resp = self.queryset.filter(subject__istartswith=query, group=group).values('subject')
+        else:
+            resp = self.queryset.filter(audience__istartswith=query, group=group).values('audience')
+        return Response({'results': resp})
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
