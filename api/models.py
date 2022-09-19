@@ -57,6 +57,6 @@ class Event(models.Model):
 
     def picture(self):
         if self.image:
-            return Site.objects.get_current().domain + self.image.url
+            return Site.objects.get_current().domain + '/' + self.image.name
         else:
             return None

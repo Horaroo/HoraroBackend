@@ -36,6 +36,35 @@ class ScheduleViewSet(mixins.CreateModelMixin,
             resp = self.queryset.filter(audience__istartswith=query, group=group).values(name=F('audience'))
         return Response({'results': resp.distinct()})
 
+    @action(detail=False,
+            methods=['post'],
+            url_path=r'copy-week',
+            serializer_class=ScheduleCopySerializer,
+            permission_classes=[permissions.AllowAny])
+    def copy_schedule(self, request):
+        serializer = ScheduleCopySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.data['username']
+        from_week = serializer.data['from_week']
+        to_week = serializer.data['to_week']
+        week = Week.objects.get(pk=to_week)
+        for data in Schedule.objects.filter(group__username=username,
+                                            week_id=from_week).all():
+            Schedule.objects.update_or_create(group__username=username,
+                                              week_id=to_week,
+                                              number_pair=data.number_pair,
+                                              day=data.day,
+                                              defaults={"number_pair": data.number_pair,
+                                                        "subject": data.subject,
+                                                        "teacher": data.teacher,
+                                                        "audience": data.audience,
+                                                        "week": week,
+                                                        "group": data.group,
+                                                        "type_pair": data.type_pair,
+                                                        "day": data.day})
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
     queryset = NumberWeek.objects.all()
