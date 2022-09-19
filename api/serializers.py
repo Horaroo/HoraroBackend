@@ -139,3 +139,14 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ['title', 'description', 'picture', 'is_main', 'created_at']
+
+
+class ScheduleCopySerializer(serializers.ModelSerializer):
+    from_week = serializers.IntegerField()
+    to_week = serializers.IntegerField()
+    username = serializers.CharField(source='group__username')
+
+    class Meta:
+        model = Schedule
+        fields = ['username', 'from_week', 'to_week']
+
