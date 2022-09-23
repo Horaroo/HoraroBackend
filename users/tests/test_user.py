@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.django_db
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_user_sign_up(not_logged_client):
 
