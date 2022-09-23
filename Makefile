@@ -3,7 +3,9 @@ SHELL := /bin/bash
 
 local_up:
 	docker-compose build
-	docker-compose up
+	docker-compose up -d
+	docker-compose exec web python manage.py migrate
+
 
 local_restart:
 	docker-compose restart

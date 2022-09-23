@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'django_filters',
 ]
-
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -119,6 +118,7 @@ DATABASES = {
         'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
+
 
 
 # Password validation

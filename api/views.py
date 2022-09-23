@@ -4,23 +4,26 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.authentication import TokenAuthentication
-from users.models import CustomUser, TelegramUser, GroupUserTelegram
+from users.models import TelegramUser, GroupUserTelegram
 from rest_framework import mixins
 from django.db.models import Q, F
 from .models import Schedule
 from rest_framework import status
-from .filters import TelegramUsersFilter, EventFilter
+from .filters import *
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
+                      mixins.ListModelMixin,
                       viewsets.GenericViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = GetScheduleFilter
 
     @action(detail=False,
             methods=['get'],
@@ -64,6 +67,17 @@ class ScheduleViewSet(mixins.CreateModelMixin,
                                                         "type_pair": data.type_pair,
                                                         "day": data.day})
         return Response(status=status.HTTP_201_CREATED)
+
+    @action(methods=['get'],
+            detail=False,
+            serializer_class=OneFieldSerializer)
+    def get_one_field(self, request):
+        user = get_object_or_404(CustomUser, username=self.request.GET.get('token'))
+        instances = self.queryset.filter(group=user.pk).distinct().values(
+            request.GET.get('select_field'))
+        serializer = OneFieldSerializer(data=instances, many=True)
+        serializer.is_valid(raise_exception=False)
+        return Response({'data': serializer.data})
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
@@ -143,30 +157,6 @@ class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
     def get_queryset(self):
         telegram_id = self.request.query_params.get('telegram_id')
         return self.queryset.filter(user__telegram_id=telegram_id).values()
-
-
-class ScheduleViewList(generics.ListAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        group = CustomUser.objects.filter(username=self.request.query_params.get('token')).first()
-        if self.request.query_params.get('day'):
-            instances = self.queryset.filter(group=group.pk,
-                                             week=self.request.query_params.get('week'),
-                                             day=self.request.query_params.get('day'))
-
-        elif self.request.query_params.get('week'):
-            instances = self.queryset.filter(group=group.pk,
-                                             week=self.request.query_params.get('week')).order_by('day')
-
-        else:
-            instances = self.queryset.filter(group=group.pk)
-
-        if not bool(instances):
-            return Response({})
-        serializer = self.serializer_class(instances, many=True)
-        return Response(serializer.data)
 
 
 class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
