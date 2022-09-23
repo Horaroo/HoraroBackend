@@ -76,12 +76,10 @@ class NumberWeekSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
-    select_field = serializers.CharField(required=False, default='')
 
     class Meta:
         model = Schedule
-        fields = ('select_field',
-                  'number_pair',
+        fields = ('number_pair',
                   'subject',
                   'teacher',
                   'audience',
