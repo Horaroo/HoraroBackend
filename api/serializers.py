@@ -76,6 +76,7 @@ class NumberWeekSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Schedule
         fields = ('number_pair',
@@ -150,3 +151,16 @@ class ScheduleCopySerializer(serializers.ModelSerializer):
         model = Schedule
         fields = ['username', 'from_week', 'to_week']
 
+
+class OneFieldSerializer(serializers.Serializer):
+    select_field = serializers.CharField(read_only=True)
+    teacher = serializers.CharField(required=False)
+    subject = serializers.CharField(required=False)
+
+    class Meta:
+        model = Schedule
+        fields = [
+            'select_field',
+            'subject',
+            'teacher'
+        ]
