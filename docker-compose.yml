@@ -41,4 +41,5 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 123
     ports:
       - 5050:80
-
+    logging:
+      driver: none
