@@ -218,6 +218,19 @@ DJOSER = {
         }
 }
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        },
+        'Token': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
 
 Messages.INVALID_CREDENTIALS_ERROR = 'Вы ввели неправильный логин или пароль!'
 Messages.INVALID_PASSWORD_ERROR = 'Введен не правильный пароль.'
@@ -235,3 +248,5 @@ EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+
