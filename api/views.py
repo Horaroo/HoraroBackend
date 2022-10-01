@@ -13,6 +13,10 @@ from .filters import *
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
+from api.time.time_services import TimeServices
+
+
+time_services = TimeServices()
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -24,6 +28,18 @@ class ScheduleViewSet(mixins.CreateModelMixin,
     authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GetScheduleFilter
+
+    @action(detail=False,
+            methods=['get'],
+            url_path=r'where-are-pairs')
+    def where_are_pairs(self, request):
+        token = request.GET.get('token')
+        if token is None:
+            return Response({'status': 'need token'}, status=status.HTTP_400_BAD_REQUEST)
+        group = get_object_or_404(CustomUser, username=token)
+        week_day = time_services.get_week_day()
+        qs = super().get_queryset().get(group=group, )
+        return Response({})
 
     @action(detail=False,
             methods=['get'],
