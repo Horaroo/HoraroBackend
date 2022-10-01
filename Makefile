@@ -24,3 +24,6 @@ local_shell:
 
 local_create_superuser:
 	docker-compose exec web python manage.py createsuperuser
+
+test:
+	docker-compose run --rm web sh -c "pytest"

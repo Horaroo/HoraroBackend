@@ -218,6 +218,19 @@ DJOSER = {
         }
 }
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        },
+        'Token': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
 
 Messages.INVALID_CREDENTIALS_ERROR = 'Вы ввели неправильный логин или пароль!'
 Messages.INVALID_PASSWORD_ERROR = 'Введен не правильный пароль.'
@@ -227,7 +240,6 @@ LOGOUT_REDIRECT_URL = "/"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = 'users.CustomUser'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True

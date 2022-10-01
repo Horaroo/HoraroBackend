@@ -13,6 +13,8 @@ from .filters import *
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
+from api.time.time_services import TimeServices
+from api.time.configs.dataclasses import Time
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -24,6 +26,37 @@ class ScheduleViewSet(mixins.CreateModelMixin,
     authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GetScheduleFilter
+    _time_services = TimeServices()
+
+    @action(detail=False,
+            methods=['get'],
+            url_path=r'where-are-pairs',
+            filterset_class=WhereArePairsFilter)
+    def where_are_pairs(self, request):
+        token = request.GET.get('token')
+
+        if token is None:
+            return Response({'status': 'need token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        h, m = request.GET.get('h'), request.GET.get('m')
+
+        if h is not None and m is not None:
+            time = Time(hour=int(h), minute=int(m))
+        else:
+            time = None
+
+        group = get_object_or_404(CustomUser, username=token)
+        week_day = self._time_services.get_week_day().name
+        week_number = str(self._time_services.get_week_number())
+
+        qs = super().get_queryset().filter(
+            group=group,
+            week__name__startswith=week_number,
+            day__name__icontains=week_day,
+        ).order_by('number_pair')
+
+        current_pair = self._time_services.get_current_pair(qs, time=time)
+        return Response(current_pair.to_dict())
 
     @action(detail=False,
             methods=['get'],
