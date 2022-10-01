@@ -5,3 +5,7 @@ __pycache__
 .idea
 datadir
 readme.md
+.env
+.git
+.gitignore
+
