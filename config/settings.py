@@ -218,6 +218,19 @@ DJOSER = {
         }
 }
 
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        },
+        'Token': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
+}
+
 
 Messages.INVALID_CREDENTIALS_ERROR = 'Вы ввели неправильный логин или пароль!'
 Messages.INVALID_PASSWORD_ERROR = 'Введен не правильный пароль.'

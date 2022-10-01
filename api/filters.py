@@ -16,6 +16,12 @@ class EventFilter(filters.FilterSet):
     )
 
 
+class WhereArePairsFilter(filters.FilterSet):
+    h = filters.NumberFilter()
+    m = filters.NumberFilter()
+    token = filters.CharFilter()
+
+
 class GetScheduleFilter(filters.FilterSet):
     day = filters.CharFilter(field_name='day', method='get_day')
     week = filters.CharFilter(field_name='week', method='get_week')
