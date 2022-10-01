@@ -18,7 +18,7 @@ services:
   db:
     image: postgres:14
     volumes:
-      - ./datadir:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
@@ -34,3 +34,5 @@ services:
     ports:
       - 5050:80
 
+volumes:
+  db-data:
