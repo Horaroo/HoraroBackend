@@ -156,7 +156,7 @@ class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         if not bool(instance):
             return Response({})
         instance.delete()
-        return Response(status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TelegramUserListOrUpdateOrCreate(
