@@ -1,4 +1,3 @@
-#.PHONY:local_up local_down
 SHELL := /bin/bash
 
 local_up:
@@ -20,7 +19,7 @@ test:
 	pytest -v
 
 local_shell:
-	docker-compose exec web bash
+	docker-compose exec web sh
 
 local_create_superuser:
 	docker-compose exec web python manage.py createsuperuser
