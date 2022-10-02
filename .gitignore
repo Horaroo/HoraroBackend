@@ -11,8 +11,5 @@ __pycache__
 db.sqlite3
 data.json
 datadir
-.github
-.github/workflows
-.github/workflows/deploy.yml
 media
 staticfiles
