@@ -20,6 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
+        run: docker-compose run --rm app sh -c "pytest"
         with:
           envkey_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           envkey_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -30,8 +31,7 @@ jobs:
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           envkey_debug: ${{ secrets.debug }}
           envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          envkey_EMAIL_HOST: = ${{ secrets.EMAIL_HOST }}
-          envkey_EMAIL_PORT: = ${{ secrets.EMAIL_PORT }}
-          envkey_EMAIL_HOST_USER: = ${{ secrets.EMAIL_HOST_USER }}
-          envkey_EMAIL_HOST_PASSWORD: = ${{ secrets.EMAIL_HOST_PASSWORD }}
-        run: docker-compose run --rm app sh -c "pytest"
+          envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
