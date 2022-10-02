@@ -19,7 +19,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Test
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           envkey_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -34,4 +35,5 @@ jobs:
           envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
           envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
           envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      - name: Test
         run: docker-compose run --rm app sh -c "pytest"
