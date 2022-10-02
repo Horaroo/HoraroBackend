@@ -8,7 +8,7 @@ def test_telegram_detail_user_post(not_logged_client):
                                                                              'username': 'name'})
 
     assert response.status_code == 201
-    assert len(response.json()) == 4
+    assert len(response.json()) == 3
 
 
 @pytest.mark.django_db
