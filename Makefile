@@ -15,9 +15,6 @@ local_down:
 local_stop:
 	docker-compose stop
 
-test:
-	pytest -v
-
 local_shell:
 	docker-compose exec web sh
 
