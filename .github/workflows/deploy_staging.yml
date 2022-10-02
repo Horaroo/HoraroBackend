@@ -37,3 +37,14 @@ jobs:
           envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
       - name: Test
         run: docker-compose run --rm web sh -c "pytest"
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: [test-lint]
+    steps:
+      - name: deploy
+        with:
+          host: horaro.net
+          username: prod
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: cd ~/staging_horaro/HoraroBackend/ && git pull && cd .. && docker stop staging_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
