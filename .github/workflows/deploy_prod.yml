@@ -15,4 +15,4 @@ jobs:
           host: 46.229.214.105
           username: prod
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: cd ~ && echo "I'm here"
+          script: cd ~/prod_horaro/HoraroBackend/ && git pull && cd .. && docker stop prod_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
