@@ -50,7 +50,7 @@ jobs:
 #          key: ${{ secrets.SERVER_PRIVATE_KEY }}
 #          script: cd ~/staging_horaro/HoraroBackend/ && git pull && cd .. && docker stop staging_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
 
-      - name: Trigger container update
+      - name: deploy
         uses: appleboy/ssh-action@master
         with:
           host: 46.229.214.105
