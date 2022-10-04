@@ -1,9 +1,6 @@
-name: Deploy-staging
+name: Lint-test
 
 on:
-  push:
-    branches:
-      - staging
   pull_request:
     branches:
       - staging
