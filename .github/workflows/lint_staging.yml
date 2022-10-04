@@ -42,10 +42,18 @@ jobs:
     runs-on: ubuntu-20.04
 #    needs: [test-lint]
     steps:
-      - name: deploy
+#      - name: deploy
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: 46.229.214.105
+#          username: prod
+#          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+#          script: cd ~/staging_horaro/HoraroBackend/ && git pull && cd .. && docker stop staging_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
+
+      - name: Trigger container update
         uses: appleboy/ssh-action@master
         with:
           host: 46.229.214.105
           username: prod
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: cd ~/staging_horaro/HoraroBackend/ && git pull && cd .. && docker stop staging_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
+          script: cd ~ && echo "I'm here"
