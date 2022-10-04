@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from api.time.time_services import TimeServices
 from api.time.configs.dataclasses import Time
+from api.helpers import copy_week
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -85,20 +86,11 @@ class ScheduleViewSet(mixins.CreateModelMixin,
         from_week = serializer.data['from_week']
         to_week = serializer.data['to_week']
         week = Week.objects.get(pk=to_week)
-        for data in Schedule.objects.filter(group__username=username,
-                                            week_id=from_week).all():
-            Schedule.objects.update_or_create(group__username=username,
-                                              week_id=to_week,
-                                              number_pair=data.number_pair,
-                                              day=data.day,
-                                              defaults={"number_pair": data.number_pair,
-                                                        "subject": data.subject,
-                                                        "teacher": data.teacher,
-                                                        "audience": data.audience,
-                                                        "week": week,
-                                                        "group": data.group,
-                                                        "type_pair": data.type_pair,
-                                                        "day": data.day})
+        instances = self.queryset.filter(group__username=username, week_id=to_week)
+        if instances:
+            instances.delete()
+        copy_week(self.queryset, username, from_week, week)
+
         return Response(status=status.HTTP_201_CREATED)
 
     @action(methods=['get'],
