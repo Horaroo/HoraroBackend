@@ -49,6 +49,7 @@ class Event(models.Model):
     title = models.TextField()
     description = models.TextField()
     image = models.ImageField(blank=True)
+    cover_image = models.ImageField(blank=True)
     is_main = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -58,5 +59,11 @@ class Event(models.Model):
     def picture(self):
         if self.image:
             return Site.objects.get_current().domain + '/' + self.image.name
+        else:
+            return None
+
+    def cover(self):
+        if self.cover_image:
+            return Site.objects.get_current().domain + '/' + self.cover_image.name
         else:
             return None
