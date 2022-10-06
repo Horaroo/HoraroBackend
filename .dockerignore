@@ -8,3 +8,8 @@ readme.md
 .env
 .git
 .gitignore
+docker-compose.yml
+Dockerfile
+Makefile
+.dockerignore
+.github
