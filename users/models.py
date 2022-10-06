@@ -29,9 +29,17 @@ class CustomUser(AbstractUser):
 
 
 class TelegramUser(models.Model):
+    ACTION_CHOICES = (
+        ('PTY', 'PairsToday'),
+        ('PTW', 'PairsTomorrow'),
+    )
+
     telegram_id = models.TextField(unique=True)
     username = models.TextField()
     is_moder = models.BooleanField(default=False)
+    token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
+    action = models.CharField(max_length=255, choices=ACTION_CHOICES, blank=True, null=True)
+    notification_time = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.telegram_id

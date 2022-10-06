@@ -138,3 +138,28 @@ def test_get_all_group(not_logged_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 2
+
+
+@pytest.mark.django_db
+def test_telegram_detail_user_update(not_logged_client):
+    user = CustomUser.objects.create(username="test",
+                                     password="password",
+                                     email="test@example.com",
+                                     group="test")
+
+    user_telegram = TelegramUser.objects.create(telegram_id="1234567",
+                                                username="test")
+
+    payload = {
+        "token": user.username,
+        "action": "PWT",
+        "notification_time": 6
+    }
+
+    response = not_logged_client.patch('/api/v1/telegram/detail/user/{}/'.format(user_telegram.telegram_id),
+                                       payload)
+    user_telegram.refresh_from_db()
+    assert response.status_code == 200
+    assert user_telegram.notification_time == payload.get('notification_time')
+    assert user_telegram.token == payload.get('token')
+    assert user_telegram.action == payload.get('action')
