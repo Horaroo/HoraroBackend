@@ -65,14 +65,14 @@ def test_telegram_detail_user_get_user_list(not_logged_client):
 @pytest.mark.django_db
 def test_telegram_detail_group_list_user(not_logged_client):
     CustomUser.objects.create(username="test",
-                                     password="password",
-                                     email="test@example.com",
-                                     group="test")
+                              password="password",
+                              email="test@example.com",
+                              group="test")
 
     user_telegram = TelegramUser.objects.create(telegram_id="1234567",
                                                 username="test")
     TelegramUser.objects.create(telegram_id="11234567",
-                                            username="test1")
+                                username="test1")
     group = GroupUserTelegramFactory(token="test")
     list_users = TelegramUser.objects.filter(telegram_id__istartswith='1').all()
     group.user.set(list_users)
@@ -138,3 +138,31 @@ def test_get_all_group(not_logged_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 2
+
+@pytest.mark.test
+@pytest.mark.django_db
+def test_telegram_detail_user_update(not_logged_client):
+    telegram_user = TelegramUserFactory(username="test1",
+                                        is_moder=True)
+    user = CustomUser.objects.create(username="test2",
+                                     password="passw",
+                                     group="test2",
+                                     email="test2@example.com")
+    payload = {
+        "action": "PWT",
+        "token": user.username,
+        "notification_time": 9
+    }
+
+    response = not_logged_client.patch('/api/v1/telegram/detail/user/{}/'.format(telegram_user.pk),
+                                       payload)
+    telegram_user.refresh_from_db()
+
+    assert response.status_code == 200
+    assert telegram_user.action == payload.get('action')
+    assert telegram_user.token == payload.get('token')
+    assert telegram_user.notification_time == payload.get('notification_time')
+
+    # token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
+    # action = models.CharField(choices=ACTION_CHOICES, blank=True, null=True)
+    # notification_time = models.IntegerField(blank=True, null=True)

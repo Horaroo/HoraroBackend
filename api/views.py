@@ -162,7 +162,16 @@ class TelegramUserListOrUpdateOrCreate(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TelegramUsersFilter
     lookup_filed = 'telegram_id'
-
+    """
+    /api/v1/<telegram_id>/
+    
+            [
+            {'telegram_id': 1234566,
+            data: {1: "1) Физика Кто-то Где-то", 2: "", 3: "", 4: ""}},
+            {'telegram_id': 1234566,
+            data: {1: "1) Физика Кто-то Где-то", 2: "", 3: "", 4: ""}},
+            ]
+        """
 
 class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
                                     generics.DestroyAPIView,
