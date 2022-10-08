@@ -53,7 +53,6 @@ class CustomSendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin)
     }
 
     def __init__(self, *args, **kwargs):
-
         if kwargs.get('data') and not CustomUser.objects.filter(email=kwargs['data']['email']):
             raise serializers.ValidationError({'email': ['Почта не зарегистрирована.']},
                                               code=HTTP_400_BAD_REQUEST)
@@ -76,7 +75,6 @@ class NumberWeekSerializer(serializers.ModelSerializer):
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Schedule
         fields = ('number_pair',
@@ -113,9 +111,24 @@ class TypeSerializer(serializers.ModelSerializer):
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = TelegramUser
-        fields = ['telegram_id', 'username', 'is_moder']
+        fields = [
+            'telegram_id',
+            'username',
+            'is_moder',
+            'token',
+            'action',
+            'notification_time'
+        ]
+
+    def is_valid(self, raise_exception=False):
+        data = self.initial_data.dict()
+        if data.get('token'):
+            data['token'] = CustomUser.objects.get(username=data['token']).pk
+        self.initial_data = data
+        return super().is_valid()
 
 
 class GroupUserTelegramSerializer(serializers.ModelSerializer):
@@ -164,3 +177,11 @@ class OneFieldSerializer(serializers.Serializer):
             'subject',
             'teacher'
         ]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    data = ScheduleSerializer(many=True)
+
+    class Meta:
+        model = TelegramUser
+        fields = ['telegram_id', 'data']
