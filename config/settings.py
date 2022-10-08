@@ -37,6 +37,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://api.horaro.net",
     "https://www.api.horaro.net",
     "https://staging.horaro.net",
+    "https://api.staging.horaro.net",
     "https://www.api.staging.horaro.net"
 ]
 
