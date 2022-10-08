@@ -1,5 +1,6 @@
 import pytest
 from .factories import *
+from ..models import Day, Week, Schedule
 
 
 @pytest.mark.django_db
@@ -65,14 +66,14 @@ def test_telegram_detail_user_get_user_list(not_logged_client):
 @pytest.mark.django_db
 def test_telegram_detail_group_list_user(not_logged_client):
     CustomUser.objects.create(username="test",
-                                     password="password",
-                                     email="test@example.com",
-                                     group="test")
+                              password="password",
+                              email="test@example.com",
+                              group="test")
 
     user_telegram = TelegramUser.objects.create(telegram_id="1234567",
                                                 username="test")
     TelegramUser.objects.create(telegram_id="11234567",
-                                            username="test1")
+                                username="test1")
     group = GroupUserTelegramFactory(token="test")
     list_users = TelegramUser.objects.filter(telegram_id__istartswith='1').all()
     group.user.set(list_users)
@@ -141,7 +142,7 @@ def test_get_all_group(not_logged_client):
 
 
 @pytest.mark.django_db
-def test_telegram_detail_user_update(not_logged_client):
+def test_telegram_detail_user_update(logged_user, logged_client):
     user = CustomUser.objects.create(username="test",
                                      password="password",
                                      email="test@example.com",
@@ -153,13 +154,72 @@ def test_telegram_detail_user_update(not_logged_client):
     payload = {
         "token": user.username,
         "action": "PWT",
-        "notification_time": 6
+        "notification_time": 6,
     }
-
-    response = not_logged_client.patch('/api/v1/telegram/detail/user/{}/'.format(user_telegram.telegram_id),
-                                       payload)
+    # breakpoint()
+    response = logged_client.patch(
+        '/api/v1/telegram/user/{}/'.format(user_telegram.telegram_id),
+        data=payload)
     user_telegram.refresh_from_db()
+
     assert response.status_code == 200
     assert user_telegram.notification_time == payload.get('notification_time')
-    assert user_telegram.token == payload.get('token')
+    assert user_telegram.token.username == payload.get('token')
     assert user_telegram.action == payload.get('action')
+
+
+@pytest.mark.django_db
+def test_telegram_notifications(logged_user, logged_client):
+    user = CustomUser.objects.create(username="test",
+                                     password="password",
+                                     email="test@example.com",
+                                     group="test")
+
+    TelegramUser.objects.create(telegram_id="1234567",
+                                username="test",
+                                token=user,
+                                action="PTY",
+                                notification_time=19
+                                )
+    TelegramUser.objects.create(telegram_id="2131324",
+                                username="test",
+                                token=user,
+                                action="PTW",
+                                notification_time=19
+                                )
+    TelegramUser.objects.create(telegram_id="23424124",
+                                username="test",
+                                token=user,
+                                action="PTY",
+                                notification_time=19
+                                )
+
+    type_ = Type.objects.create(name="lc")
+    day = Day.objects.create(name="Суббота")
+    week = Week.objects.create(name="2 week")
+    Schedule.objects.create(
+        number_pair=1,
+        subject='subject',
+        teacher='teacher',
+        audience='555 aud.',
+        week=week,
+        day=day,
+        group=user,
+        type_pair=type_
+    )
+    Schedule.objects.create(
+        number_pair=1,
+        subject='subject',
+        teacher='teacher',
+        audience='555 aud.',
+        week=Week.objects.create(name="3 week"),
+        day=day,
+        group=user,
+        type_pair=type_
+    )
+
+    response = logged_client.get(
+        '/api/v1/telegram/user/notifications/?h=19')
+
+    breakpoint()
+    assert response.status_code == 200
