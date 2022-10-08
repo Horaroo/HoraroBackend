@@ -161,8 +161,8 @@ class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
 class TelegramUserViewSet(viewsets.ModelViewSet):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
-    # filter_backends = (filters.DjangoFilterBackend,)
-    # filterset_class = TelegramUsersFilter
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TelegramUsersFilter
     _time_services = TimeServices()
     lookup_field = 'telegram_id'
     lookup_url_kwarg = 'telegram_id'
@@ -194,7 +194,6 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
         result = []
         for user in qs_users:
             week_day, week_number = self._get_week_data(user.action)
-            breakpoint()
             temp = {
                 'telegram_id': user.telegram_id,
                 'data': Schedule.objects.filter(

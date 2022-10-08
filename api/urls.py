@@ -1,4 +1,4 @@
-from django.urls import path, include, re_path
+from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 from .views import *
 from users.views import UserViewSet
@@ -6,8 +6,8 @@ router = SimpleRouter()
 
 router.register('schedule', ScheduleViewSet)
 router.register('events', EventDetailOrList)
-router.register('telegram/user', TelegramUserViewSet)
-router.register('users', UserViewSet)
+router.register('telegram/detail/user', TelegramUserViewSet)
+router.register('auth/detail', UserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -18,7 +18,5 @@ urlpatterns = [
     path(r'list/group/', GroupApiView.as_view()),
     path('type-pair/', TypeListView.as_view()),
     path('get-pair/<int:week>/<int:day>/<int:number>/', ScheduleRetrieveOrDestroy.as_view()),
-    # path('telegram/detail/user/', TelegramUserListOrUpdateOrCreate.as_view()),
-    # path('telegram/detail/user/<int:telegrr>/', TelegramUserListOrUpdateOrCreate.as_view()),
     path('telegram/detail/group/', GroupUserCreateOrDeleteOrList.as_view()),
 ]

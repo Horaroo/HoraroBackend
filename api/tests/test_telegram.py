@@ -3,25 +3,25 @@ from .factories import *
 from ..models import Day, Week, Schedule
 
 
+def create_telegram_user(username='test', **kwargs):
+    return TelegramUserFactory(username=username,
+                               **kwargs)
+
+
 @pytest.mark.django_db
 def test_telegram_detail_user_post(not_logged_client):
     response = not_logged_client.post('/api/v1/telegram/detail/user/', data={'telegram_id': '123456',
-                                                                             'username': 'name'})
+                                                                      'username': 'name'})
 
     assert response.status_code == 201
-    assert len(response.json()) == 3
+    assert len(response.json()) == 6
 
 
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_moder(not_logged_client):
-    TelegramUserFactory(username="test1",
-                        is_moder=True)
-    TelegramUserFactory(username="test2",
-                        is_moder=True,
-                        telegram_id=321)
-    TelegramUserFactory(username="test3",
-                        is_moder=False,
-                        telegram_id=123)
+    create_telegram_user(is_moder=True, telegram_id='123')
+    create_telegram_user(is_moder=True, telegram_id='231')
+    create_telegram_user(is_moder=False, telegram_id='321')
 
     response = not_logged_client.get('/api/v1/telegram/detail/user/?is_moder=true')
 
@@ -31,14 +31,9 @@ def test_telegram_detail_user_get_user_moder(not_logged_client):
 
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_not_moder(not_logged_client):
-    TelegramUserFactory(username="test1",
-                        is_moder=True)
-    TelegramUserFactory(username="test2",
-                        is_moder=True,
-                        telegram_id=321)
-    TelegramUserFactory(username="test3",
-                        is_moder=False,
-                        telegram_id=123)
+    create_telegram_user(is_moder=True, telegram_id='123')
+    create_telegram_user(is_moder=True, telegram_id='231')
+    create_telegram_user(is_moder=False, telegram_id='321')
 
     response = not_logged_client.get('/api/v1/telegram/detail/user/?is_moder=false')
 
@@ -48,14 +43,9 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
 
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_list(not_logged_client):
-    TelegramUserFactory(username="test1",
-                        is_moder=True)
-    TelegramUserFactory(username="test2",
-                        is_moder=True,
-                        telegram_id=321)
-    TelegramUserFactory(username="test3",
-                        is_moder=False,
-                        telegram_id=123)
+    create_telegram_user(telegram_id='123')
+    create_telegram_user(telegram_id='231')
+    create_telegram_user(telegram_id='321')
 
     response = not_logged_client.get('/api/v1/telegram/detail/user/')
 
@@ -158,7 +148,7 @@ def test_telegram_detail_user_update(logged_user, logged_client):
     }
     # breakpoint()
     response = logged_client.patch(
-        '/api/v1/telegram/user/{}/'.format(user_telegram.telegram_id),
+        '/api/v1/telegram/detail/user/{}/'.format(user_telegram.telegram_id),
         data=payload)
     user_telegram.refresh_from_db()
 
@@ -176,19 +166,16 @@ def test_telegram_notifications(logged_user, logged_client):
                                      group="test")
 
     TelegramUser.objects.create(telegram_id="1234567",
-                                username="test",
                                 token=user,
                                 action="PTY",
                                 notification_time=19
                                 )
     TelegramUser.objects.create(telegram_id="2131324",
-                                username="test",
                                 token=user,
                                 action="PTW",
                                 notification_time=19
                                 )
     TelegramUser.objects.create(telegram_id="23424124",
-                                username="test",
                                 token=user,
                                 action="PTY",
                                 notification_time=19
@@ -219,7 +206,6 @@ def test_telegram_notifications(logged_user, logged_client):
     )
 
     response = logged_client.get(
-        '/api/v1/telegram/user/notifications/?h=19')
+        '/api/v1/telegram/detail/user/notifications/?h=19')
 
-    breakpoint()
     assert response.status_code == 200
