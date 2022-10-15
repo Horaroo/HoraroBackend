@@ -34,28 +34,12 @@ class TelegramUser(models.Model):
         ('PTW', 'PairsTomorrow'),
     )
 
-<<<<<<< HEAD
-    telegram_id = models.TextField(unique=True)
-=======
->>>>>>> horaro-23
     username = models.TextField()
     telegram_id = models.TextField(unique=True)
     is_moder = models.BooleanField(default=False)
-<<<<<<< HEAD
-    # token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
-    action = models.CharField(max_length=255, choices=ACTION_CHOICES, blank=True, null=True)
-    # notification_time = models.IntegerField(blank=True, null=True)
-    """
-    /pin 
-    funct - Пары сегодня | Пары завтра
-    token - u933
-    notification_time - 22
-    """
-=======
     token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
     action = models.CharField(max_length=255, blank=True, null=True)
     notification_time = models.IntegerField(blank=True, null=True, unique=False)
->>>>>>> horaro-23
 
     def __str__(self):
         return self.telegram_id
