@@ -130,36 +130,6 @@ def test_get_all_group(not_logged_client):
     assert response.status_code == 200
     assert len(response.json()) == 2
 
-<<<<<<< HEAD
-@pytest.mark.test
-@pytest.mark.django_db
-def test_telegram_detail_user_update(not_logged_client):
-    telegram_user = TelegramUserFactory(username="test1",
-                                        is_moder=True)
-    user = CustomUser.objects.create(username="test2",
-                                     password="passw",
-                                     group="test2",
-                                     email="test2@example.com")
-    payload = {
-        "action": "PWT",
-        "token": user.username,
-        "notification_time": 9
-    }
-
-    response = not_logged_client.patch('/api/v1/telegram/detail/user/{}/'.format(telegram_user.pk),
-                                       payload)
-    telegram_user.refresh_from_db()
-
-    assert response.status_code == 200
-    assert telegram_user.action == payload.get('action')
-    assert telegram_user.token == payload.get('token')
-    assert telegram_user.notification_time == payload.get('notification_time')
-
-    # token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
-    # action = models.CharField(choices=ACTION_CHOICES, blank=True, null=True)
-    # notification_time = models.IntegerField(blank=True, null=True)
-=======
-
 @pytest.mark.django_db
 def test_telegram_detail_user_update(logged_user, logged_client):
     user = CustomUser.objects.create(username="test",
@@ -238,4 +208,4 @@ def test_telegram_notifications(logged_user, logged_client):
         '/api/v1/telegram/detail/user/notifications/?h=19')
 
     assert response.status_code == 200
->>>>>>> horaro-23
+
