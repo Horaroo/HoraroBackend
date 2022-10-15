@@ -152,7 +152,7 @@ class GroupUserTelegramSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'picture', 'is_main', 'created_at']
+        fields = ['title', 'description', 'picture', 'cover', 'is_main', 'created_at']
 
 
 class ScheduleCopySerializer(serializers.ModelSerializer):
