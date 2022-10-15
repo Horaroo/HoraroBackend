@@ -1,4 +1,8 @@
+from django.db.models.functions import Concat
+from django.forms import CharField
+from django.http import QueryDict
 from rest_framework import generics, viewsets
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -6,7 +10,8 @@ from .serializers import *
 from rest_framework.authentication import TokenAuthentication
 from users.models import TelegramUser, GroupUserTelegram
 from rest_framework import mixins
-from django.db.models import Q, F
+from django.db.models import Q
+from django.db.models import F, Value, Func
 from .models import Schedule
 from rest_framework import status
 from .filters import *
@@ -16,6 +21,8 @@ from rest_framework.decorators import action
 from api.time.time_services import TimeServices
 from api.time.configs.dataclasses import Time
 from api.helpers import copy_week
+from .time.configs.constants import WEEK_DAYS_RU
+from django.db.models.functions import Concat
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -151,27 +158,56 @@ class ScheduleRetrieveOrDestroy(generics.RetrieveDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TelegramUserListOrUpdateOrCreate(
-    generics.CreateAPIView,
-    generics.UpdateAPIView,
-    generics.DestroyAPIView,
-    generics.ListAPIView,
-):
+class TelegramUserViewSet(viewsets.ModelViewSet):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TelegramUsersFilter
-    lookup_filed = 'telegram_id'
-    """
-    /api/v1/<telegram_id>/
-    
-            [
-            {'telegram_id': 1234566,
-            data: {1: "1) Физика Кто-то Где-то", 2: "", 3: "", 4: ""}},
-            {'telegram_id': 1234566,
-            data: {1: "1) Физика Кто-то Где-то", 2: "", 3: "", 4: ""}},
-            ]
-        """
+    _time_services = TimeServices()
+    lookup_field = 'telegram_id'
+    lookup_url_kwarg = 'telegram_id'
+
+    def _get_week_data(self, action):
+        week_day_num = self._time_services.get_week_day().num
+        week_number = str(self._time_services.get_week_number())
+        if action == 'PTW':
+            week_day_num = (self._time_services.get_week_day().num + 1) % 7
+            if week_day_num == 0:
+                week_number = str((self._time_services.get_week_number() + 1) % 4)
+
+        return WEEK_DAYS_RU[week_day_num], week_number
+
+    @action(
+        methods=['GET'],
+        detail=False
+    )
+    def notifications(self, request):
+        """query param - h (current hour)"""
+        hour = request.GET.get('h')
+        if hour is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        qs_users = self.queryset.filter(
+            notification_time=hour,
+        )
+
+        result = []
+        for user in qs_users:
+            week_day, week_number = self._get_week_data(user.action)
+            temp = {
+                'telegram_id': user.telegram_id,
+                'data': Schedule.objects.filter(
+                    group=user.token.pk,
+                    week__name__startswith=week_number,
+                    day__name__icontains=week_day,
+                )
+            }
+            result.append(temp)
+
+        serializer = NotificationSerializer(data=result, many=True)
+        serializer.is_valid()
+        return Response(serializer.data, status.HTTP_200_OK)
+
 
 class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
                                     generics.DestroyAPIView,
