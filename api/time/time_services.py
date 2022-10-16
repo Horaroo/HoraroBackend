@@ -48,7 +48,7 @@ class TimeServices:
             date = datetime.now()
         days_count = (date - start_date).days
 
-        return (days_count + start_date_week_day + 2) // 7 % 4
+        return (days_count + start_date_week_day) // 7 % 4
 
     def get_pair_status(self, time: Time = None) -> PairStatus:
         """
@@ -106,5 +106,6 @@ class TimeServices:
 
 if __name__ == '__main__':
     ts = TimeServices()
-    pair = ts.get_pair_status(time=Time(hour=15, minute=0))
-    print(pair.to_dict())
+    # print(ts.get_week_number(datetime(day=25, month=9, year=2022)))
+    # pair = ts.get_pair_status(time=Time(hour=15, minute=0))
+    # print(pair.to_dict())

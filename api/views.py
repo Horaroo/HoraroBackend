@@ -22,7 +22,6 @@ from api.time.time_services import TimeServices
 from api.time.configs.dataclasses import Time
 from api.helpers import copy_week
 from .time.configs.constants import WEEK_DAYS_RU
-from django.db.models.functions import Concat
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -169,13 +168,12 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
 
     def _get_week_data(self, action):
         week_day_num = self._time_services.get_week_day().num
-        week_number = str(self._time_services.get_week_number())
+        week_number = self._time_services.get_week_number()
         if action == 'PTW':
-            week_day_num = (self._time_services.get_week_day().num + 1) % 7
+            week_day_num = (week_day_num + 1) % 7
             if week_day_num == 0:
-                week_number = str((self._time_services.get_week_number() + 1) % 4)
-
-        return WEEK_DAYS_RU[week_day_num], week_number
+                week_number = (week_number + 1) % 4
+        return WEEK_DAYS_RU[week_day_num], str(week_number)
 
     @action(
         methods=['GET'],
@@ -183,7 +181,7 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
     )
     def notifications(self, request):
         """query param - h (current hour)"""
-        hour = request.GET.get('h')
+        hour = self._time_services.get_current_time().hour
         if hour is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -196,17 +194,28 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
             week_day, week_number = self._get_week_data(user.action)
             temp = {
                 'telegram_id': user.telegram_id,
+                'action': user.action,
+                'group': user.token.group,
                 'data': Schedule.objects.filter(
                     group=user.token.pk,
                     week__name__startswith=week_number,
                     day__name__icontains=week_day,
                 )
+                .order_by('number_pair')
             }
             result.append(temp)
-
         serializer = NotificationSerializer(data=result, many=True)
         serializer.is_valid()
         return Response(serializer.data, status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        if self.queryset.filter(telegram_id=request.POST.get('telegram_id')):
+            return Response({"Message": "Already created"}, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,

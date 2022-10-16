@@ -127,7 +127,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
         data = self.initial_data.dict()
         if data.get('token'):
             data['token'] = CustomUser.objects.get(username=data['token']).pk
-        self.initial_data = data
+            self.initial_data = data
         return super().is_valid()
 
 
@@ -181,7 +181,8 @@ class OneFieldSerializer(serializers.Serializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     data = ScheduleSerializer(many=True)
+    group = serializers.CharField(max_length=255)
 
     class Meta:
         model = TelegramUser
-        fields = ['telegram_id', 'data']
+        fields = ['telegram_id', 'action', 'data', 'group']
