@@ -172,8 +172,8 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
         if action == 'PTW':
             week_day_num = (week_day_num + 1) % 7
             if week_day_num == 0:
-                week_number = str((week_number + 1) % 4)
-        return WEEK_DAYS_RU[week_day_num], week_number
+                week_number = (week_number + 1) % 4
+        return WEEK_DAYS_RU[week_day_num], str(week_number)
 
     @action(
         methods=['GET'],
