@@ -239,7 +239,7 @@ class GroupUserCreateOrDeleteOrList(generics.CreateAPIView,
 
 
 class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().order_by('-id')
     serializer_class = EventSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter

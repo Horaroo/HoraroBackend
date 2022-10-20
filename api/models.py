@@ -40,6 +40,8 @@ class Schedule(models.Model):
     group = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     type_pair = models.ForeignKey(Type, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
+    start_time = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    end_time = models.DateTimeField(auto_now_add=False, null=True, blank=True)
 
     def __str__(self):
         return f'{self.number_pair}: {self.subject} - {self.group.group}'

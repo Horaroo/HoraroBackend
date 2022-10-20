@@ -21,7 +21,7 @@ def test_create_schedule(logged_user, logged_client):
     })
 
     assert response.status_code == 201
-    assert len(response.json()) == 8
+    assert len(response.json()) == 10
 
 
 @pytest.mark.django_db
@@ -115,7 +115,7 @@ def test_get_pair_schedule(logged_user, logged_client):
                                  .format(week=week.pk, day=day.pk, number=1, token=logged_user.username))
 
     assert response.status_code == 200
-    assert len(response.json()) == 8
+    assert len(response.json()) == 10
 
 
 @pytest.mark.django_db
