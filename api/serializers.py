@@ -84,7 +84,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
                   'week',
                   'group',
                   'type_pair',
-                  'day')
+                  'day',
+                  'start_time',
+                  'end_time')
 
     def create(self, validated_data):
         group = validated_data['group']
@@ -94,10 +96,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
         obj = Schedule.objects.filter(Q(number_pair=number) & Q(week=week) & Q(group=group) & Q(day=day))
         if bool(obj):
             instance = obj.first()
-            instance.subject = validated_data.get('subject', instance.subject)
-            instance.teacher = validated_data.get('teacher', instance.subject)
-            instance.audience = validated_data.get('audience', instance.audience)
-            instance.type_pair = validated_data.get('type_pair', instance.type_pair)
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+
             instance.save()
             return instance
         else:
