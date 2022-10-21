@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from djoser import signals, utils
 from djoser.compat import get_user_email
 from djoser.conf import settings
+from django.utils.timezone import now
 
 User = get_user_model()
 
@@ -45,6 +46,8 @@ class UserViewSet(viewsets.ModelViewSet):
             self.permission_classes = settings.PERMISSIONS.user_list
         elif self.action == "reset_password":
             self.permission_classes = settings.PERMISSIONS.password_reset
+        elif self.action == "reset_password_confirm":
+            self.permission_classes = settings.PERMISSIONS.password_reset_confirm
         elif self.action == "set_password":
             self.permission_classes = settings.PERMISSIONS.set_password
         elif self.action == "destroy" or (
@@ -68,6 +71,10 @@ class UserViewSet(viewsets.ModelViewSet):
             return settings.SERIALIZERS.password_reset
         elif self.action == "reset_password":
             return settings.SERIALIZERS.password_reset
+        elif self.action == "reset_password_confirm":
+            if settings.PASSWORD_RESET_CONFIRM_RETYPE:
+                return settings.SERIALIZERS.password_reset_confirm_retype
+            return settings.SERIALIZERS.password_reset_confirm
         elif self.action == "set_password":
             if settings.SET_PASSWORD_RETYPE:
                 return settings.SERIALIZERS.set_password_retype
@@ -184,4 +191,20 @@ class UserViewSet(viewsets.ModelViewSet):
             to = [get_user_email(user)]
             settings.EMAIL.password_reset(self.request, context).send(to)
 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(["post"], detail=False)
+    def reset_password_confirm(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.user.set_password(serializer.data["new_password"])
+        if hasattr(serializer.user, "last_login"):
+            serializer.user.last_login = now()
+        serializer.user.save()
+
+        if settings.PASSWORD_CHANGED_EMAIL_CONFIRMATION:
+            context = {"user": serializer.user}
+            to = [get_user_email(serializer.user)]
+            settings.EMAIL.password_changed_confirmation(self.request, context).send(to)
         return Response(status=status.HTTP_204_NO_CONTENT)
