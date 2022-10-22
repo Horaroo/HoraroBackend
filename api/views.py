@@ -1,6 +1,5 @@
-from django.db.models.functions import Concat
-from django.forms import CharField
-from django.http import QueryDict
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework import generics, viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -21,7 +20,7 @@ from rest_framework.decorators import action
 from api.time.time_services import TimeServices
 from api.time.configs.dataclasses import Time
 from api.helpers import copy_week
-from .time.configs.constants import WEEK_DAYS_RU
+from .time.configs.constants import WEEK_DAYS_RU, WEEK_DAYS_EN
 
 
 class ScheduleViewSet(mixins.CreateModelMixin,
@@ -109,6 +108,33 @@ class ScheduleViewSet(mixins.CreateModelMixin,
         serializer = OneFieldSerializer(data=instances, many=True)
         serializer.is_valid(raise_exception=False)
         return Response({'data': serializer.data})
+
+    @swagger_auto_schema(method='GET', manual_parameters=[
+        openapi.Parameter('token', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+        openapi.Parameter('week', openapi.IN_QUERY, type=openapi.TYPE_STRING),
+    ])
+    @action(methods=['GET'],
+            detail=False,
+            permission_classes=[permissions.AllowAny],
+            filterset_class=[])
+    def get_schedule_week(self, request):
+        week = self.request.query_params.get('week')
+        token = self.request.query_params.get('token')
+
+        data = []
+        for i in range(1, 7):
+            qs = Schedule.objects.filter(group__username=token,
+                                         week__name__startswith=week,
+                                         day_id=i).order_by('number_pair')
+            if qs:
+                data.append([
+                    f'{elem.number_pair}) {elem.subject} {elem.type_pair} {elem.teacher} {elem.audience} ' \
+                    f'{elem.start_time}:{elem.end_time}'
+                    for elem in qs])
+            else:
+                data.append([])
+
+        return Response(data)
 
 
 class NumberWeekAPI(generics.RetrieveUpdateAPIView):
