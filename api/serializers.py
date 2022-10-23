@@ -133,8 +133,16 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             'is_moder',
             'token',
             'action',
-            'notification_time'
+            'notification_time',
+            'token_name'
         ]
+        extra_kwargs = {'token': {'write_only': 'True'}}
+
+    token_name = serializers.SerializerMethodField()
+
+    def get_token_name(self, instance):
+        if instance.token:
+            return instance.token.username
 
     def is_valid(self, raise_exception=False):
         data = self.initial_data.dict()
