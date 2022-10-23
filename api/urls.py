@@ -12,7 +12,7 @@ router.register('auth/detail', UserViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path('drf-auth/', include('rest_framework.urls')),
-    path('number-week/<pk>/', NumberWeekAPI.as_view()),
+    path('number-week/', NumberWeekAPI.as_view()),
     # path(r'auth/detail/', include('djoser.urls')),
     path(r'auth/', include('djoser.urls.authtoken')),
     path(r'list/group/', GroupApiView.as_view()),

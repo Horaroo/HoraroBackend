@@ -129,7 +129,7 @@ class ScheduleViewSet(mixins.CreateModelMixin,
             if qs:
                 data.append([
                     f'{elem.number_pair}) {elem.subject} {elem.type_pair} {elem.teacher} {elem.audience} ' \
-                    f'{elem.start_time}:{elem.end_time}'
+                    f'{str(elem.start_time.hour) + ":" + str(elem.start_time.minute) + " - " + str(elem.end_time.hour) + ":" + str(elem.end_time.minute) if elem.start_time is not None else ""}'
                     for elem in qs])
             else:
                 data.append([])
@@ -137,10 +137,11 @@ class ScheduleViewSet(mixins.CreateModelMixin,
         return Response(data)
 
 
-class NumberWeekAPI(generics.RetrieveUpdateAPIView):
-    queryset = NumberWeek.objects.all()
-    serializer_class = NumberWeekSerializer
-    permission_classes = (permissions.IsAdminUser,)
+class NumberWeekAPI(APIView):
+    _time_service = TimeServices()
+
+    def get(self, request):
+        return Response({"Number": self._time_service.get_week_number()})
 
 
 class GroupApiView(APIView):
