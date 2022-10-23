@@ -15,7 +15,7 @@ class AdminDay(admin.ModelAdmin):
 
 @admin.register(Week)
 class AdminWeek(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'name']
 
 
 @admin.register(Type)

@@ -21,14 +21,14 @@ class AdminCustomUser(UserAdmin):
             },
         ),
     )
-    list_display = ['username', 'group', 'email', 'verified', 'is_staff', 'is_active']
+    list_display = ['id', 'username', 'group', 'email', 'verified', 'is_staff', 'is_active']
     search_fields = ['username', 'group', 'email']
     list_display_links = ['username']
 
 
 @admin.register(TelegramUser)
 class AdminTelegramUser(admin.ModelAdmin):
-    list_display = ['telegram_id', 'username', 'is_moder']
+    list_display = ['id', 'telegram_id', 'username', 'is_moder']
 
 
 @admin.register(GroupUserTelegram)

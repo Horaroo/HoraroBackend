@@ -118,18 +118,21 @@ class ScheduleViewSet(mixins.CreateModelMixin,
             permission_classes=[permissions.AllowAny],
             filterset_class=[])
     def get_schedule_week(self, request):
-        week = self.request.query_params.get('week')
+        week = str(int(self.request.query_params.get('week')) - 1)
         token = self.request.query_params.get('token')
-
+        """str(elem.start_time.hour) + ":" + str(elem.start_time.minute) + " - " +
+         str(elem.end_time.hour) + ":" + str(elem.end_time.minute)"""
+        """str(elem.start_time)[11:16] + " - " + str(elem.end_time)[11:16] if bool(elem.start_time and elem.end_time)"""
         data = []
         for i in range(1, 7):
             qs = Schedule.objects.filter(group__username=token,
                                          week__name__startswith=week,
                                          day_id=i).order_by('number_pair')
             if qs:
+
                 data.append([
                     f'{elem.number_pair}) {elem.subject} {elem.type_pair} {elem.teacher} {elem.audience} ' \
-                    f'{str(elem.start_time.hour) + ":" + str(elem.start_time.minute) + " - " + str(elem.end_time.hour) + ":" + str(elem.end_time.minute) if elem.start_time is not None else ""}'
+                    f'{str(elem.start_time.hour + 3) + ":" + str(elem.start_time.minute) + " - " + str(elem.end_time.hour + 3) + ":" + str(elem.end_time.minute) if bool(elem.start_time and elem.end_time) else ""}'
                     for elem in qs])
             else:
                 data.append([])
