@@ -25,11 +25,6 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
         password = validated_data["password"]
         group = validated_data["group"]
         email = validated_data["email"]
-        groups = CustomUser.objects.filter(group=group)
-        if bool(groups):
-            raise serializers.ValidationError({'group': ['Группа с таким именем уже зарегистрирована.']},
-                                              code=HTTP_400_BAD_REQUEST)
-
         user = CustomUser(username=username, email=email, group=group)
         user.set_password(password)
         user.save()
