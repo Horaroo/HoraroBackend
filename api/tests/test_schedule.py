@@ -1,7 +1,7 @@
 import pytest
 from api.models import Schedule, Type, Day, Week
 from api.tests.factories import TypeFactory
-
+import datetime
 
 @pytest.mark.django_db
 def test_create_schedule(logged_user, logged_client):
@@ -30,6 +30,7 @@ def test_schedule_copy_week(logged_user, logged_client):
     day = Day.objects.create(name="monday")
     week1 = Week.objects.create(name="1 week")
     week2 = Week.objects.create(name="2 week")
+    pair_time = datetime.datetime.now()
     Schedule.objects.create(
         number_pair=1,
         subject='subject',
@@ -38,7 +39,9 @@ def test_schedule_copy_week(logged_user, logged_client):
         week=week1,
         day=day,
         group=logged_user,
-        type_pair=type_
+        type_pair=type_,
+        start_time=pair_time,
+        end_time=pair_time
     )
 
     response = logged_client.post('/api/v1/schedule/copy-week/',
