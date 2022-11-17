@@ -2,13 +2,13 @@
 
 ## How to:
   
-```make local_up```
+```make local_up``` - поднять локально
 
 
-```make local_down```
+```make local_down``` - удалить контейнеры
 
 
-```make local_shell```
+```make local_shell``` - зайти в шел бэка
 
 
-```make test```
+```make test``` - прогнать тесты
