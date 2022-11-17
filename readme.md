@@ -3,5 +3,12 @@
 ## How to:
   
 ```make local_up```
+
+
 ```make local_down```
+
+
 ```make local_shell```
+
+
+```make test```
