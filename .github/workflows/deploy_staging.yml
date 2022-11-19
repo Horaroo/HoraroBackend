@@ -1,18 +1,72 @@
 name: Deploy-staging
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflow: [Lint-test]
+    types:
+      - completed
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_debug: ${{ secrets.DEBUG }}
+          envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+
+          envkey_POSTGRES_HOST:  ${{ secrets.POSTGRES_HOST }}
+          envkey_POSTGRES_PORT:  ${{ secrets.POSTGRES_PORT }}
+          envkey_POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
+          envkey_POSTGRES_USER:  ${{ secrets.POSTGRES_USER }}
+          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+ 
+          file_name: .env_web_db
+
+      - name: Copy actual docker-compose.yml
+        uses: appleboy/scp-action@master
+        with:
+          host: 46.229.214.105
+          username: prod
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          source: "docker-compose.staging.yml"
+          target: "~/staging_horaro/"
+    
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.ROSTOMS_DOCKER_USERNAME }}
+          password: ${{ secrets.ROSTOMS_DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Backend
+        id: docker_build_backend
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ivan556/horaro-backend
+
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
           host: 46.229.214.105
           username: prod
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: cd ~/staging_horaro/HoraroBackend/ && git pull && cd .. && docker stop staging_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
+          script: | 
+                  cd ~/staging_horaro && docker-compose pull && \
+                  docker-compose up -d && docker system prune -f
+

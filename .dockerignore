@@ -5,7 +5,7 @@ __pycache__
 .idea
 datadir
 readme.md
-.env
+.env*
 .git
 .gitignore
 docker-compose.yml
