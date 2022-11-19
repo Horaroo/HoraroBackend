@@ -3,6 +3,7 @@ name: Deploy-staging
 on:
   workflow_run:
     workflow: [Lint-test]
+    branches: [staging]
     types: [completed]
 
 jobs:
