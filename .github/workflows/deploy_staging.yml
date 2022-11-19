@@ -2,9 +2,8 @@ name: Deploy-staging
 
 on:
   workflow_run:
-    workflow: [Lint test]
-    types:
-      - completed
+    workflow: [Lint-test]
+    types: [completed]
 
 jobs:
   deploy:
