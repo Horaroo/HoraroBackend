@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: deploy
         uses: appleboy/ssh-action@master
@@ -15,4 +15,7 @@ jobs:
           host: 46.229.214.105
           username: prod
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: cd ~/prod_horaro/HoraroBackend/ && git pull && cd .. && docker stop prod_horaro_web_1 && docker-compose up -d --no-deps --build web && docker image prune -f
+          script: |
+                  cd ~/prod_horaro/HoraroBackend/ &&\
+                  git pull && cd .. && docker stop prod_horaro_web_1 &&\
+                  docker-compose up -d --no-deps --build web && docker image prune -f
