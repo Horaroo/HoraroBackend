@@ -9,6 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     steps:
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.ROSTOMS_DOCKER_USERNAME }}
+          password: ${{ secrets.ROSTOMS_DOCKER_PASSWORD }}
+
       - name: Check Out Repo
         uses: actions/checkout@v3
 
@@ -40,11 +46,6 @@ jobs:
           source: "docker-compose.staging.yml"
           target: "~/staging_horaro/"
     
-      - name: Login to Docker Registry
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.ROSTOMS_DOCKER_USERNAME }}
-          password: ${{ secrets.ROSTOMS_DOCKER_PASSWORD }}
 
       - name: Set up Docker Buildx
         id: buildx
