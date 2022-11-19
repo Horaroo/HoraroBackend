@@ -6,10 +6,8 @@ __pycache__
 datadir
 readme.md
 .env*
-.git
-.gitignore
-docker-compose.yml
+.git*
+docker*
 Dockerfile
 Makefile
-.dockerignore
-.github
+.docker*
