@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "127.0.0.1:8001:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env_web_db
+    volumes:
+      - ./HoraroBackend/media:/app/media/
+
+  db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    volumes:
+       - staging_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env_web_db
+
+
+volumes:
+  staging_postgres_data:
