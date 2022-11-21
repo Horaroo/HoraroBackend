@@ -1,6 +1,7 @@
 import pytest
 from api.models import Schedule, Type, Day, Week
 from api.tests.factories import TypeFactory
+import datetime
 
 
 @pytest.mark.django_db
@@ -23,14 +24,15 @@ def test_create_schedule(logged_user, logged_client):
     assert response.status_code == 201
     assert len(response.json()) == 10
 
-
+@pytest.mark.test
 @pytest.mark.django_db
 def test_schedule_copy_week(logged_user, logged_client):
     type_ = Type.objects.create(name="lc")
     day = Day.objects.create(name="monday")
     week1 = Week.objects.create(name="1 week")
     week2 = Week.objects.create(name="2 week")
-    Schedule.objects.create(
+    pair_time = datetime.datetime.now()
+    schedule = Schedule.objects.create(
         number_pair=1,
         subject='subject',
         teacher='teacher',
@@ -38,7 +40,9 @@ def test_schedule_copy_week(logged_user, logged_client):
         week=week1,
         day=day,
         group=logged_user,
-        type_pair=type_
+        type_pair=type_,
+        start_time=pair_time,
+        end_time=pair_time
     )
 
     response = logged_client.post('/api/v1/schedule/copy-week/',
@@ -47,8 +51,11 @@ def test_schedule_copy_week(logged_user, logged_client):
                                       "from_week": week1.pk,
                                       "to_week": week2.pk
                                   })
+    result = logged_client.get(f'/api/v1/get-pair/{week2.pk}/{day.pk}/1/?token={logged_user.username}')
 
     assert response.status_code == 201
+    assert result.json()['start_time'][:10] == str(pair_time)[:10]
+    assert result.json()['end_time'][:10] == str(pair_time)[:10]
 
 
 @pytest.mark.django_db
