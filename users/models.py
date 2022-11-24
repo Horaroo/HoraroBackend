@@ -30,7 +30,6 @@ class CustomUser(AbstractUser):
 
 
 class TelegramUser(models.Model):
-
     ACTION_CHOICES = (
         ('PTY', 'PairsToday'),
         ('PTW', 'PairsTomorrow'),
