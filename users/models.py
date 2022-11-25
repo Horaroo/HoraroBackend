@@ -41,6 +41,7 @@ class TelegramUser(models.Model):
     token = models.ForeignKey('CustomUser', on_delete=models.CASCADE, blank=True, null=True)
     action = models.CharField(max_length=255, blank=True, null=True)
     notification_time = models.IntegerField(blank=True, null=True, unique=False)
+    notification_time_min = models.IntegerField(blank=True, null=True, unique=False)
 
     def __str__(self):
         return self.telegram_id
