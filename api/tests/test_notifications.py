@@ -2,7 +2,7 @@ import pytest
 from .factories import *
 from ..models import Day, Week, Schedule
 
-@pytest.mark.test
+
 @pytest.mark.django_db
 def test_telegram_notifications(logged_user, logged_client):
     user = CustomUser.objects.create(username="test",

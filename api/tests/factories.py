@@ -22,6 +22,7 @@ class GroupUserTelegramFactory(DjangoModelFactory):
     class Meta:
         model = GroupUserTelegram
 
+
 class TypeFactory(DjangoModelFactory):
     class Meta:
         model = Type

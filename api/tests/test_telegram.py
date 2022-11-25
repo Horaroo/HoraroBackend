@@ -11,10 +11,10 @@ def create_telegram_user(username='test', **kwargs):
 @pytest.mark.django_db
 def test_telegram_detail_user_post(not_logged_client):
     response = not_logged_client.post('/api/v1/telegram/detail/user/', data={'telegram_id': '123456',
-                                                                      'username': 'name'})
+                                                                             'username': 'name'})
 
     assert response.status_code == 201
-    assert len(response.json()) == 6
+    assert len(response.json()) == 7
 
 
 @pytest.mark.django_db
@@ -144,9 +144,10 @@ def test_telegram_detail_user_update(logged_user, logged_client):
     payload = {
         "token": user.username,
         "action": "PWT",
-        "notification_time": 6,
+        "notification_time": 7,
+        "notification_time_min": 30
     }
-    # breakpoint()
+
     response = logged_client.patch(
         '/api/v1/telegram/detail/user/{}/'.format(user_telegram.telegram_id),
         data=payload)
@@ -154,5 +155,6 @@ def test_telegram_detail_user_update(logged_user, logged_client):
 
     assert response.status_code == 200
     assert user_telegram.notification_time == payload.get('notification_time')
+    assert user_telegram.notification_time_min == payload.get('notification_time_min')
     assert user_telegram.token.username == payload.get('token')
     assert user_telegram.action == payload.get('action')

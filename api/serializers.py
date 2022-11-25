@@ -134,7 +134,8 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             'token',
             'action',
             'notification_time',
-            'token_name'
+            'notification_time_min',
+            'token_name',
         ]
         extra_kwargs = {'token': {'write_only': 'True'}}
 
