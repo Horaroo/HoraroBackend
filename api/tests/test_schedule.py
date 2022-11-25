@@ -24,7 +24,7 @@ def test_create_schedule(logged_user, logged_client):
     assert response.status_code == 201
     assert len(response.json()) == 10
 
-@pytest.mark.test
+
 @pytest.mark.django_db
 def test_schedule_copy_week(logged_user, logged_client):
     type_ = Type.objects.create(name="lc")

@@ -212,11 +212,15 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
     def notifications(self, request):
         """query param - h (current hour)"""
         hour = self._time_services.get_current_time().hour
-        if hour is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        minute = self._time_services.get_current_time().minute
+        query_params = self.request.query_params.keys()
+        if 'h' in query_params and 'm' in query_params:
+            hour = self.request.query_params.get('h')
+            minute = self.request.query_params.get('m')
 
         qs_users = self.queryset.filter(
             notification_time=hour,
+            notification_time_min=minute
         )
 
         result = []

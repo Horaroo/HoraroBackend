@@ -29,4 +29,4 @@ jobs:
           envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
           envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
       - name: Test
-        run: docker-compose run --rm web sh -c "pytest"
+        run: docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"
