@@ -23,7 +23,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          envkey_debug: ${{ secrets.DEBUG }}
+          envkey_DEBUG: ${{ secrets.DEBUG }}
           envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
           envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
