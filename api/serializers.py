@@ -124,6 +124,7 @@ class TypeSerializer(serializers.ModelSerializer):
 
 
 class TelegramUserSerializer(serializers.ModelSerializer):
+    group = serializers.CharField(source='token.group', read_only=True)
 
     class Meta:
         model = TelegramUser
@@ -136,6 +137,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             'notification_time',
             'notification_time_min',
             'token_name',
+            'group',
         ]
         extra_kwargs = {'token': {'write_only': 'True'}}
 
