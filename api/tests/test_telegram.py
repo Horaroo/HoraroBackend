@@ -43,14 +43,22 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
 
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_list(not_logged_client):
-    create_telegram_user(telegram_id='123')
-    create_telegram_user(telegram_id='231')
-    create_telegram_user(telegram_id='321')
+    user = CustomUser.objects.create(username="test",
+                                     password="password",
+                                     email="test@example.com",
+                                     group="test")
+    create_telegram_user(telegram_id='123',
+                         token=user)
+    create_telegram_user(telegram_id='231',
+                         token=user)
+    create_telegram_user(telegram_id='321',
+                         token=user)
 
     response = not_logged_client.get('/api/v1/telegram/detail/user/')
 
     assert response.status_code == 200
     assert len(response.json()) == 3
+    assert response.json()[0]['group']
 
 
 @pytest.mark.django_db
