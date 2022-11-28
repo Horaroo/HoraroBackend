@@ -9,13 +9,72 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
     steps:
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_DEBUG: ""
+          envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+
+          envkey_POSTGRES_HOST:  ${{ secrets.POSTGRES_HOST }}
+          envkey_POSTGRES_PORT:  ${{ secrets.POSTGRES_PORT }}
+          envkey_POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
+          envkey_POSTGRES_USER:  ${{ secrets.POSTGRES_USER }}
+          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+ 
+          file_name: .env_web_db
+
+      - name: Copy env file
+        uses: appleboy/scp-action@master
+        with:
+          host: 46.229.214.105
+          username: prod
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          source: ".env_web_db"
+          target: "~/prod_horaro"
+
+      - name: Copy actual docker-compose
+        uses: appleboy/scp-action@master
+        with:
+          host: 46.229.214.105
+          username: prod
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          source: "docker-compose.staging.yml"
+          target: "~/prod_horaro/"
+    
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Backend
+        id: docker_build_backend
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ivan556/horaro-backend
+
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
           host: 46.229.214.105
           username: prod
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: |
-                  cd ~/prod_horaro/HoraroBackend/ &&\
-                  git pull && cd .. && docker stop prod_horaro_web_1 &&\
-                  docker-compose up -d --no-deps --build web && docker image prune -f
+          script: | 
+                  cd ~/prod_horaro && docker-compose pull &&\
+                  make up_and_build_one_service service=web
