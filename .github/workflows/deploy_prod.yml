@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-
 jobs:
   deploy:
     runs-on: ubuntu-22.04
@@ -35,7 +34,7 @@ jobs:
           envkey_POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
           envkey_POSTGRES_USER:  ${{ secrets.POSTGRES_USER }}
           envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
- 
+
           file_name: .env_web_db
 
       - name: Copy env file
@@ -56,34 +55,34 @@ jobs:
           source: "docker-compose.yml"
           target: "~/prod_horaro/"
 
-       - name: Copy actual Makefile
-         uses: appleboy/scp-action@master
-         with:
+      - name: Copy actual Makefile
+        uses: appleboy/scp-action@master
+        with:
+        host: horaro.net
+        username: ubuntu
+        key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
+        source: "Makefile"
+        target: "~/prod_horaro/"
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Backend
+        id: docker_build_backend
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ivan556/horaro-backend
+
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
           host: horaro.net
           username: ubuntu
-          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
-          source: "Makefile"
-          target: "~/prod_horaro/"
-
-        - name: Set up Docker Buildx
-          id: buildx
-          uses: docker/setup-buildx-action@v2
-
-        - name: Build Backend
-          id: docker_build_backend
-          uses: docker/build-push-action@v3
-          with:
-            context: .
-            file: ./Dockerfile
-            push: true
-            tags: ivan556/horaro-backend
-
-        - name: deploy
-          uses: appleboy/ssh-action@master
-          with:
-            host: horaro.net
-            username: ubuntu
-            key: ${{ secrets.SERVER_PRIVATE_KEY }}
-            script: | 
-                    cd ~/prod_horaro && docker-compose pull &&\
-                    make up_and_build_one_service service=web
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: | 
+                  cd ~/prod_horaro && docker-compose pull &&\
+                  make up_and_build_one_service service=web
