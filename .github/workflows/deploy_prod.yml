@@ -65,25 +65,25 @@ jobs:
           source: "Makefile"
           target: "~/prod_horaro/"
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+        - name: Set up Docker Buildx
+          id: buildx
+          uses: docker/setup-buildx-action@v2
 
-      - name: Build Backend
-        id: docker_build_backend
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ivan556/horaro-backend
+        - name: Build Backend
+          id: docker_build_backend
+          uses: docker/build-push-action@v3
+          with:
+            context: .
+            file: ./Dockerfile
+            push: true
+            tags: ivan556/horaro-backend
 
-      - name: deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: horaro.net
-          username: ubuntu
-          key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: | 
-                  cd ~/prod_horaro && docker-compose pull &&\
-                  make up_and_build_one_service service=web
+        - name: deploy
+          uses: appleboy/ssh-action@master
+          with:
+            host: horaro.net
+            username: ubuntu
+            key: ${{ secrets.SERVER_PRIVATE_KEY }}
+            script: | 
+                    cd ~/prod_horaro && docker-compose pull &&\
+                    make up_and_build_one_service service=web
