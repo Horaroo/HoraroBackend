@@ -55,7 +55,15 @@ jobs:
           source: "docker-compose.staging.yml"
           target: "~/staging_horaro/"
     
-
+      - name: Copy actual Makefile
+        uses: appleboy/scp-action@master
+        with:
+          host: staging.horaro.net
+          username: ubuntu
+          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
+          source: "Makefile"
+          target: "~/staging_horaro/"
+    
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
