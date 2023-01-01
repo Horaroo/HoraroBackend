@@ -1,4 +1,4 @@
-name: Deploy-prod
+name: Deploy-ubuntu
 
 on:
   push:
@@ -40,8 +40,8 @@ jobs:
       - name: Copy env file
         uses: appleboy/scp-action@master
         with:
-          host: 46.229.214.105
-          username: prod
+          host: horaro.net
+          username: ubuntu
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           source: ".env_web_db"
           target: "~/prod_horaro"
@@ -49,12 +49,20 @@ jobs:
       - name: Copy actual docker-compose
         uses: appleboy/scp-action@master
         with:
-          host: 46.229.214.105
-          username: prod
+          host: horaro.net
+          username: ubuntu
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          source: "docker-compose.staging.yml"
+          source: "docker-compose.yml"
           target: "~/prod_horaro/"
-    
+
+       - name: Copy actual Makefile
+         uses: appleboy/scp-action@master
+         with:
+          host: horaro.net
+          username: ubuntu
+          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
+          source: "Makefile"
+          target: "~/prod_horaro/"
 
       - name: Set up Docker Buildx
         id: buildx
@@ -72,8 +80,8 @@ jobs:
       - name: deploy
         uses: appleboy/ssh-action@master
         with:
-          host: 46.229.214.105
-          username: prod
+          host: horaro.net
+          username: ubuntu
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           script: | 
                   cd ~/prod_horaro && docker-compose pull &&\
