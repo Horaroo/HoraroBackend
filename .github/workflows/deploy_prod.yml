@@ -42,7 +42,7 @@ jobs:
         with:
           host: horaro.net
           username: ubuntu
-          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
           source: ".env_web_db"
           target: "~/prod_horaro"
 
@@ -51,7 +51,7 @@ jobs:
         with:
           host: horaro.net
           username: ubuntu
-          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
           source: "docker-compose.yml"
           target: "~/prod_horaro/"
 
@@ -82,7 +82,7 @@ jobs:
         with:
           host: horaro.net
           username: ubuntu
-          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
           script: | 
                   cd ~/prod_horaro && docker-compose pull &&\
                   make up_and_build_one_service service=web
