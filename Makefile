@@ -24,8 +24,8 @@ stop:
 start:
 	docker-compose start
 
-web_shell:
-	docker-compose exec web bash
+webshell:
+	docker-compose exec web sh
 
 
 
@@ -81,4 +81,7 @@ local_create_superuser:
 
 test:
 	docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"
-	
+
+format:
+	isort .
+	black .

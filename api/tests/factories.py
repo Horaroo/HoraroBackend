@@ -1,7 +1,8 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
-from users.models import CustomUser, TelegramUser, GroupUserTelegram
+
 from api.models import Type
+from users.models import CustomUser, GroupUserTelegram, TelegramUser
 
 
 class BaseUserFactory(DjangoModelFactory):
@@ -10,7 +11,7 @@ class BaseUserFactory(DjangoModelFactory):
 
 
 class ActiveUserFactory(BaseUserFactory):
-    username = factory.Sequence(lambda n: 'username_{}'.format(n))
+    username = factory.Sequence(lambda n: "username_{}".format(n))
 
 
 class TelegramUserFactory(DjangoModelFactory):

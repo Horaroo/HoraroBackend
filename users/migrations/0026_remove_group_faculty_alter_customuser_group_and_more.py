@@ -6,23 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0025_alter_customuser_group'),
+        ("users", "0025_alter_customuser_group"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='group',
-            name='faculty',
+            model_name="group",
+            name="faculty",
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='group',
-            field=models.CharField(error_messages={'unique': 'Группа с таким именем уже существует.'}, max_length=15, unique=True),
+            model_name="customuser",
+            name="group",
+            field=models.CharField(
+                error_messages={"unique": "Группа с таким именем уже существует."},
+                max_length=15,
+                unique=True,
+            ),
         ),
         migrations.DeleteModel(
-            name='Faculty',
+            name="Faculty",
         ),
         migrations.DeleteModel(
-            name='Group',
+            name="Group",
         ),
     ]

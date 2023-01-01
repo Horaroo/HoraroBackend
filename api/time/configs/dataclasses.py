@@ -8,7 +8,7 @@ class Time:
     hour: int
     minute: int
 
-    def __lt__(self, other: 'Time'):
+    def __lt__(self, other: "Time"):
         if self.hour < other.hour:
             return True
         elif self.hour == other.hour and self.minute < other.minute:
@@ -16,7 +16,7 @@ class Time:
         else:
             return False
 
-    def __le__(self, other: 'Time'):
+    def __le__(self, other: "Time"):
         if self.hour < other.hour:
             return True
         elif self.hour == other.hour and self.minute <= other.minute:
@@ -49,12 +49,11 @@ class PairStatus:
                next pair number if status is 'break'
                None if status break
     """
-    status: Literal['early', 'pair', 'break', 'nothing']
-    pair_num:  int | None = None
+
+    status: Literal["early", "pair", "break", "nothing"]
+    pair_num: int | None = None
     pair_data: dict | None = None
     time_range: TimeRange | None = None
 
     def to_dict(self):
         return dataclasses.asdict(self)
-
-

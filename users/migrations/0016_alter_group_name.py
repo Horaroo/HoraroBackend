@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0015_alter_group_name'),
+        ("users", "0015_alter_group_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='group',
-            name='name',
+            model_name="group",
+            name="name",
             field=models.CharField(max_length=20),
         ),
     ]

@@ -1,6 +1,6 @@
 from django.core import validators
-from django.utils.deconstruct import deconstructible
 from django.core.validators import EmailValidator
+from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
 
@@ -23,4 +23,4 @@ class UnicodeGroupValidator(validators.RegexValidator):
     flags = 0
 
 
-email_validator = EmailValidator(message='Введите корректный email ')
+email_validator = EmailValidator(message="Введите корректный email ")
