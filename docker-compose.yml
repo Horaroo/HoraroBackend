@@ -23,7 +23,7 @@ services:
       - web
 
   web:
-    build: ./HoraroBackend
+    build: ivan556/horaro-backend
     restart: unless-stopped
     command: >
       sh -c "python manage.py migrate &&
