@@ -39,4 +39,6 @@ def copy_week(queryset, username, from_week, week):
                         week=week,
                         group=data.group,
                         type_pair=data.type_pair,
-                        day=data.day)
+                        day=data.day,
+                        start_time=data.start_time,
+                        end_time=data.end_time)

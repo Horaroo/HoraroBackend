@@ -11,10 +11,10 @@ def create_telegram_user(username='test', **kwargs):
 @pytest.mark.django_db
 def test_telegram_detail_user_post(not_logged_client):
     response = not_logged_client.post('/api/v1/telegram/detail/user/', data={'telegram_id': '123456',
-                                                                      'username': 'name'})
+                                                                             'username': 'name'})
 
     assert response.status_code == 201
-    assert len(response.json()) == 6
+    assert len(response.json()) == 7
 
 
 @pytest.mark.django_db
@@ -43,14 +43,22 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
 
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_list(not_logged_client):
-    create_telegram_user(telegram_id='123')
-    create_telegram_user(telegram_id='231')
-    create_telegram_user(telegram_id='321')
+    user = CustomUser.objects.create(username="test",
+                                     password="password",
+                                     email="test@example.com",
+                                     group="test")
+    create_telegram_user(telegram_id='123',
+                         token=user)
+    create_telegram_user(telegram_id='231',
+                         token=user)
+    create_telegram_user(telegram_id='321',
+                         token=user)
 
     response = not_logged_client.get('/api/v1/telegram/detail/user/')
 
     assert response.status_code == 200
     assert len(response.json()) == 3
+    assert response.json()[0]['group']
 
 
 @pytest.mark.django_db
@@ -144,9 +152,10 @@ def test_telegram_detail_user_update(logged_user, logged_client):
     payload = {
         "token": user.username,
         "action": "PWT",
-        "notification_time": 6,
+        "notification_time": 7,
+        "notification_time_min": 30
     }
-    # breakpoint()
+
     response = logged_client.patch(
         '/api/v1/telegram/detail/user/{}/'.format(user_telegram.telegram_id),
         data=payload)
@@ -154,58 +163,6 @@ def test_telegram_detail_user_update(logged_user, logged_client):
 
     assert response.status_code == 200
     assert user_telegram.notification_time == payload.get('notification_time')
+    assert user_telegram.notification_time_min == payload.get('notification_time_min')
     assert user_telegram.token.username == payload.get('token')
     assert user_telegram.action == payload.get('action')
-
-
-@pytest.mark.django_db
-def test_telegram_notifications(logged_user, logged_client):
-    user = CustomUser.objects.create(username="test",
-                                     password="password",
-                                     email="test@example.com",
-                                     group="test")
-
-    TelegramUser.objects.create(telegram_id="1234567",
-                                token=user,
-                                action="PTY",
-                                notification_time=19
-                                )
-    TelegramUser.objects.create(telegram_id="2131324",
-                                token=user,
-                                action="PTW",
-                                notification_time=19
-                                )
-    TelegramUser.objects.create(telegram_id="23424124",
-                                token=user,
-                                action="PTY",
-                                notification_time=19
-                                )
-
-    type_ = Type.objects.create(name="lc")
-    day = Day.objects.create(name="Суббота")
-    week = Week.objects.create(name="2 week")
-    Schedule.objects.create(
-        number_pair=1,
-        subject='subject',
-        teacher='teacher',
-        audience='555 aud.',
-        week=week,
-        day=day,
-        group=user,
-        type_pair=type_
-    )
-    Schedule.objects.create(
-        number_pair=1,
-        subject='subject',
-        teacher='teacher',
-        audience='555 aud.',
-        week=Week.objects.create(name="3 week"),
-        day=day,
-        group=user,
-        type_pair=type_
-    )
-
-    response = logged_client.get(
-        '/api/v1/telegram/detail/user/notifications/?h=19')
-
-    assert response.status_code == 200

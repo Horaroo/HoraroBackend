@@ -7,9 +7,10 @@ front/__pycache__
 api/migrations/__pycache__
 config/__pycache__
 __pycache__
-.env
+.env*
 db.sqlite3
 data.json
 datadir
 media
 staticfiles
+.git
