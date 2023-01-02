@@ -52,7 +52,7 @@ staging_stop:
 staging_start:
 	docker-compose -f docker-compose.staging.yml start
 
-web_shell:
+staging_web_shell:
 	docker-compose -f docker-compose.staging.yml exec web sh
 
 
