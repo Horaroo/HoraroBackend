@@ -10,7 +10,7 @@ services:
       - .env_bot
 
   front:
-    build: ./HoraroFrontend
+    image: ivan556/horaro-frontend
     restart: unless-stopped
     ports:
       - "127.0.0.1:3000:3000"
