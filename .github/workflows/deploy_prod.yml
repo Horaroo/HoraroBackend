@@ -83,6 +83,11 @@ jobs:
           host: horaro.net
           username: ubuntu
           key: ${{ secrets.AWS_HORARO_PRYVATE_KEY }}
-          script: | 
+          script: |
+                  cd ~/prod_horaro/;
+                  [[ -d HoraroBot/ ]] || git clone git@github.com:Horaroo/HoraroBot.git;
+                  [[ -d HoraroBackend/ ]] || git clone git@github.com:Horaroo/HoraroBackend.git; 
+                  [[ -d HoraroFrontend/ ]] || git clone git@github.com:Horaroo/HoraroFrontend.git; 
+ 
                   cd ~/prod_horaro && docker-compose pull &&\
                   make up_and_build_one_service service=web
