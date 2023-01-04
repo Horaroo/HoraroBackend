@@ -1,9 +1,11 @@
+from rest_framework import serializers
+from rest_framework.status import HTTP_400_BAD_REQUEST
+
 from djoser.compat import get_user_email_field_name
 from djoser.conf import settings as djoser_settings
 from djoser.serializers import UserFunctionsMixin
-from rest_framework import serializers
-from rest_framework.status import HTTP_400_BAD_REQUEST
-from services import UserCreator
+
+from users.services import UserCreator
 
 from .models import CustomUser
 

@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 import rest_framework.permissions
+
 from djoser.constants import Messages
 from dotenv import load_dotenv
 
