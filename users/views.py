@@ -1,13 +1,16 @@
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
+from django.utils.timezone import now
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+
 from djoser import signals, utils
 from djoser.compat import get_user_email
 from djoser.conf import settings
-from django.utils.timezone import now
+
+from .serializers import RegisterCustomUserSerializer
 
 User = get_user_model()
 
@@ -17,7 +20,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     permission_classes = settings.PERMISSIONS.user
     token_generator = default_token_generator
-    lookup_field = 'username'
+    lookup_field = "username"
 
     def permission_denied(self, request, **kwargs):
         if (

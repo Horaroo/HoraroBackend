@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0016_event_cover_image'),
+        ("api", "0016_event_cover_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='schedule',
-            name='end_time',
+            model_name="schedule",
+            name="end_time",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='schedule',
-            name='start_time',
+            model_name="schedule",
+            name="start_time",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

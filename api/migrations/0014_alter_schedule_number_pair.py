@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0013_delete_schedules'),
+        ("api", "0013_delete_schedules"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='schedule',
-            name='number_pair',
+            model_name="schedule",
+            name="number_pair",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

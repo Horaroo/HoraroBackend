@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0030_groupusertelegram_token'),
+        ("users", "0030_groupusertelegram_token"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='customuser',
-            name='verified',
+            model_name="customuser",
+            name="verified",
             field=models.BooleanField(default=False),
         ),
     ]

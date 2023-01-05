@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_blockuser_username'),
+        ("api", "0008_blockuser_username"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='moderator',
+            model_name="userprofile",
+            name="moderator",
             field=models.TextField(default=False),
         ),
     ]

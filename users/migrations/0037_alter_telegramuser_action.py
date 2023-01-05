@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0036_telegramuser_action_telegramuser_notification_time_and_more'),
+        ("users", "0036_telegramuser_action_telegramuser_notification_time_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='telegramuser',
-            name='action',
+            model_name="telegramuser",
+            name="action",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

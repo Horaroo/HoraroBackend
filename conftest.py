@@ -1,5 +1,7 @@
-import pytest
 from rest_framework.test import APIClient
+
+import pytest
+
 from api.tests import factories
 
 
@@ -23,5 +25,5 @@ def not_logged_client():
 
 @pytest.fixture(autouse=True)
 def mock_things(settings):
-    settings.DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'
-    settings.THUMBNAIL_STORAGE = 'inmemorystorage.InMemoryStorage'
+    settings.DEFAULT_FILE_STORAGE = "inmemorystorage.InMemoryStorage"
+    settings.THUMBNAIL_STORAGE = "inmemorystorage.InMemoryStorage"

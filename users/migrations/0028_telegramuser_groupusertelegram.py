@@ -6,23 +6,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0027_alter_customuser_group'),
+        ("users", "0027_alter_customuser_group"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TelegramUser',
+            name="TelegramUser",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('telegram_id', models.IntegerField(unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("telegram_id", models.IntegerField(unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='GroupUserTelegram',
+            name="GroupUserTelegram",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('group', models.TextField()),
-                ('user', models.ManyToManyField(to='users.telegramuser')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("group", models.TextField()),
+                ("user", models.ManyToManyField(to="users.telegramuser")),
             ],
         ),
     ]

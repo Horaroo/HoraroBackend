@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0026_remove_group_faculty_alter_customuser_group_and_more'),
+        ("users", "0026_remove_group_faculty_alter_customuser_group_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='group',
+            model_name="customuser",
+            name="group",
             field=models.CharField(max_length=15),
         ),
     ]
