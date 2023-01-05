@@ -1,8 +1,6 @@
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from api import services
 from users.models import GroupUserTelegram, TelegramUser
 
 from .models import *
@@ -71,19 +69,9 @@ class GroupUserTelegramSerializer(serializers.ModelSerializer):
         fields = ["group", "telegram_id", "token"]
 
     def create(self, validated_data):
-        user = get_object_or_404(
-            TelegramUser, telegram_id=validated_data.get("telegram_id")
-        )
-        obj = GroupUserTelegram.objects.filter(
-            user=user, group=validated_data["group"], token=validated_data["token"]
-        )
-        if obj:
-            raise serializers.ValidationError(code=HTTP_400_BAD_REQUEST)
-        instance = GroupUserTelegram(
-            group=validated_data["group"], token=validated_data["token"]
-        )
-        instance.save()
-        instance.user.add(user)
+        instance = services.GroupUserTelegramCreator(
+            validated_data=validated_data
+        ).execute()
         return instance
 
 

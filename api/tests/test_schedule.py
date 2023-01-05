@@ -174,9 +174,3 @@ def test_get_type_pair(not_logged_client):
 
     assert response.status_code == 200
     assert len(response.json()) == 10
-
-
-@pytest.mark.skip
-@pytest.mark.django_db
-def test_get_schedule_list(logged_user, logged_client):
-    pass

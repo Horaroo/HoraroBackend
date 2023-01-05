@@ -209,8 +209,8 @@ DJOSER = {
         "token_destroy": ["rest_framework.permissions.IsAuthenticated"],
     },
     "EMAIL": {
-        "password_reset": "api.helpers.CustomPasswordResetEmail",
-        "activation": "api.helpers.CustomActivationEmail",
+        "password_reset": "users.helpers.CustomPasswordResetEmail",
+        "activation": "users.helpers.CustomActivationEmail",
     },
 }
 

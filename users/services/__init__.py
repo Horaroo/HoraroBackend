@@ -1,1 +1,1 @@
-from .user_creator import UserCreator
+from .user_creator import *

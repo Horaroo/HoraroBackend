@@ -6,7 +6,7 @@ from templated_mail.mail import BaseEmailMessage
 
 
 class CustomPasswordResetEmail(BaseEmailMessage):
-    template_name = "api/password_reset.html"
+    template_name = "users/password_reset.html"
 
     def get_context_data(self):
         context = super().get_context_data()
@@ -18,7 +18,7 @@ class CustomPasswordResetEmail(BaseEmailMessage):
 
 
 class CustomActivationEmail(BaseEmailMessage):
-    template_name = "api/activation.html"
+    template_name = "users/activation.html"
 
     def get_context_data(self):
         context = super().get_context_data()

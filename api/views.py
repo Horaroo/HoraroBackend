@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, mixins, permissions, status, viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
@@ -18,7 +19,7 @@ from .serializers import *
 class ScheduleViewSet(
     mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    queryset = Schedule.objects.all()
+    queryset = Schedule.objects.all().select_related("group")
     serializer_class = ScheduleSerializer
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
@@ -69,7 +70,7 @@ class ScheduleViewSet(
         username = serializer.data["username"]
         from_week = serializer.data["from_week"]
         to_week = serializer.data["to_week"]
-        week = Week.objects.get(pk=to_week)  # TODO: ???
+        week = Week.objects.get(pk=to_week)
         instances = self.queryset.filter(group__username=username, week_id=to_week)
         if instances:
             instances.delete()
@@ -79,9 +80,9 @@ class ScheduleViewSet(
 
     @action(methods=["get"], detail=False, serializer_class=OneFieldSerializer)
     def get_one_field(self, request):
-        user = get_object_or_404(CustomUser, username=self.request.GET.get("token"))
+        username = self.request.GET.get("token")
         instances = (
-            self.queryset.filter(group=user.pk)
+            self.queryset.filter(group__username=username)
             .distinct()
             .values(request.GET.get("select_field"))
         )
@@ -117,7 +118,7 @@ class NumberWeekAPI(APIView):
 
 
 class GroupApiView(APIView):
-    def get(self, request):
+    def get(self, request):  # noqa
         q = CustomUser.objects.filter(~Q(username="root")).values(
             "username", "group", "verified"
         )
@@ -189,7 +190,7 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
 class GroupUserCreateDeleteList(
     generics.CreateAPIView, generics.ListAPIView, generics.GenericAPIView
 ):
-    queryset = GroupUserTelegram.objects.all()
+    queryset = GroupUserTelegram.objects.all().prefetch_related("user")
     serializer_class = GroupUserTelegramSerializer
 
     def delete(self, request, *args, **kwargs):

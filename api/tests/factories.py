@@ -1,7 +1,7 @@
 import factory.fuzzy
 from factory.django import DjangoModelFactory
 
-from api.models import Type
+from api.models import Event, Type
 from users.models import CustomUser, GroupUserTelegram, TelegramUser
 
 
@@ -27,3 +27,11 @@ class GroupUserTelegramFactory(DjangoModelFactory):
 class TypeFactory(DjangoModelFactory):
     class Meta:
         model = Type
+
+
+class EventFactory(DjangoModelFactory):
+    class Meta:
+        model = Event
+
+    title = "Event title"
+    description = "Description for event"
