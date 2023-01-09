@@ -24,7 +24,7 @@ ___
 - `SECRET_KEY="django-insecure-b(=r+o15ecqk0yslac@*^@w^5a8"`
 #### Необязательные переменные
 Ниже перечисленные переменные необходимы для взаимодействия с gmail.
-В случае если вам необходимо их установить, то следует их [создать по данному туториалу.](https://dev.to/abderrahmanemustapha/how-to-send-email-with-django-and-gmail-in-production-the-right-way-24ab)
+В случае, если вам необходимо их установить, то следует их [создать по данному туториалу.](https://dev.to/abderrahmanemustapha/how-to-send-email-with-django-and-gmail-in-production-the-right-way-24ab)
 - `EMAIL_HOST`
 - `EMAIL_HOST_PASSWORD`
 - `EMAIL_HOST_USER`
