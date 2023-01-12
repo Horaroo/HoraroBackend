@@ -29,7 +29,7 @@ class ScheduleViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        services.ScheduleCreatorOrUpdater(serializer.data)
+        services.ScheduleCreatorOrUpdater(serializer.validated_data).execute()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
