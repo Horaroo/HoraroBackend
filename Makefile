@@ -24,8 +24,8 @@ stop:
 start:
 	docker-compose start
 
-web_shell:
-	docker-compose exec web bash
+webshell:
+	docker-compose exec web sh
 
 
 
@@ -60,8 +60,7 @@ staging_web_shell:
 
 local_up:
 	docker-compose -f docker-compose.local.yml build
-	docker-compose -f docker-compose.local.yml up -d
-	docker-compose -f docker-compose.local.yml exec web python manage.py migrate
+	docker-compose -f docker-compose.local.yml up
 
 
 local_restart:
@@ -81,4 +80,7 @@ local_create_superuser:
 
 test:
 	docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"
-	
+
+format:
+	isort .
+	black .

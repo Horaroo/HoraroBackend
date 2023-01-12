@@ -6,11 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0012_day_type_week_schedule'),
+        ("api", "0012_day_type_week_schedule"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='Schedules',
+            name="Schedules",
         ),
     ]

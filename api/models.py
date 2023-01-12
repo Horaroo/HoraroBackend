@@ -1,13 +1,7 @@
-from django.db import models
-from users.models import CustomUser
 from django.contrib.sites.models import Site
+from django.db import models
 
-
-class NumberWeek(models.Model):
-    number = models.IntegerField()
-
-    def __str__(self):
-        return str(self.number)
+from users.models import CustomUser
 
 
 class Week(models.Model):
@@ -44,7 +38,7 @@ class Schedule(models.Model):
     end_time = models.DateTimeField(auto_now_add=False, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.number_pair}: {self.subject} - {self.group.group}'
+        return f"{self.number_pair}: {self.subject} - {self.group.group}"
 
 
 class Event(models.Model):
@@ -60,12 +54,12 @@ class Event(models.Model):
 
     def picture(self):
         if self.image:
-            return Site.objects.get_current().domain + '/' + self.image.name
+            return Site.objects.get_current().domain + "/" + self.image.name
         else:
             return None
 
     def cover(self):
         if self.cover_image:
-            return Site.objects.get_current().domain + '/' + self.cover_image.name
+            return Site.objects.get_current().domain + "/" + self.cover_image.name
         else:
             return None

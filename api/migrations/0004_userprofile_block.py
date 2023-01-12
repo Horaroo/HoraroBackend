@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_delete_blockuser'),
+        ("api", "0003_delete_blockuser"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userprofile',
-            name='block',
+            model_name="userprofile",
+            name="block",
             field=models.BooleanField(default=False),
         ),
     ]

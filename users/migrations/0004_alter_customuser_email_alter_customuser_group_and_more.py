@@ -2,29 +2,52 @@
 
 import django.core.validators
 from django.db import migrations, models
+
 import users.validators
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_alter_customuser_email_alter_customuser_group_and_more'),
+        ("users", "0003_alter_customuser_email_alter_customuser_group_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='email',
-            field=models.EmailField(error_messages={'unique': 'Такая почта уже используется.'}, max_length=254, unique=True, validators=[django.core.validators.EmailValidator(message='Введите корректный email ')], verbose_name='Email address'),
+            model_name="customuser",
+            name="email",
+            field=models.EmailField(
+                error_messages={"unique": "Такая почта уже используется."},
+                max_length=254,
+                unique=True,
+                validators=[
+                    django.core.validators.EmailValidator(
+                        message="Введите корректный email "
+                    )
+                ],
+                verbose_name="Email address",
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='group',
-            field=models.CharField(error_messages={'unique': 'Группа с таким именем уже зарегистрирована.'}, max_length=10, unique=True, validators=[users.validators.UnicodeGroupValidator()]),
+            model_name="customuser",
+            name="group",
+            field=models.CharField(
+                error_messages={
+                    "unique": "Группа с таким именем уже зарегистрирована."
+                },
+                max_length=10,
+                unique=True,
+                validators=[users.validators.UnicodeGroupValidator()],
+            ),
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='username',
-            field=models.CharField(error_messages={'unique': 'Логин занят.'}, max_length=15, unique=True, validators=[users.validators.UnicodeUsernameValidator()]),
+            model_name="customuser",
+            name="username",
+            field=models.CharField(
+                error_messages={"unique": "Логин занят."},
+                max_length=15,
+                unique=True,
+                validators=[users.validators.UnicodeUsernameValidator()],
+            ),
         ),
     ]

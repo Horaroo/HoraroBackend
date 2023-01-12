@@ -6,15 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0005_remove_userprofile_block'),
+        ("api", "0005_remove_userprofile_block"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BlockUser',
+            name="BlockUser",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('telegram_id', models.IntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("telegram_id", models.IntegerField()),
             ],
         ),
     ]

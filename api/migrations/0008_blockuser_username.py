@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0007_numberweek'),
+        ("api", "0007_numberweek"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='blockuser',
-            name='username',
-            field=models.TextField(default=''),
+            model_name="blockuser",
+            name="username",
+            field=models.TextField(default=""),
         ),
     ]

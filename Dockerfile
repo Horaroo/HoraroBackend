@@ -16,6 +16,7 @@ RUN echo 'root:awdkj%W@!#' | chpasswd && find . -type f -exec chmod 644 {} \; &&
     adduser --disabled-password --no-create-home john-doe && chmod 755 manage.py && \
     find . -type d -exec chmod 755 {} \;
 
-RUN python manage.py collectstatic --noinput
+RUN python /app/manage.py collectstatic --noinput
+
 
 USER john-doe
