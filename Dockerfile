@@ -18,4 +18,5 @@ RUN echo 'root:awdkj%W@!#' | chpasswd && find . -type f -exec chmod 644 {} \; &&
 
 RUN python /app/manage.py collectstatic --noinput
 
+
 USER john-doe
