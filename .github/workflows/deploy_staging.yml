@@ -46,6 +46,7 @@ jobs:
           source: ".env_web_db"
           target: "~/staging_horaro"
 
+
       - name: Copy actual docker-compose
         uses: appleboy/scp-action@master
         with:
