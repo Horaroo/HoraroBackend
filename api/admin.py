@@ -6,7 +6,7 @@ from .models import Day, Event, Schedule, Type, Week
 @admin.register(Schedule)
 class AdminSchedule(admin.ModelAdmin):
     list_display = ["group", "week", "day", "subject", "number_pair"]
-    search_fields = ["group", "week", "day"]
+    search_fields = ["group__group", "group__username"]
 
 
 @admin.register(Day)
