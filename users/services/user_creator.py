@@ -12,6 +12,7 @@ class UserCreator:
         password = self.validated_data["password"]
         group = self.validated_data["group"]
         email = self.validated_data["email"]
-        return CustomUser.objects.create(
-            username=username, password=password, email=email, group=group
-        )
+        user = CustomUser(username=username, email=email, group=group)
+        user.set_password(password)
+        user.save()
+        return user
