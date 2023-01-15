@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
+    "bots.apps.BotsConfig",
     "django_filters",
 ]
 SITE_ID = 1

@@ -14,3 +14,4 @@ datadir
 media
 staticfiles
 .git
+app.log
