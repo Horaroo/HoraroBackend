@@ -25,6 +25,7 @@ from .yasg import urlpatterns as doc_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include("api.urls")),
+    path("webhook/", include("bots.urls")),
 ] + doc_urls
 
 if settings.DEBUG:
