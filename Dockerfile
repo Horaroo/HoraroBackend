@@ -11,6 +11,7 @@ RUN pip install --upgrade pip && apk add build-base && pip3 install -r requireme
 
 COPY . .
 
+
 RUN find . -type f -exec chmod 644 {} \; && \
     adduser --disabled-password --no-create-home john-doe && chmod 755 manage.py && \
     find . -type d -exec chmod 755 {} \;
@@ -18,5 +19,7 @@ RUN find . -type f -exec chmod 644 {} \; && \
 RUN python /app/manage.py collectstatic --noinput
 
 RUN touch app.log && chown john-doe:john-doe app.log
+
+VOLUME ./HoraroBackend/media:/app/media/
 
 USER john-doe
