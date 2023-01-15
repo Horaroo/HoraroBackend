@@ -20,6 +20,6 @@ RUN python /app/manage.py collectstatic --noinput
 
 RUN touch app.log && chown john-doe:john-doe app.log
 
-VOLUME ./HoraroBackend/media:/app/media/
+VOLUME ./HoraroBackend/media /app/media/
 
 USER john-doe
