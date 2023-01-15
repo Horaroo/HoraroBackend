@@ -34,6 +34,8 @@ class TelegramCallbacks(BaseMixin):
         tokens = models.CustomUser.objects.filter(verified=True)
         inline_buttons = {
             "inline_keyboard": [
+                [],  # 4 rows button
+                [],
                 [],
                 [],
                 [{"text": messages.MENU_RU, "callback_data": "menu"}],
@@ -42,7 +44,7 @@ class TelegramCallbacks(BaseMixin):
 
         ind = -1
         for token in tokens:
-            if ind == 1:
+            if ind == 3:
                 ind = -1
             ind += 1
             inline_buttons["inline_keyboard"][ind].append(

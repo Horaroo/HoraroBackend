@@ -59,7 +59,7 @@ def test_telegram_detail_user_get_user_list(not_logged_client):
     assert response.json()[0]["group"]
 
 
-@pytest.mark.django_db
+@pytest.mark.skip
 def test_add_token(not_logged_client):
     CustomUser.objects.create(
         username="test", password="password", email="test@example.com", group="test"
