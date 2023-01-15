@@ -43,7 +43,11 @@ class TelegramUser(models.Model):
     telegram_id = models.TextField(unique=True)
     is_moder = models.BooleanField(default=False)
     token = models.ForeignKey(
-        "CustomUser", on_delete=models.CASCADE, blank=True, null=True
+        "CustomUser",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        help_text="Token of notifications",
     )
     action = models.CharField(max_length=255, blank=True, null=True)
     notification_time = models.IntegerField(blank=True, null=True, unique=False)
@@ -53,17 +57,8 @@ class TelegramUser(models.Model):
         return self.telegram_id
 
 
-class GroupUserTelegram(models.Model):
-    token = models.TextField()
-    group = models.TextField()
-    user = models.ManyToManyField(TelegramUser)
-    owner_token = models.ForeignKey(
-        "CustomUser", on_delete=models.CASCADE, blank=True, null=True
+class TelegramUserToken(models.Model):
+    token = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    telegram_user = models.ForeignKey(
+        TelegramUser, on_delete=models.CASCADE, related_name="tokens"
     )
-
-    def __str__(self):
-        return f"{self.group}"
-
-    def save(self, *args, **kwargs):
-        self.owner_token = CustomUser.objects.get(username=self.token)
-        super().save(*args, **kwargs)

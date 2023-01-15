@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser, GroupUserTelegram, TelegramUser
+from .models import CustomUser, TelegramUser, TelegramUserToken
 
 
 @admin.register(CustomUser)
@@ -41,6 +41,6 @@ class AdminTelegramUser(admin.ModelAdmin):
     list_display = ["id", "telegram_id", "username", "is_moder"]
 
 
-@admin.register(GroupUserTelegram)
-class AdminGroupUser(admin.ModelAdmin):
-    pass
+@admin.register(TelegramUserToken)
+class AdminTelegramUserToken(admin.ModelAdmin):
+    list_display = ["id", "token", "telegram_user"]

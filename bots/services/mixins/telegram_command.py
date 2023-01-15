@@ -2,7 +2,6 @@ from .common import BaseMixin
 
 
 class TelegramCommands(BaseMixin):
-
     @staticmethod
     def is_command(message):
         try:

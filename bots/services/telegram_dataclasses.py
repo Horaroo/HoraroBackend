@@ -12,14 +12,14 @@ class MessageUser:
     username: str | None = None
 
     def execute(self):
-        message = self.message['message']
-        telegram_user = message['from']
-        self.text = message['text']
-        self.type_ = message['chat']['type']
-        self.is_bot = telegram_user['is_bot']
-        self.user_id = telegram_user['id']
-        self.chat_id = message['chat']['id']
-        self.username = telegram_user['username']
+        message = self.message["message"]
+        telegram_user = message["from"]
+        self.text = message["text"]
+        self.type_ = message["chat"]["type"]
+        self.is_bot = telegram_user["is_bot"]
+        self.user_id = telegram_user["id"]
+        self.chat_id = message["chat"]["id"]
+        self.username = telegram_user["username"]
         self.message = None
         return self
 
@@ -36,16 +36,16 @@ class CallbackUser:
     username: str | None = None
 
     def execute(self):
-        callback = self.message['callback_query']
-        telegram_user = callback['from']
+        callback = self.message["callback_query"]
+        telegram_user = callback["from"]
         self.message = None
-        self.call_data = callback['data']
-        self.type_ = callback['message']['chat']['type']
-        self.is_bot = telegram_user['is_bot']
-        self.user_id = telegram_user['id']
-        self.username = telegram_user['username']
-        self.chat_id = callback['message']['chat']['id']
-        self.message_id = callback['message']['message_id']
+        self.call_data = callback["data"]
+        self.type_ = callback["message"]["chat"]["type"]
+        self.is_bot = telegram_user["is_bot"]
+        self.user_id = telegram_user["id"]
+        self.username = telegram_user["username"]
+        self.chat_id = callback["message"]["chat"]["id"]
+        self.message_id = callback["message"]["message_id"]
         return self
 
 
@@ -60,14 +60,14 @@ class CommandUser:
     username: str | None = None
 
     def execute(self):
-        message = self.message['message']
-        telegram_user = self.message['message']['from']
-        self.type_ = message['chat']['type']
-        self.command = message['text']
-        self.is_bot = telegram_user['is_bot']
-        self.user_id = telegram_user['id']
-        self.chat_id = message['chat']['id']
-        self.username = telegram_user['username']
+        message = self.message["message"]
+        telegram_user = self.message["message"]["from"]
+        self.type_ = message["chat"]["type"]
+        self.command = message["text"]
+        self.is_bot = telegram_user["is_bot"]
+        self.user_id = telegram_user["id"]
+        self.chat_id = message["chat"]["id"]
+        self.username = telegram_user["username"]
         self.message = None
         return self
 

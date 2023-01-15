@@ -187,26 +187,6 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 
-class GroupUserCreateDeleteList(
-    generics.CreateAPIView, generics.ListAPIView, generics.GenericAPIView
-):
-    queryset = GroupUserTelegram.objects.all().prefetch_related("user")
-    serializer_class = GroupUserTelegramSerializer
-
-    def delete(self, request, *args, **kwargs):
-        telegram_id = self.request.query_params.get("telegram_id")
-        token = self.request.query_params.get("token")
-        try:
-            self.queryset.get(user__telegram_id=telegram_id, token=token).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except GroupUserTelegram.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def get_queryset(self):
-        telegram_id = self.request.query_params.get("telegram_id")
-        return self.queryset.filter(user__telegram_id=telegram_id).values()
-
-
 class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all().order_by("-id")
     serializer_class = EventSerializer

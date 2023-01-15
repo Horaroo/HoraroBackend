@@ -28,12 +28,16 @@ class ScheduleCreatorOrUpdater:
 
             if self.data.get("start_time"):
                 new_time = self.data.get("start_time")
-                for inst in models.Schedule.objects.filter(number_pair=number, group=group):
+                for inst in models.Schedule.objects.filter(
+                    number_pair=number, group=group
+                ):
                     inst.start_time = new_time
                     inst.save()
             if self.data.get("end_time"):
                 new_time = self.data.get("end_time")
-                for inst in models.Schedule.objects.filter(number_pair=number, group=group):
+                for inst in models.Schedule.objects.filter(
+                    number_pair=number, group=group
+                ):
                     inst.end_time = new_time
                     inst.save()
             instance.save()
