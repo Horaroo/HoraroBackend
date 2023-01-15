@@ -1,6 +1,5 @@
 FROM python:3.10-alpine
 
-
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -12,11 +11,12 @@ RUN pip install --upgrade pip && apk add build-base && pip3 install -r requireme
 
 COPY . .
 
-RUN echo 'root:awdkj%W@!#' | chpasswd && find . -type f -exec chmod 644 {} \; && \
+RUN find . -type f -exec chmod 644 {} \; && \
     adduser --disabled-password --no-create-home john-doe && chmod 755 manage.py && \
     find . -type d -exec chmod 755 {} \;
 
 RUN python /app/manage.py collectstatic --noinput
 
+RUN touch app.log && chown john-doe:john-doe app.log
 
 USER john-doe
