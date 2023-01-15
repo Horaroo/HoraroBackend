@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py runserver 0.0.0.0:8000" 
     ports:
       - "127.0.0.1:8001:8000"
     depends_on:
@@ -35,7 +35,7 @@ services:
     env_file:
       - .env_web_db
     volumes:
-      - ./HoraroBackend/media:/app/media/
+      - ./HoraroBackend/media:/app/media/:ro
 
   db:
     image: postgres:14-alpine
