@@ -17,3 +17,6 @@ HELP_EN = ""
 
 MENU_RU = "« Меню"
 MENU_EN = "« Menu"
+
+MENU_TOKENS_RU = "« Назад"
+MENU_TOKENS_EN = "« Back"
