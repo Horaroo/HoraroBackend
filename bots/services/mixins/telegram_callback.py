@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 
@@ -31,12 +32,30 @@ class TelegramCallbacks(BaseMixin):
         }
 
     def _get_tokens_data(self):
-        tokens = models.CustomUser.objects.filter(verified=True)
+        token = models.CustomUser.objects.filter(verified=True).first()
         inline_buttons = {
             "inline_keyboard": [
-                [],  # 4 rows button
-                [],
-                [],
+                [
+                    {
+                        "text": f"{token.username}",
+                        "callback_data": f"about-token:{token.username}",
+                    }
+                ],
+                [{"text": messages.MENU_RU, "callback_data": "menu"}],
+            ]
+        }
+        return {
+            "text": messages.ABOUT_TOKEN_RU,
+            "buttons": inline_buttons["inline_keyboard"],
+        }
+
+    def _get_favorites_data(self, callback_data, call_data):
+        tokens = models.TelegramUserToken.objects.filter(
+            telegram_user__telegram_id=callback_data.user_id,
+        )
+        inline_buttons = {
+            "inline_keyboard": [
+                [],  # 2 rows button
                 [],
                 [{"text": messages.MENU_RU, "callback_data": "menu"}],
             ]
@@ -44,20 +63,21 @@ class TelegramCallbacks(BaseMixin):
 
         ind = -1
         for token in tokens:
-            if ind == 3:
+            if ind == 1:
                 ind = -1
             ind += 1
             inline_buttons["inline_keyboard"][ind].append(
                 {
-                    "text": f"{token.username}",
-                    "callback_data": f"about-token:{token.username}",
+                    "text": f"{token.token.username}",
+                    "callback_data": f"{call_data}:{token.token.username}",  # TODO: self token
                 }
             )
+        return {"text": "Токен:", "buttons": inline_buttons["inline_keyboard"]}
 
-        return {"text": "Токены ✅", "buttons": inline_buttons["inline_keyboard"]}
-
-    def _get_about_token_data(self, callback_data):
-        token = callback_data.call_data.split(":")[1]
+    def _get_about_token_data(self, callback_data, favorites_token=False):
+        about_token, token = callback_data.call_data.split(":")
+        if "self" in about_token:  # TODO: self token
+            favorites_token = True
         token = models.CustomUser.objects.filter(username=token).first()
         is_added_token = models.TelegramUserToken.objects.filter(
             token__username=token.username,
@@ -68,29 +88,148 @@ class TelegramCallbacks(BaseMixin):
         ).count()
         result = {
             "text": f"Информация о токене:\n{'-' * 24}\n\nТокен - {token.username}\nГруппа - {token.group}\nДобавлено - {total_added}",
-            "buttons": [
-                [{"text": messages.MENU_TOKENS_RU, "callback_data": "menu-tokens"}]
-            ],
+            "buttons": [],
         }
+        if favorites_token:
+            menu = [
+                {"text": messages.MENU_TOKENS_RU, "callback_data": "menu-favorites"}
+            ]
+        else:
+            menu = [{"text": messages.MENU_TOKENS_RU, "callback_data": "menu-tokens"}]
 
         if is_added_token:
+            if favorites_token:
+                call_data = f"del-token-self:{token.username}"
+            else:
+                call_data = f"del-token:{token.username}"
             button_added_or_delete = [
                 {
                     "text": "Удалить токен",
-                    "callback_data": f"del-token:{token.username}",
+                    "callback_data": call_data,
                 }
             ]
         else:
+            if favorites_token:
+                call_data = f"add-token-self:{token.username}"
+            else:
+                call_data = f"add-token:{token.username}"
             button_added_or_delete = [
                 {
                     "text": "Добавить токен",
-                    "callback_data": f"add-token:{token.username}",
+                    "callback_data": call_data,
                 }
             ]
 
+        result["buttons"].append(menu)
         result["buttons"].insert(0, button_added_or_delete)
 
         return result
+
+    def _get_tokens_for_notification_data(self, callback_data):
+        added_tokens = models.TelegramUserToken.objects.filter(
+            telegram_user__telegram_id=callback_data.user_id,
+        )
+        if not added_tokens:
+            return {
+                "text": messages.NOT_ADDED_TOKEN_FOR_PIN_RU,
+                "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            }
+        data = self._get_favorites_data(callback_data, call_data="pin-token")
+        data["text"] = "Токены для уведомления:"
+        return data
+
+    def _get_time_for_notification_data(self, callback_data, h="12", m="00"):
+        data = callback_data.call_data.split()[-1]
+        buttons = [
+            [
+                {"text": "↑", "callback_data": f"plus-h {data}"},
+                {"text": "↑", "callback_data": f"plus-m {data}"},
+            ],  # 2 rows button
+            [{"text": h, "callback_data": "---"}, {"text": m, "callback_data": "---"}],
+            [
+                {"text": "↓", "callback_data": f"minus-h {data}"},
+                {"text": "↓", "callback_data": f"minus-m {data}"},
+            ],
+            [
+                {"text": messages.MENU_TOKENS_RU, "callback_data": "menu-pin"},
+                {"text": "Далее", "callback_data": f"pin-time:{h}-{m} {data}"},
+            ],
+        ]
+        return {"text": "Выберите время:", "buttons": buttons}
+
+    def _get_minus_time(self, operator_, hour, minutes):
+        if operator_.endswith("minus-m") and int(minutes) - 5 >= 0:
+            minutes = str(int(minutes) - 5)
+        elif operator_.endswith("minus-h") and int(hour) - 1 >= 0:
+            hour = str(int(hour) - 1)
+        return hour, minutes
+
+    def _get_plus_time(self, operator_, hour, minutes):
+        if operator_.startswith("plus-h") and int(hour) + 1 <= 23:
+            hour = str(int(hour) + 1)
+        elif operator_.startswith("plus-m") and int(minutes) + 5 <= 55:
+            minutes = str(int(minutes) + 5)
+        return hour, minutes
+
+    def _change_time_for_notification_data(self, callback_data):
+        operator_ = callback_data.call_data
+        hour = callback_data.message["callback_query"]["message"]["reply_markup"][
+            "inline_keyboard"
+        ][1][0]
+        minutes = callback_data.message["callback_query"]["message"]["reply_markup"][
+            "inline_keyboard"
+        ][1][1]
+        hour, minutes = hour["text"], minutes["text"]
+        if operator_.startswith("minus"):
+            hour, minutes = self._get_minus_time(operator_, hour, minutes)
+        elif operator_.startswith("plus"):
+            hour, minutes = self._get_plus_time(operator_, hour, minutes)
+        hour, minutes = hour.rjust(2, "0"), minutes.rjust(2, "0")
+        return self._get_time_for_notification_data(callback_data, m=minutes, h=hour)
+
+    def _get_action_for_notification_data(self, callback_data):
+        data = callback_data
+        buttons = [
+            [
+                {
+                    "text": "Занятия на сегодня",
+                    "callback_data": f"confirm-not pin-action:pty {data.call_data}",
+                }
+            ],  # 2 rows button
+            [
+                {
+                    "text": "Занятия на завтра",
+                    "callback_data": f"confirm-not pin-action:ptw {data.call_data}",
+                }
+            ],
+            [
+                {
+                    "text": messages.MENU_TOKENS_RU,
+                    "callback_data": f"menu-time {callback_data.call_data}",
+                }
+            ],
+        ]
+        return {"text": "Выберите время:", "buttons": buttons}
+
+    def _get_confirm_notification_data(self, callback_data):
+        data = callback_data.call_data.split()[2:]
+        hour, minute = data[0].split(":")[1].split("-")
+        token = data[1].split(":")[-1]
+        if "ptw" in callback_data.call_data:
+            pass
+        else:
+            pass
+        return {
+            "text": messages.SUCCESS_ADDED_NOTIFICATION_RU.format(
+                token=token, date=f"{hour}:{minute}"
+            ),
+            "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+        }
+
+    def _get_data_time_menu(self, callback_data):
+        data = callback_data.call_data.split()
+        hour, minute = data[1].split(":")[1].split("-")
+        return self._get_time_for_notification_data(callback_data, h=hour, m=minute)
 
     def _get_data(self, callback_data):
         return self._get_quickstart_data()
@@ -138,30 +277,49 @@ class TelegramCallbacks(BaseMixin):
                 "text": "Панель бота",
                 "buttons": self.get_menu()["inline_keyboard"],
             }
-        elif callback_data.call_data == "help":
+        elif callback_data.call_data == "help":  # TODO: done
             return self._get_help_data()
-        elif callback_data.call_data in ("tokens", "menu-tokens"):
+        elif callback_data.call_data in ("tokens", "menu-tokens"):  # TODO: done
             return self._get_tokens_data()
-        elif callback_data.call_data == "quickstart":
+        elif callback_data.call_data == "quickstart":  # TODO: done
             return self._get_quickstart_data()
 
-        elif callback_data.call_data == "add":
-            pass
-        elif callback_data.call_data == "del":
+        elif callback_data.call_data == "add":  # TODO: in progress
             pass
 
-        elif callback_data.call_data == "pin":
-            pass
-        elif callback_data.call_data == "unpin":
+        elif callback_data.call_data in ("favorites", "menu-favorites"):  # TODO: done
+            return self._get_favorites_data(callback_data, call_data="about-token-self")
+
+        elif callback_data.call_data in ("pin", "menu-pin"):  # Choice group
+            return self._get_tokens_for_notification_data(callback_data)
+        elif callback_data.call_data.startswith("menu-time"):  # Choice group
+            return self._get_data_time_menu(callback_data)
+
+        elif callback_data.call_data.startswith("confirm-not"):  # Confirm notification
+            return self._get_confirm_notification_data(callback_data)
+        elif re.search("(minus|plus)", callback_data.call_data):  # Choice time
+            return self._change_time_for_notification_data(callback_data)
+        elif (
+            "pin-time" in callback_data.call_data
+        ):  # Choice action  TODO: it's important be before pin-token
+            return self._get_action_for_notification_data(callback_data)
+        elif "pin-token" in callback_data.call_data:  # Choice token
+            return self._get_time_for_notification_data(callback_data)
+
+        elif callback_data.call_data == "unpin":  # TODO: in progress
             pass
 
-        elif callback_data.call_data.startswith("about-token:"):
+        elif callback_data.call_data.startswith("about-token"):  # TODO: done
             return self._get_about_token_data(callback_data)
-        elif callback_data.call_data.startswith("del-token:"):
-            self._delete_token(callback_data)
-            return self._get_about_token_data(callback_data)
-        elif callback_data.call_data.startswith("add-token:"):
-            self._add_token(callback_data)
+
+        elif re.match(r"(del-token|add-token)", callback_data.call_data):  # TODO: done
+            if callback_data.call_data.startswith("del"):
+                self._delete_token(callback_data)
+            else:
+                self._add_token(callback_data)
+
+            if "self" in callback_data.call_data:
+                return self._get_about_token_data(callback_data, favorites_token=True)
             return self._get_about_token_data(callback_data)
 
     def send_callback(self, callback_data):

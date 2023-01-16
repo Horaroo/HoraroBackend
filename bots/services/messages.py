@@ -20,3 +20,19 @@ MENU_EN = "« Menu"
 
 MENU_TOKENS_RU = "« Назад"
 MENU_TOKENS_EN = "« Back"
+
+
+ABOUT_TOKEN_RU = "Токены это что-то,Токены это что-т\nоТокены это что-тоТокены это что-то\nТокены это что то\n\nоТокены это что-тоТокены это что-то\nТокены это что то"
+ABOUT_TOKEN_EN = ""
+
+MENU_FAVORITES_RU = "Self tokens"
+MENU_FAVORITES_EN = ""
+
+
+NOT_ADDED_TOKEN_FOR_PIN_RU = "Необходимо добавить токен"
+NOT_ADDED_TOKEN_FOR_PIN_EN = "Необходимо добавить токен"
+
+SUCCESS_ADDED_NOTIFICATION_RU = (
+    "Уведомление успешно добавлено: \n\n\nТокен - {token}\nВремя - {date}"
+)
+SUCCESS_ADDED_NOTIFICATION_EN = ""

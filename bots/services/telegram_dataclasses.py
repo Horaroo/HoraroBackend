@@ -26,7 +26,7 @@ class MessageUser:
 
 @dataclasses.dataclass
 class CallbackUser:
-    message: dict | None  # During initialization dict, after call None
+    message: dict
     message_id = int = None
     type_: str = None
     is_bot: bool = None
@@ -38,7 +38,6 @@ class CallbackUser:
     def execute(self):
         callback = self.message["callback_query"]
         telegram_user = callback["from"]
-        self.message = None
         self.call_data = callback["data"]
         self.type_ = callback["message"]["chat"]["type"]
         self.is_bot = telegram_user["is_bot"]
