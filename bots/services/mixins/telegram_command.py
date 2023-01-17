@@ -2,27 +2,21 @@ import json
 
 import requests
 
-from bots.services import messages
-
+from ..telegram_dataclasses import ButtonsWithText
 from .common import BaseMixin
 
 
 class TelegramCommands(BaseMixin):
-    def _send_command(self, message, data):
+    def _send_command(self, message, data: ButtonsWithText):
         url = (
             "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
         )
-        if message.command == "/settings":
-            text = messages.TITLE_SETTINGS_RU
-        else:
-            text = "menu"
-
-        r = requests.get(
+        requests.get(
             url + "/sendMessage",
             params={
                 "chat_id": message.chat_id,
-                "reply_markup": json.dumps(data),
-                "text": text,
+                "reply_markup": json.dumps({"inline_keyboard": data.buttons}),
+                "text": data.text,
             },
         )
 
@@ -35,5 +29,7 @@ class TelegramCommands(BaseMixin):
             return False
 
     def send_command(self, command_user):
-        # if command_user.command == '/settings':
-        self._send_command(command_user, self.get_settings())
+        if command_user.command == "/settings":
+            self._send_command(command_user, self.get_settings())
+        elif command_user.command == "/menu":
+            self._send_command(command_user, self.get_menu(command_user))

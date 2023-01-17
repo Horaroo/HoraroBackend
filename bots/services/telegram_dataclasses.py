@@ -79,3 +79,9 @@ class MessageWithoutButton:
 @dataclasses.dataclass
 class MessageWithButton:
     pass
+
+
+@dataclasses.dataclass
+class ButtonsWithText:
+    text: str
+    buttons: list[list[dict[str, str]]]
