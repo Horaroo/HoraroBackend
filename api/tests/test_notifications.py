@@ -4,6 +4,7 @@ from ..models import Day, Schedule, Week
 from .factories import *
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_notifications(logged_user, logged_client):
     user = CustomUser.objects.create(

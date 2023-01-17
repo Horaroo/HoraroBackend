@@ -32,7 +32,25 @@ MENU_FAVORITES_EN = ""
 NOT_ADDED_TOKEN_FOR_PIN_RU = "Необходимо добавить токен"
 NOT_ADDED_TOKEN_FOR_PIN_EN = "Необходимо добавить токен"
 
+NOT_ADDED_TOKEN_FOR_UNPIN_RU = "Необходимо добавить уведомление"
+NOT_ADDED_TOKEN_FOR_UNPIN_EN = "Необходимо добавить уведомление"
+
+ABOUT_NOTIFICATION_RU = "Ваше уведомление: \n\n\nТокен - {token}\nВремя - {date}"
+ABOUT_NOTIFICATION_EN = "Ваше уведомление: \n\n\nТокен - {token}\nВремя - {date}"
+
 SUCCESS_ADDED_NOTIFICATION_RU = (
     "Уведомление успешно добавлено: \n\n\nТокен - {token}\nВремя - {date}"
 )
 SUCCESS_ADDED_NOTIFICATION_EN = ""
+
+CONFIRM_DELETE_NOTIFICATION_RU = "Удалить уведомление"
+CONFIRM_DELETE_NOTIFICATION_EN = "Delete notification"
+
+SUCCESS_DELETE_NOTIFICATION_RU = "Уведомление успешно удалено"
+SUCCESS_DELETE_NOTIFICATION_EN = "Уведомление успешно удалено"
+
+ABOUT_ADD_TOKENS_RU = "Что бы добавить токен необходимо отправить боту текстовым сообщением название токена"
+ABOUT_ADD_TOKENS_EN = "..."
+
+TITLE_SETTINGS_RU = "Настройки"
+TITLE_SETTINGS_EN = "Settings"

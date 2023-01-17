@@ -1,3 +1,4 @@
+import datetime
 import json
 import re
 
@@ -9,10 +10,16 @@ from users import models
 from .common import BaseMixin
 
 
-class TelegramCallbacks(BaseMixin):
+class TelegramCallbackSettings(BaseMixin):
     def _get_quickstart_data(self):
         return {
             "text": messages.QUICKSTART_RU,
+            "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+        }
+
+    def _get_add_data(self):
+        return {
+            "text": messages.ABOUT_ADD_TOKENS_RU,
             "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
         }
 
@@ -158,9 +165,9 @@ class TelegramCallbacks(BaseMixin):
         return {"text": "Выберите время:", "buttons": buttons}
 
     def _get_minus_time(self, operator_, hour, minutes):
-        if operator_.endswith("minus-m") and int(minutes) - 5 >= 0:
+        if operator_.startswith("minus-m") and int(minutes) - 5 >= 0:
             minutes = str(int(minutes) - 5)
-        elif operator_.endswith("minus-h") and int(hour) - 1 >= 0:
+        elif operator_.startswith("minus-h") and int(hour) - 1 >= 0:
             hour = str(int(hour) - 1)
         return hour, minutes
 
@@ -215,14 +222,53 @@ class TelegramCallbacks(BaseMixin):
         data = callback_data.call_data.split()[2:]
         hour, minute = data[0].split(":")[1].split("-")
         token = data[1].split(":")[-1]
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user.token = models.CustomUser.objects.get(username=token)
+        user.notification_time = datetime.time(
+            hour=int(hour), minute=int(minute), second=0
+        )
         if "ptw" in callback_data.call_data:
-            pass
+            user.action = "PTW"
         else:
-            pass
+            user.action = "PTY"
+        user.save(update_fields=["token", "action", "notification_time"])
         return {
             "text": messages.SUCCESS_ADDED_NOTIFICATION_RU.format(
                 token=token, date=f"{hour}:{minute}"
             ),
+            "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+        }
+
+    def _get_notification_data(self, callback_data):
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        if user.action == "NONE":
+            return {
+                "text": messages.NOT_ADDED_TOKEN_FOR_UNPIN_RU,
+                "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            }
+        return {
+            "text": messages.ABOUT_NOTIFICATION_RU.format(
+                token=user.token.username, date=f"{str(user.notification_time)[:5]}"
+            ),
+            "buttons": [
+                [
+                    {
+                        "text": messages.CONFIRM_DELETE_NOTIFICATION_RU,
+                        "callback_data": "confirm-delete",
+                    }
+                ],
+                [{"text": messages.MENU_RU, "callback_data": "menu"}],
+            ],
+        }
+
+    def _get_confirm_delete_notification_data(self, callback_data):
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user.action = "NONE"
+        user.token = None
+        user.notification_time = None
+        user.save(update_fields=["action", "token", "notification_time"])
+        return {
+            "text": messages.SUCCESS_DELETE_NOTIFICATION_RU,
             "buttons": [[{"text": messages.MENU_RU, "callback_data": "menu"}]],
         }
 
@@ -274,8 +320,8 @@ class TelegramCallbacks(BaseMixin):
     def _handle_callback(self, callback_data):
         if callback_data.call_data == "menu":
             return {
-                "text": "Панель бота",
-                "buttons": self.get_menu()["inline_keyboard"],
+                "text": messages.TITLE_SETTINGS_RU,
+                "buttons": self.get_settings()["inline_keyboard"],
             }
         elif callback_data.call_data == "help":  # TODO: done
             return self._get_help_data()
@@ -285,7 +331,7 @@ class TelegramCallbacks(BaseMixin):
             return self._get_quickstart_data()
 
         elif callback_data.call_data == "add":  # TODO: in progress
-            pass
+            return self._get_add_data()
 
         elif callback_data.call_data in ("favorites", "menu-favorites"):  # TODO: done
             return self._get_favorites_data(callback_data, call_data="about-token-self")
@@ -307,7 +353,9 @@ class TelegramCallbacks(BaseMixin):
             return self._get_time_for_notification_data(callback_data)
 
         elif callback_data.call_data == "unpin":  # TODO: in progress
-            pass
+            return self._get_notification_data(callback_data)
+        elif callback_data.call_data == "confirm-delete":
+            return self._get_confirm_delete_notification_data(callback_data)
 
         elif callback_data.call_data.startswith("about-token"):  # TODO: done
             return self._get_about_token_data(callback_data)
@@ -324,3 +372,7 @@ class TelegramCallbacks(BaseMixin):
 
     def send_callback(self, callback_data):
         self._send_callback(callback_data)
+
+
+class TelegramCallbackMenu(BaseMixin):
+    pass
