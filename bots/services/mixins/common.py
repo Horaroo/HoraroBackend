@@ -1,6 +1,6 @@
 class BaseMixin:
     @staticmethod
-    def get_menu():
+    def get_settings():
         inline_buttons = {"inline_keyboard": [[], [], [], []]}
         ind = -1
         data = {

@@ -4,11 +4,12 @@ import requests
 
 from bots.services import mixins
 
+from .messages import TITLE_SETTINGS_RU
 from .telegram_dataclasses import *
 
 
 class Telegram(
-    mixins.TelegramMessages, mixins.TelegramCallbacks, mixins.TelegramCommands
+    mixins.TelegramMessages, mixins.TelegramCallbackSettings, mixins.TelegramCommands
 ):
     def __init__(self, token, lang="ru"):
         self.token = token
@@ -23,7 +24,7 @@ class Telegram(
             params={
                 "chat_id": message.chat_id,
                 "reply_markup": json.dumps(data),
-                "text": "Панель бота",
+                "text": TITLE_SETTINGS_RU,
             },
         )
 
@@ -37,7 +38,7 @@ class Telegram(
             self.send_callback(message)
         elif self.is_command(data):
             message = CommandUser(data).execute()
-            result = self.get_commands(message)
+            self.send_command(message)
 
         if result and message:
             self._send(result, message)

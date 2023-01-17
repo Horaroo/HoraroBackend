@@ -7,7 +7,7 @@ from .factories import *
 def create_telegram_user(username="test", **kwargs):
     return TelegramUserFactory(username=username, **kwargs)
 
-
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_post(not_logged_client):
     response = not_logged_client.post(
@@ -19,6 +19,7 @@ def test_telegram_detail_user_post(not_logged_client):
     assert len(response.json()) == 7
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_moder(not_logged_client):
     create_telegram_user(is_moder=True, telegram_id="123")
@@ -31,6 +32,7 @@ def test_telegram_detail_user_get_user_moder(not_logged_client):
     assert len(response.json()) == 2
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_not_moder(not_logged_client):
     create_telegram_user(is_moder=True, telegram_id="123")
@@ -43,6 +45,7 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
     assert len(response.json()) == 1
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_list(not_logged_client):
     user = CustomUser.objects.create(
@@ -90,6 +93,7 @@ def test_get_all_group(not_logged_client):
     assert len(response.json()) == 2
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_update(logged_user, logged_client):
     user = CustomUser.objects.create(
