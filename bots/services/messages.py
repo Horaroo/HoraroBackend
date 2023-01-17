@@ -32,6 +32,10 @@ MENU_FAVORITES_EN = ""
 NOT_ADDED_TOKEN_FOR_PIN_RU = "Необходимо добавить токен"
 NOT_ADDED_TOKEN_FOR_PIN_EN = "Необходимо добавить токен"
 
+NOT_ADDED_TOKEN_FOR_MENU_RU = "Добавьте токен"
+NOT_ADDED_TOKEN_FOR_MENU_EN = "Add the token"
+
+
 NOT_ADDED_TOKEN_FOR_UNPIN_RU = "Необходимо добавить уведомление"
 NOT_ADDED_TOKEN_FOR_UNPIN_EN = "Необходимо добавить уведомление"
 
@@ -54,3 +58,6 @@ ABOUT_ADD_TOKENS_EN = "..."
 
 TITLE_SETTINGS_RU = "Настройки"
 TITLE_SETTINGS_EN = "Settings"
+
+TITLE_MENU_RU = "Панель токенов"
+TITLE_MENU_EN = "Панель токенов"

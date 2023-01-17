@@ -7,6 +7,7 @@ from .factories import *
 def create_telegram_user(username="test", **kwargs):
     return TelegramUserFactory(username=username, **kwargs)
 
+
 @pytest.mark.skip
 @pytest.mark.django_db
 def test_telegram_detail_user_post(not_logged_client):
