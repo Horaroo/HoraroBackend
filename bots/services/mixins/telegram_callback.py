@@ -4,6 +4,8 @@ import re
 
 import requests
 
+from api import models as api_models
+from api.time.time_services import TimeServices
 from bots.services import messages
 from users import models
 
@@ -12,6 +14,8 @@ from .common import BaseMixin
 
 
 class TelegramCallbackSettings(BaseMixin):
+    _time_service = TimeServices()
+
     def _get_quickstart_data(self):
         return ButtonsWithText(
             text=messages.QUICKSTART_RU,
@@ -275,9 +279,12 @@ class TelegramCallbackSettings(BaseMixin):
     def _get_data(self, callback_data):
         return self._get_quickstart_data()
 
-    def _send_callback(self, callback_data):
+    def _send_callback(self, callback_data, is_menu=False):
         data: ButtonsWithText
-        data = self._handle_callback(callback_data)
+        if is_menu:
+            data = self._handle_callback_for_menu(callback_data)
+        else:
+            data = self._handle_callback(callback_data)
         url = (
             "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
         )
@@ -314,6 +321,8 @@ class TelegramCallbackSettings(BaseMixin):
             return False
 
     def _handle_callback(self, callback_data):
+        if callback_data.call_data.startswith("M"):
+            return self._handle_callback_for_menu(callback_data)
         if callback_data.call_data == "menu":
             return self.get_settings()
         elif callback_data.call_data == "help":
@@ -363,9 +372,77 @@ class TelegramCallbackSettings(BaseMixin):
                 return self._get_about_token_data(callback_data, favorites_token=True)
             return self._get_about_token_data(callback_data)
 
+    def _get_data_for_buttons_of_menu(self, data, callback_data):
+        token = callback_data.call_data.split(":")[-1]
+        return ButtonsWithText(
+            text=data,
+            buttons=[
+                [
+                    {
+                        "text": messages.MENU_TOKENS_RU,
+                        "callback_data": f"MainMenu:{token}",
+                    }
+                ]
+            ],
+        )
+
+    def _get_number_week(self):
+        return self._time_service.get_week_number() + 1
+
+    def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week):
+        token = callback_data.call_data.split(":")[-1]
+        instances = api_models.Schedule.objects.filter(
+            group__username=token,
+            week__name__startswith=week,
+            day__name__iexact=day.name,
+        )
+        result = f"{day.name.title()}\n\n"
+        for inst in instances:
+            result += (
+                f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.audience}\n"
+            )
+        return result
+
+    def _get_pairs(self, callback_data, is_today=True):
+        day = self._time_service.get_week_day()
+        week = self._time_service.get_week_number()
+        if is_today and day.num == 6:
+            return "Сегодня выходной :)"
+        if not is_today and day.num == 5:
+            return "Завтра выходной"
+        if not is_today and day.num == 6:
+            week = 0 if week + 1 == 4 else week + 1
+        if not is_today:
+            day = self._time_service.get_week_day(is_today=False)
+
+        return self._get_data_for_today_and_tomorrow_paris(
+            callback_data, day, str(week)
+        )
+
+    def _get_teachers(self):
+        pass
+
+    def _get_subjects(self):
+        pass
+
+    def _handle_callback_for_menu(self, callback_data):
+        data = None
+        if callback_data.call_data == "MainMenu":
+            return self.get_menu(callback_data)
+        if callback_data.call_data.startswith("MainMenu:"):
+            return self.get_menu_buttons(callback_data)
+        elif callback_data.call_data.startswith("MB-number-week"):
+            data = self._get_number_week()
+        elif callback_data.call_data.startswith("MB-pairs-today"):
+            data = self._get_pairs(callback_data)
+        elif callback_data.call_data.startswith("MB-pairs-tomorrow"):
+            data = self._get_pairs(callback_data, is_today=False)
+        elif callback_data.call_data.startswith("MB-teachers"):
+            pass
+        elif callback_data.call_data.startswith("MB-subjects"):
+            pass
+        if data is not None:
+            return self._get_data_for_buttons_of_menu(data, callback_data)
+
     def send_callback(self, callback_data):
         self._send_callback(callback_data)
-
-
-class TelegramCallbackMenu(BaseMixin):
-    pass

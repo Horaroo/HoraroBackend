@@ -1,6 +1,12 @@
 from users import models
 
-from ..messages import TITLE_MENU_RU, NOT_ADDED_TOKEN_FOR_MENU_RU, TITLE_SETTINGS_RU, ABOUT_ADD_TOKENS_RU
+from ..messages import (
+    ABOUT_ADD_TOKENS_RU,
+    MENU_RU,
+    NOT_ADDED_TOKEN_FOR_MENU_RU,
+    TITLE_MENU_RU,
+    TITLE_SETTINGS_RU,
+)
 from ..telegram_dataclasses import ButtonsWithText
 
 
@@ -46,8 +52,31 @@ class BaseMixin:
             inline_buttons[ind].append(
                 {
                     "text": f"{token.token.username}",
-                    "callback_data": f"{token.token.username}",
+                    "callback_data": f"MainMenu:{token.token.username}",
                 }
             )
+
+        return ButtonsWithText(text=TITLE_MENU_RU, buttons=inline_buttons)
+
+    @staticmethod
+    def get_menu_buttons(message):
+        inline_buttons = [[], [], [], []]
+        token = message.call_data.split(":")[-1]
+        ind = -1
+        data = {
+            "Занятия сегодня": f"MB-pairs-today:{token}",  # MenuButtons
+            "Занятия завтра": f"MB-pairs-tomorrow:{token}",
+            "Номер недели": f"MB-number-week:{token}",
+            MENU_RU: "MainMenu",
+            "Преподаватели": f"MB-teachers:{token}",
+            "Расписание": f"MB-schedule:{token}",
+            "Предметы": f"MB-subjects:{token}",
+        }
+
+        for name, call_data in data.items():
+            if ind == 3:
+                ind = -1
+            ind += 1
+            inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
 
         return ButtonsWithText(text=TITLE_MENU_RU, buttons=inline_buttons)
