@@ -12,6 +12,16 @@ WEEK_DAYS_RU = {
     6: "воскресенье",
 }
 
+WEEK_DAYS_TOMORROW_RU = {
+    6: "понедельник",
+    0: "вторник",
+    1: "среда",
+    2: "четверг",
+    3: "пятница",
+    4: "суббота",
+    5: "воскресенье",
+}
+
 WEEK_DAYS_EN = {
     0: "monday",
     1: "tuesday",
@@ -20,6 +30,16 @@ WEEK_DAYS_EN = {
     4: "friday",
     5: "saturday",
     6: "sunday",
+}
+
+WEEK_DAYS_TOMORROW_EN = {
+    6: "monday",
+    0: "tuesday",
+    1: "wednesday",
+    2: "thursday",
+    3: "friday",
+    4: "saturday",
+    5: "sunday",
 }
 
 RU_MSC_TZ = ZoneInfo("Europe/Moscow")

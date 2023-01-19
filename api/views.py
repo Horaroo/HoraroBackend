@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
-from api import services
 from api.time.time_services import TimeServices
 
 from .filters import *

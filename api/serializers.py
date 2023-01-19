@@ -40,8 +40,6 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "is_moder",
             "token",
             "action",
-            "notification_time",
-            "notification_time_min",
             "token_name",
             "group",
         ]
