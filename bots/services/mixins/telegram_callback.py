@@ -321,6 +321,8 @@ class TelegramCallbackSettings(BaseMixin):
             return False
 
     def _handle_callback(self, callback_data):
+        """The order of conditions is important"""
+
         if callback_data.call_data.startswith("M"):
             return self._handle_callback_for_menu(callback_data)
         if callback_data.call_data == "menu":
@@ -335,7 +337,7 @@ class TelegramCallbackSettings(BaseMixin):
         elif callback_data.call_data == "add":
             return self._get_add_data()
 
-        elif callback_data.call_data in ("favorites", "menu-favorites"):  # TODO: done
+        elif callback_data.call_data in ("favorites", "menu-favorites"):
             return self._get_favorites_data(callback_data, call_data="about-token-self")
 
         elif callback_data.call_data in ("pin", "menu-pin"):  # Choice group
@@ -347,14 +349,12 @@ class TelegramCallbackSettings(BaseMixin):
             return self._get_confirm_notification_data(callback_data)
         elif re.search("(minus|plus)", callback_data.call_data):  # Choice time
             return self._change_time_for_notification_data(callback_data)
-        elif (
-            "pin-time" in callback_data.call_data
-        ):  # Choice action  TODO: it's important be before pin-token
+        elif "pin-time" in callback_data.call_data:  # Choice action
             return self._get_action_for_notification_data(callback_data)
         elif "pin-token" in callback_data.call_data:  # Choice token
             return self._get_time_for_notification_data(callback_data)
 
-        elif callback_data.call_data == "unpin":  # TODO: in progress
+        elif callback_data.call_data == "unpin":
             return self._get_notification_data(callback_data)
         elif callback_data.call_data == "confirm-delete":
             return self._get_confirm_delete_notification_data(callback_data)
@@ -419,13 +419,46 @@ class TelegramCallbackSettings(BaseMixin):
             callback_data, day, str(week)
         )
 
-    def _get_teachers(self):
-        pass
+    def _get_teachers(self, callback_data):
+        token = callback_data.call_data.split(":")[-1]
+        instances = api_models.Schedule.objects.filter(
+            group__username=token,
+        ).distinct("teacher")
+        if len(instances):
+            return "\n".join([t.teacher for t in instances])
+        return "Нет данных"
 
-    def _get_subjects(self):
-        pass
+    def _get_subjects(self, callback_data):
+        token = callback_data.call_data.split(":")[-1]
+        instances = api_models.Schedule.objects.filter(
+            group__username=token,
+        ).distinct("subject")
+        if len(instances):
+            return "\n".join([t.subject for t in instances if "(" not in t.subject])
+        return "Нет данных"
+
+    def _get_schedule(self, callback_data):
+        token = callback_data.call_data.split(":")[-1]
+        week = str(self._time_service.get_week_number())
+        instances = api_models.Schedule.objects.filter(
+            group__username=token, week__name__startswith=week
+        ).order_by(*["day_id", "number_pair"])
+        if len(instances):
+            first_day = instances[0].day.name
+            result = f"{first_day}\n"
+            for s in instances:
+                if s.day.name != first_day:
+                    first_day = s.day.name
+                    result += f"\n{first_day}\n"
+                result += (
+                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.audience}\n"
+                )
+            return result
+        return "Нет данных"
 
     def _handle_callback_for_menu(self, callback_data):
+        """The order of conditions is important"""
+
         data = None
         if callback_data.call_data == "MainMenu":
             return self.get_menu(callback_data)
@@ -438,9 +471,11 @@ class TelegramCallbackSettings(BaseMixin):
         elif callback_data.call_data.startswith("MB-pairs-tomorrow"):
             data = self._get_pairs(callback_data, is_today=False)
         elif callback_data.call_data.startswith("MB-teachers"):
-            pass
+            data = self._get_teachers(callback_data)
         elif callback_data.call_data.startswith("MB-subjects"):
-            pass
+            data = self._get_subjects(callback_data)
+        elif callback_data.call_data.startswith("MB-schedule"):
+            data = self._get_schedule(callback_data)
         if data is not None:
             return self._get_data_for_buttons_of_menu(data, callback_data)
 

@@ -29,7 +29,6 @@ class Telegram(
         )
 
     def handle(self, data):
-        result = message = None
         if self.is_message(data):
             message = MessageUser(data).execute()
             self.send_message(message)
@@ -39,9 +38,6 @@ class Telegram(
         elif self.is_command(data):
             message = CommandUser(data).execute()
             self.send_command(message)
-
-        if result and message:
-            self._send(result, message)
 
     def send_error_message(self, data):
         pass
