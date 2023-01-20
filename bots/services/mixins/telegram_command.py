@@ -28,8 +28,22 @@ class TelegramCommands(BaseMixin):
         except KeyError:
             return False
 
+    def _send_start(self, message):
+        url = (
+            "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
+        )
+        requests.get(
+            url + "/sendMessage",
+            params={
+                "chat_id": message.chat_id,
+                "text": "/settings - настройки бота\n/menu - меню токенов",
+            },
+        )
+
     def send_command(self, command_user):
         if command_user.command == "/settings":
             self._send_command(command_user, self.get_settings())
         elif command_user.command == "/menu":
             self._send_command(command_user, self.get_menu(command_user))
+        elif command_user.command == "/start":
+            self._send_start(command_user)
