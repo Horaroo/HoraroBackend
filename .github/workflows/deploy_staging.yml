@@ -90,6 +90,13 @@ jobs:
                   [[ -d HoraroBackend/ ]] || git clone git@github.com:Horaroo/HoraroBackend.git; 
                   [[ -d HoraroFrontend/ ]] || git clone git@github.com:Horaroo/HoraroFrontend.git; 
 
+                  [[ -d HoraroBot/ ]] && cd HoraroBot/ && git pull;
+                  cd ~/staging_horaro/;
+                  [[ -d HoraroBackend/ ]] &&  cd HoraroBackend/ && git pull; 
+                  cd ~/staging_horaro/;
+                  [[ -d HoraroFrontend/ ]] && cd HoraroFrontend/ && git pull; 
+
+
                   cd ~/staging_horaro &&\
                   docker-compose -f docker-compose.staging.yml pull &&\
                   make staging_up_and_build_one_service service=web
