@@ -54,7 +54,7 @@ services:
 
   worker:
     build:
-      context: .
+      context: ./HoraroBackend/
     restart: unless-stopped
     hostname: worker
     entrypoint: celery
