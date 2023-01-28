@@ -45,6 +45,26 @@ services:
     env_file:
       - .env_web_db
 
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A config.celery.app worker --beat --loglevel=warning
+    volumes:
+      - ./:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env_web_db
+
 volumes:
   postgres_data:
 
