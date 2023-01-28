@@ -49,9 +49,8 @@ services:
     image: redis:7.0.5-alpine
     restart: unless-stopped
     hostname: redis
-    depends_on:
-      - web
 
+    
   worker:
     build:
       context: ./HoraroBackend/
