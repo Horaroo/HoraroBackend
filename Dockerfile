@@ -20,5 +20,4 @@ RUN python /app/manage.py collectstatic --noinput
 
 RUN touch app.log && chown john-doe:john-doe app.log
 
-
 USER john-doe
