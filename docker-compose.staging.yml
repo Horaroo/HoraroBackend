@@ -1,14 +1,6 @@
 version: '3'
 
 services:
-  bot:
-    build: ./HoraroBot
-    restart: unless-stopped
-    depends_on:
-      - front
-    env_file:
-      - .env_bot
-
   front:
     image: ivan556/horaro-frontend
     restart: unless-stopped
