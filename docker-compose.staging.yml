@@ -58,8 +58,6 @@ services:
     hostname: worker
     entrypoint: celery
     command: -A config.celery.app worker --beat --loglevel=warning
-    volumes:
-      - ./:/service
     links:
       - redis
     depends_on:
