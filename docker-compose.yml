@@ -54,8 +54,9 @@ services:
     image: ivan556/horaro-backend
     restart: unless-stopped
     hostname: worker
-    entrypoint: celery
-    command: -A config.celery.app worker --beat --loglevel=warning
+    user: root
+    # entrypoint: celery
+    command: celery -A config.celery.app worker --beat --loglevel=warning
     links:
       - redis
     depends_on:
