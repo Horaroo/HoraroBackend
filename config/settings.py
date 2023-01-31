@@ -245,6 +245,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 CELERY_BROKER_URL = "redis://redis:6379/0"
 
+
 if DEBUG:
     API_URL_TELEGRAM = os.getenv("TOKEN_BOT_STAGING")
 else:
@@ -252,3 +253,4 @@ else:
 
 with open("messages.json") as messages:
     MESSAGES = json.loads(messages.read())
+
