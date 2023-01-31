@@ -97,4 +97,5 @@ jobs:
                   [[ -d HoraroFrontend/ ]] && cd HoraroFrontend/ && git pull; 
 
                   cd ~/prod_horaro && docker-compose pull &&\
-                  make up_and_build_one_service service=web
+                  make up_and_build_one_service service=web &&\
+                  make up_and_build_one_service service=worker
