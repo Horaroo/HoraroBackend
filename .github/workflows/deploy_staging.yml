@@ -100,4 +100,5 @@ jobs:
 
                   cd ~/staging_horaro &&\
                   docker-compose -f docker-compose.staging.yml pull &&\
-                  make staging_up_and_build_one_service service=web
+                  make staging_up_and_build_one_service service=web &&\
+                  make staging_up_and_build_one_service service=worker
