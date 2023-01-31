@@ -28,6 +28,45 @@ services:
     env_file:
       - .env
 
+  redis:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    hostname: redis
+    depends_on:
+      - web
+
+  worker:
+    build:
+      context: .
+    restart: unless-stopped
+    hostname: worker
+    entrypoint: celery
+    command: -A config.celery.app worker --beat --loglevel=debug
+    volumes:
+      - ./:/app
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+
+  flower:
+    build:
+      context: .
+    restart: unless-stopped
+    hostname: flower
+    entrypoint: celery
+    command: -A config.celery.app flower
+    volumes:
+      - ./:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - "5555:5555"
 
 volumes:
   staging_postgres_data:
