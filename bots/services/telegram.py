@@ -1,10 +1,11 @@
 import json
 
+from django.conf import settings
+
 import requests
 
 from bots.services import mixins
 
-from .messages import TITLE_SETTINGS_RU
 from .telegram_dataclasses import *
 
 
@@ -16,15 +17,12 @@ class Telegram(
         self.lang = lang
 
     def _send(self, data, message):
-        url = (
-            "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
-        )
         r = requests.get(
-            url + "/sendMessage",
+            settings.API_URL_TELEGRAM + "/sendMessage",
             params={
                 "chat_id": message.chat_id,
                 "reply_markup": json.dumps(data),
-                "text": TITLE_SETTINGS_RU,
+                "text": settings.MESSAGES["TITLE_SETTINGS_RU"],
             },
         )
 

@@ -1,12 +1,6 @@
 from users import models
 
-from ..messages import (
-    ABOUT_ADD_TOKENS_RU,
-    MENU_RU,
-    NOT_ADDED_TOKEN_FOR_MENU_RU,
-    TITLE_MENU_RU,
-    TITLE_SETTINGS_RU,
-)
+
 from ..telegram_dataclasses import ButtonsWithText
 
 
