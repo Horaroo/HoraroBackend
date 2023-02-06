@@ -254,4 +254,3 @@ API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
 
 with open("messages.json") as messages:
     MESSAGES = json.loads(messages.read())
-

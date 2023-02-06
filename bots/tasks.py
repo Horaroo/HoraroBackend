@@ -1,9 +1,7 @@
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-
 from django.conf import settings
-
 
 import requests
 from celery import shared_task
@@ -74,7 +72,6 @@ def _parse_data(not_data) -> dict:
         result += f"{pair.number_pair}) {pair.subject} {pair.type_pair.name} {pair.audience}\n"
 
     return {"telegram_id": not_data["telegram_id"], "text": result}
-
 
 
 def _get_week_data(action):
