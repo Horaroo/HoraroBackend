@@ -46,7 +46,7 @@ class TimeServices:
 
     def get_start_date(self) -> datetime:
         """In future will receive it from db"""
-        return datetime(day=1, month=9, year=2022)
+        return datetime(day=1, month=2, year=2023)
 
     def get_week_number(self, date=None) -> int:
         """Returns week number [0-3]"""
