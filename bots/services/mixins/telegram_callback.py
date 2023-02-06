@@ -405,7 +405,7 @@ class TelegramCallbackSettings(BaseMixin):
         )
 
     def _get_number_week(self):
-        return self._time_service.get_week_number() + 1
+        return f"Номер недели - {self._time_service.get_week_number() + 1}"
 
     def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week):
         token = callback_data.call_data.split(":")[-1]
