@@ -20,7 +20,7 @@ class HoraroAPIView(GenericAPIView):
     queryset = api_models.Schedule.objects.all().select_related("group")
 
     schema = None
-    _telegram_service = services.Telegram(token=services.BOT_TOKEN)
+    _telegram_service = services.Telegram()
 
     def post(self, request, *args, **kwargs):
         data = self.request.data
