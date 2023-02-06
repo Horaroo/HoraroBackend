@@ -43,7 +43,7 @@ services:
     entrypoint: celery
     command: -A config.celery.app worker --beat --loglevel=debug
     volumes:
-      - ./:/service
+      - ./:/app
     links:
       - redis
     depends_on:

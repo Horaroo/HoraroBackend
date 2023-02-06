@@ -1,18 +1,16 @@
 import json
 
+from django.conf import settings
+
 import requests
 
-from bots.services.messages import TITLE_SETTINGS_RU
 from users import models
 
 
 class TelegramMessages:
     def _send_message(self, text, message):
-        url = (
-            "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
-        )
         requests.get(
-            url + "/sendMessage",
+            settings.API_URL_TELEGRAM + "/sendMessage",
             params={
                 "chat_id": message.chat_id,
                 "text": text,

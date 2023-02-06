@@ -2,11 +2,12 @@ import datetime
 import json
 import re
 
+from django.conf import settings
+
 import requests
 
 from api import models as api_models
 from api.time.time_services import TimeServices
-from bots.services import messages
 from users import models
 
 from ..telegram_dataclasses import ButtonsWithText
@@ -18,19 +19,19 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_quickstart_data(self):
         return ButtonsWithText(
-            text=messages.QUICKSTART_RU,
-            buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            text=settings.MESSAGES["QUICKSTART_RU"],
+            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
         )
 
     def _get_add_data(self):
         return ButtonsWithText(
-            text=messages.ABOUT_ADD_TOKENS_RU,
-            buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            text=settings.MESSAGES["ABOUT_ADD_TOKENS_RU"],
+            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
         )
 
     def _get_help_data(self):
         return ButtonsWithText(
-            text=messages.HELP_RU,
+            text=settings.MESSAGES["HELP_RU"],
             buttons=[
                 [
                     {
@@ -39,7 +40,7 @@ class TelegramCallbackSettings(BaseMixin):
                         "callback_data": "---",
                     }
                 ],
-                [{"text": messages.MENU_RU, "callback_data": "menu"}],
+                [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
             ],
         )
 
@@ -52,9 +53,11 @@ class TelegramCallbackSettings(BaseMixin):
                     "callback_data": f"about-token:{token.username}",
                 }
             ],
-            [{"text": messages.MENU_RU, "callback_data": "menu"}],
+            [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
         ]
-        return ButtonsWithText(text=messages.ABOUT_TOKEN_RU, buttons=inline_buttons)
+        return ButtonsWithText(
+            text=settings.MESSAGES["ABOUT_TOKEN_RU"], buttons=inline_buttons
+        )
 
     def _get_favorites_data(self, callback_data, call_data):
         tokens = models.TelegramUserToken.objects.filter(
@@ -63,7 +66,7 @@ class TelegramCallbackSettings(BaseMixin):
         inline_buttons = [
             [],  # 2 rows button
             [],
-            [{"text": messages.MENU_RU, "callback_data": "menu"}],
+            [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
         ]
 
         ind = -1
@@ -77,7 +80,9 @@ class TelegramCallbackSettings(BaseMixin):
                     "callback_data": f"{call_data}:{token.token.username}",  # TODO: self token
                 }
             )
-        return ButtonsWithText(text="Токен:", buttons=inline_buttons)
+        return ButtonsWithText(
+            text=settings.MESSAGES["MENU_FAVORITES_RU"], buttons=inline_buttons
+        )
 
     def _get_about_token_data(self, callback_data, favorites_token=False):
         about_token, token = callback_data.call_data.split(":")
@@ -97,10 +102,18 @@ class TelegramCallbackSettings(BaseMixin):
         )
         if favorites_token:
             menu = [
-                {"text": messages.MENU_TOKENS_RU, "callback_data": "menu-favorites"}
+                {
+                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
+                    "callback_data": "menu-favorites",
+                }
             ]
         else:
-            menu = [{"text": messages.MENU_TOKENS_RU, "callback_data": "menu-tokens"}]
+            menu = [
+                {
+                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
+                    "callback_data": "menu-tokens",
+                }
+            ]
 
         if is_added_token:
             if favorites_token:
@@ -136,8 +149,10 @@ class TelegramCallbackSettings(BaseMixin):
         )
         if not added_tokens:
             return ButtonsWithText(
-                text=messages.NOT_ADDED_TOKEN_FOR_PIN_RU,
-                buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+                text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_PIN_RU"],
+                buttons=[
+                    [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
+                ],
             )
         data = self._get_favorites_data(callback_data, call_data="pin-token")
         data.text = "Токены для уведомления:"
@@ -156,7 +171,10 @@ class TelegramCallbackSettings(BaseMixin):
                 {"text": "↓", "callback_data": f"minus-m {data}"},
             ],
             [
-                {"text": messages.MENU_TOKENS_RU, "callback_data": "menu-pin"},
+                {
+                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
+                    "callback_data": "menu-pin",
+                },
                 {"text": "Далее", "callback_data": f"pin-time:{h}-{m} {data}"},
             ],
         ]
@@ -209,7 +227,7 @@ class TelegramCallbackSettings(BaseMixin):
             ],
             [
                 {
-                    "text": messages.MENU_TOKENS_RU,
+                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
                     "callback_data": f"menu-time {callback_data.call_data}",
                 }
             ],
@@ -231,32 +249,34 @@ class TelegramCallbackSettings(BaseMixin):
             user.action = "PTY"
         user.save(update_fields=["token", "action", "notification_time"])
         return ButtonsWithText(
-            text=messages.SUCCESS_ADDED_NOTIFICATION_RU.format(
+            text=settings.MESSAGES["SUCCESS_ADDED_NOTIFICATION_RU"].format(
                 token=token, date=f"{hour}:{minute}"
             ),
-            buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
         )
 
     def _get_notification_data(self, callback_data):
         user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
         if user.action == "NONE":
             return ButtonsWithText(
-                text=messages.NOT_ADDED_TOKEN_FOR_UNPIN_RU,
-                buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+                text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_UNPIN_RU"],
+                buttons=[
+                    [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
+                ],
             )
 
         return ButtonsWithText(
-            text=messages.ABOUT_NOTIFICATION_RU.format(
+            text=settings.MESSAGES["ABOUT_NOTIFICATION_RU"].format(
                 token=user.token.username, date=f"{str(user.notification_time)[:5]}"
             ),
             buttons=[
                 [
                     {
-                        "text": messages.CONFIRM_DELETE_NOTIFICATION_RU,
+                        "text": settings.MESSAGES["CONFIRM_DELETE_NOTIFICATION_RU"],
                         "callback_data": "confirm-delete",
                     }
                 ],
-                [{"text": messages.MENU_RU, "callback_data": "menu"}],
+                [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
             ],
         )
 
@@ -267,8 +287,8 @@ class TelegramCallbackSettings(BaseMixin):
         user.notification_time = None
         user.save(update_fields=["action", "token", "notification_time"])
         return ButtonsWithText(
-            text=messages.SUCCESS_DELETE_NOTIFICATION_RU,
-            buttons=[[{"text": messages.MENU_RU, "callback_data": "menu"}]],
+            text=settings.MESSAGES["SUCCESS_DELETE_NOTIFICATION_RU"],
+            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
         )
 
     def _get_data_time_menu(self, callback_data):
@@ -285,11 +305,9 @@ class TelegramCallbackSettings(BaseMixin):
             data = self._handle_callback_for_menu(callback_data)
         else:
             data = self._handle_callback(callback_data)
-        url = (
-            "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
-        )
-        r = requests.get(
-            url + "/editMessageText",
+
+        requests.get(
+            settings.API_URL_TELEGRAM + "/editMessageText",
             params={
                 "chat_id": callback_data.user_id,
                 "text": data.text,
@@ -379,7 +397,7 @@ class TelegramCallbackSettings(BaseMixin):
             buttons=[
                 [
                     {
-                        "text": messages.MENU_TOKENS_RU,
+                        "text": settings.MESSAGES["MENU_TOKENS_RU"],
                         "callback_data": f"MainMenu:{token}",
                     }
                 ]
@@ -409,7 +427,7 @@ class TelegramCallbackSettings(BaseMixin):
         if is_today and day.num == 6:
             return "Сегодня выходной :)"
         if not is_today and day.num == 5:
-            return "Завтра выходной"
+            return "Завтра выходной :)"
         if not is_today and day.num == 6:
             week = 0 if week + 1 == 4 else week + 1
         if not is_today:
@@ -426,7 +444,7 @@ class TelegramCallbackSettings(BaseMixin):
         ).distinct("teacher")
         if len(instances):
             return "\n".join([t.teacher for t in instances])
-        return "Нет данных"
+        return "Нет данных :("
 
     def _get_subjects(self, callback_data):
         token = callback_data.call_data.split(":")[-1]
@@ -435,7 +453,7 @@ class TelegramCallbackSettings(BaseMixin):
         ).distinct("subject")
         if len(instances):
             return "\n".join([t.subject for t in instances if "(" not in t.subject])
-        return "Нет данных"
+        return "Нет данных :("
 
     def _get_schedule(self, callback_data):
         token = callback_data.call_data.split(":")[-1]
@@ -454,7 +472,7 @@ class TelegramCallbackSettings(BaseMixin):
                     f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.audience}\n"
                 )
             return result
-        return "Нет данных"
+        return "Нет данных :("
 
     def _handle_callback_for_menu(self, callback_data):
         """The order of conditions is important"""

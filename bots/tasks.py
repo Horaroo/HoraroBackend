@@ -1,6 +1,11 @@
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
+
+
+from django.conf import settings
+
+
 import requests
 from celery import shared_task
 
@@ -14,7 +19,7 @@ time_service = TimeServices()
 
 
 @shared_task
-def send_notification(x, y):
+def send_notification():
     current_time = datetime.now(tz=tz).hour, datetime.now(tz=tz).minute
     if current_time[1] % 5 == 0:
         telegram_users = TelegramUser.objects.filter(
@@ -23,14 +28,12 @@ def send_notification(x, y):
         )
         notification_data = _get_data(telegram_users)
         for not_data in notification_data:
-            url = (
-                "https://api.telegram.org/bot5557386036:AAG6H5f_6JE5hVLYx5MH2BZLwbZ1w2lJmRw"
-            )
             requests.get(
-                url + "/sendMessage",
+                settings.API_URL_TELEGRAM + "/sendMessage",
                 params={
-                    "chat_id": not_data['telegram_id'],
-                    "text": not_data['text'],
+                    "chat_id": not_data["telegram_id"],
+                    "text": not_data["text"],
+                    "parse_mode": "HTML",
                 },
             )
 
@@ -55,11 +58,10 @@ def _get_data(qs_users) -> list[dict]:
     result = []
 
     for not_data in notification_data:
-        if not_data['action'] == "PTY" and time_service.get_week_day().num == 6:
+        if not_data["action"] == "PTY" and time_service.get_week_day().num == 6:
             continue
-        if not_data['action'] == "PTW" and time_service.get_week_day().num == 5:
+        if not_data["action"] == "PTW" and time_service.get_week_day().num == 5:
             continue
-
         result.append(_parse_data(not_data))
 
     return result
@@ -68,16 +70,13 @@ def _get_data(qs_users) -> list[dict]:
 def _parse_data(not_data) -> dict:
     data = not_data["data"]
     token = not_data["token"]
-    day = (
-        time_service.get_week_day()
-        if not_data["action"] == "PTY"
-        else time_service.get_week_day(is_today=False)
-    )
-    result = f"📨 Уведомление.\nТокен - {token}\n\n"
+    result = settings.MESSAGES["TITLE_NOTIFICATION_RU"].format(token=token)
     for pair in data:
         result += f"{pair.number_pair}) {pair.subject} {pair.type_pair.name} {pair.audience}\n"
 
-    return {'telegram_id': not_data['telegram_id'], 'text': result}
+    return {"telegram_id": not_data["telegram_id"], "text": result}
+
+
 
 
 def _get_week_data(action):
