@@ -1,11 +1,11 @@
 {
-  "START_RU": "\uD83D\uDC4B Приветствую, {username}\n\n/settings - Личные настройки \n/menu - Панель токенов\n\n Наш канал - @horaro_news",
+  "START_RU": "\uD83D\uDC4B Приветствую!\n\n/settings - Личные настройки \n/menu - Панель токенов\n\n Наш канал - @horaro_news",
   "START_EN": "",
 
   "HELP_RU": "Техническая поддержка \uD83D\uDEE0,\n\n Будьте в курсе новых обновлений - @horaro_news\n\nПроблемы с технической стороны? (Обратная связь).\n\n",
   "HELP_EN": "",
 
-  "QUICKSTART_RU": "Вы можете создать свой токен, на нашем <a href='https://horaro.net'>сайте.</a> \n\n/settings - Личные настройки \n/menu - Панель токенов\n\n Наш канал - @horaro_news",
+  "QUICKSTART_RU": "Вы можете создать свой токен, на нашем https://horaro.net \n\n/settings - Личные настройки \n/menu - Панель токенов\n\n Наш канал - @horaro_news",
   "QUICKSTART_EN": "",
 
   "MENU_RU": "« Меню",
