@@ -34,6 +34,7 @@ jobs:
           envkey_POSTGRES_DB:  ${{ secrets.POSTGRES_DB }}
           envkey_POSTGRES_USER:  ${{ secrets.POSTGRES_USER }}
           envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          envkey_TOKEN_BOT_STAGING: ${{ secrets.TOKEN_BOT_STAGING }}
  
           file_name: .env_web_db
 
@@ -90,6 +91,14 @@ jobs:
                   [[ -d HoraroBackend/ ]] || git clone git@github.com:Horaroo/HoraroBackend.git; 
                   [[ -d HoraroFrontend/ ]] || git clone git@github.com:Horaroo/HoraroFrontend.git; 
 
+                  [[ -d HoraroBot/ ]] && cd HoraroBot/ && git pull;
+                  cd ~/staging_horaro/;
+                  [[ -d HoraroBackend/ ]] &&  cd HoraroBackend/ && git pull; 
+                  cd ~/staging_horaro/;
+                  [[ -d HoraroFrontend/ ]] && cd HoraroFrontend/ && git pull; 
+
+
                   cd ~/staging_horaro &&\
                   docker-compose -f docker-compose.staging.yml pull &&\
-                  make staging_up_and_build_one_service service=web
+                  make staging_up_and_build_one_service service=web &&\
+                  make staging_up_and_build_one_service service=worker

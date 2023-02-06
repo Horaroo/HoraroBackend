@@ -23,5 +23,4 @@ urlpatterns = [
         "get-pair/<int:week>/<int:day>/<int:number>/",
         ScheduleRetrieveOrDestroy.as_view(),
     ),
-    path("telegram/detail/group/", GroupUserCreateDeleteList.as_view()),
 ]

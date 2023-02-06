@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api import services
-from users.models import GroupUserTelegram, TelegramUser
+from users.models import TelegramUser
 
 from .models import *
 
@@ -40,8 +40,6 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             "is_moder",
             "token",
             "action",
-            "notification_time",
-            "notification_time_min",
             "token_name",
             "group",
         ]
@@ -59,20 +57,6 @@ class TelegramUserSerializer(serializers.ModelSerializer):
             data["token"] = CustomUser.objects.get(username=data["token"]).pk
             self.initial_data = data
         return super().is_valid()
-
-
-class GroupUserTelegramSerializer(serializers.ModelSerializer):
-    telegram_id = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = GroupUserTelegram
-        fields = ["group", "telegram_id", "token"]
-
-    def create(self, validated_data):
-        instance = services.GroupUserTelegramCreator(
-            validated_data=validated_data
-        ).execute()
-        return instance
 
 
 class EventSerializer(serializers.ModelSerializer):

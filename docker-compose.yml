@@ -35,13 +35,33 @@ services:
     env_file:
       - .env_web_db
     volumes:
-      - ./HoraroBackend/media:/app/media/
+      - ./HoraroBackend/media:/app/media/:ro
 
   db:
     image: postgres:14-alpine
     restart: unless-stopped
     volumes:
        - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env_web_db
+
+  redis:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    hostname: redis
+
+  worker:
+    image: ivan556/horaro-backend
+    restart: unless-stopped
+    hostname: worker
+    user: root
+    # entrypoint: celery
+    command: celery -A config.celery.app worker --beat --loglevel=warning
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
     env_file:
       - .env_web_db
 

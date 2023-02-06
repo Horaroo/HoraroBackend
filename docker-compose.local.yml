@@ -11,7 +11,7 @@ services:
       sh -c "python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     ports:
-      - "127.0.0.1:8001:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       - db
     env_file:
@@ -28,6 +28,45 @@ services:
     env_file:
       - .env
 
+  redis:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    hostname: redis
+    depends_on:
+      - web
+
+  worker:
+    build:
+      context: .
+    restart: unless-stopped
+    hostname: worker
+    entrypoint: celery
+    command: -A config.celery.app worker --beat --loglevel=debug
+    volumes:
+      - ./:/app
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env
+
+  flower:
+    build:
+      context: .
+    restart: unless-stopped
+    hostname: flower
+    entrypoint: celery
+    command: -A config.celery.app flower
+    volumes:
+      - ./:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - "5555:5555"
 
 volumes:
   staging_postgres_data:

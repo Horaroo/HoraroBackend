@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
+    "bots.apps.BotsConfig",
     "django_filters",
 ]
 SITE_ID = 1
@@ -145,8 +147,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = "ru"
-
+LANGUAGE_CODE = "en"
+LANGUAGES = (
+    ("en-us", "English"),
+    ("ru", "Russian"),
+)
 TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
@@ -236,3 +241,16 @@ EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+
+
+if DEBUG:
+    BOT_TOKEN = os.getenv("TOKEN_BOT_STAGING")
+else:
+    BOT_TOKEN = os.getenv("TOKEN_BOT_PROD")
+API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
+
+with open("messages.json") as messages:
+    MESSAGES = json.loads(messages.read())

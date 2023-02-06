@@ -1,14 +1,6 @@
 version: '3'
 
 services:
-  bot:
-    build: ./HoraroBot
-    restart: unless-stopped
-    depends_on:
-      - front
-    env_file:
-      - .env_bot
-
   front:
     image: ivan556/horaro-frontend
     restart: unless-stopped
@@ -27,7 +19,7 @@ services:
     restart: unless-stopped
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py runserver 0.0.0.0:8000" 
     ports:
       - "127.0.0.1:8001:8000"
     depends_on:
@@ -35,7 +27,7 @@ services:
     env_file:
       - .env_web_db
     volumes:
-      - ./HoraroBackend/media:/app/media/
+      - ./HoraroBackend/media:/app/media/:ro
 
   db:
     image: postgres:14-alpine
@@ -45,6 +37,26 @@ services:
     env_file:
       - .env_web_db
 
+  redis:
+    image: redis:7.0.5-alpine
+    restart: unless-stopped
+    hostname: redis
+
+    
+  worker:
+    image: ivan556/horaro-backend
+    restart: unless-stopped
+    hostname: worker
+    user: root
+    # entrypoint: celery
+    command: celery -A config.celery.app worker --beat --loglevel=warning
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - .env_web_db
 
 volumes:
   staging_postgres_data:

@@ -64,3 +64,5 @@ tomli==2.0.1
 uritemplate==4.1.1
 urllib3==1.26.9
 whitenoise==6.0.0
+celery[redis]==5.2.7
+flower==1.2.0

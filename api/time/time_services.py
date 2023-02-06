@@ -8,6 +8,8 @@ from api.time.configs.constants import (
     RU_MSC_TZ,
     WEEK_DAYS_EN,
     WEEK_DAYS_RU,
+    WEEK_DAYS_TOMORROW_EN,
+    WEEK_DAYS_TOMORROW_RU,
 )
 from api.time.configs.dataclasses import PairStatus, Time, TimeRange, WeekDay
 
@@ -18,15 +20,21 @@ def _pair_model_to_dict(pair: Schedule) -> dict:
 
 
 class TimeServices:
-    def get_week_day(self, lang: str = "ru", tz=RU_MSC_TZ) -> WeekDay:
+    def get_week_day(self, lang: str = "ru", tz=RU_MSC_TZ, is_today=True) -> WeekDay:
         if lang not in ["ru", "en"]:
             raise ValueError(f"This language is not provided: {lang}")
 
         week_day_num = datetime.now(tz=tz).weekday()
-        if lang.lower() == "en":
-            week_day = WEEK_DAYS_EN[week_day_num]
+        if is_today:
+            if lang.lower() == "en":
+                week_day = WEEK_DAYS_EN[week_day_num]
+            else:
+                week_day = WEEK_DAYS_RU[week_day_num]
         else:
-            week_day = WEEK_DAYS_RU[week_day_num]
+            if lang.lower() == "en":
+                week_day = WEEK_DAYS_TOMORROW_EN[week_day_num]
+            else:
+                week_day = WEEK_DAYS_TOMORROW_RU[week_day_num]
 
         return WeekDay(num=week_day_num, name=week_day)
 
@@ -38,7 +46,7 @@ class TimeServices:
 
     def get_start_date(self) -> datetime:
         """In future will receive it from db"""
-        return datetime(day=1, month=9, year=2022)
+        return datetime(day=1, month=2, year=2023)
 
     def get_week_number(self, date=None) -> int:
         """Returns week number [0-3]"""
