@@ -1,5 +1,6 @@
-from users import models
+from django.conf import settings
 
+from users import models
 
 from ..telegram_dataclasses import ButtonsWithText
 
@@ -24,7 +25,9 @@ class BaseMixin:
             ind += 1
             inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
 
-        return ButtonsWithText(text=TITLE_SETTINGS_RU, buttons=inline_buttons)
+        return ButtonsWithText(
+            text=settings.MESSAGES["TITLE_SETTINGS_RU"], buttons=inline_buttons
+        )
 
     @staticmethod
     def get_menu(message):
@@ -33,7 +36,7 @@ class BaseMixin:
         )
         if not tokens:
             return ButtonsWithText(
-                text=NOT_ADDED_TOKEN_FOR_MENU_RU,
+                text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_MENU_RU"],
                 buttons=[[{"text": "Добавить токен", "callback_data": "add"}]],
             )
         inline_buttons = [[], [], [], []]
@@ -50,7 +53,9 @@ class BaseMixin:
                 }
             )
 
-        return ButtonsWithText(text=TITLE_MENU_RU, buttons=inline_buttons)
+        return ButtonsWithText(
+            text=settings.MESSAGES["TITLE_MENU_RU"], buttons=inline_buttons
+        )
 
     @staticmethod
     def get_menu_buttons(message):
@@ -61,7 +66,7 @@ class BaseMixin:
             "Занятия сегодня": f"MB-pairs-today:{token}",  # MenuButtons
             "Занятия завтра": f"MB-pairs-tomorrow:{token}",
             "Номер недели": f"MB-number-week:{token}",
-            MENU_RU: "MainMenu",
+            settings.MESSAGES["MENU_RU"]: "MainMenu",
             "Преподаватели": f"MB-teachers:{token}",
             "Расписание": f"MB-schedule:{token}",
             "Предметы": f"MB-subjects:{token}",
@@ -73,4 +78,6 @@ class BaseMixin:
             ind += 1
             inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
 
-        return ButtonsWithText(text=TITLE_MENU_RU, buttons=inline_buttons)
+        return ButtonsWithText(
+            text=settings.MESSAGES["TITLE_MENU_RU"], buttons=inline_buttons
+        )

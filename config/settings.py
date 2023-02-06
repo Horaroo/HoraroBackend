@@ -247,10 +247,10 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 
 
 if DEBUG:
-    API_URL_TELEGRAM = os.getenv("TOKEN_BOT_STAGING")
+    BOT_TOKEN = os.getenv("TOKEN_BOT_STAGING")
 else:
-    API_URL_TELEGRAM = os.getenv("TOKEN_BOT_PROD")
+    BOT_TOKEN = os.getenv("TOKEN_BOT_PROD")
+API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
 
 with open("messages.json") as messages:
     MESSAGES = json.loads(messages.read())
-
