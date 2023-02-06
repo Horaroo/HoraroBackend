@@ -1,12 +1,11 @@
 import logging
 
-from django.db.models import Q
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from api import models as api_models
 from bots import services
-from users import models as users_model
+
 
 logging.basicConfig(
     filename="app.log",
@@ -25,7 +24,6 @@ class HoraroAPIView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         data = self.request.data
         try:
-            # print(data)
             self._telegram_service.handle(data)
         except Exception:
             logging.exception("Exception occurred")  # write in the 'app.log' file
