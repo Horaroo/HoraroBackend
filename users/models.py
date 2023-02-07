@@ -36,7 +36,7 @@ class CustomUser(AbstractUser):
 class TelegramUser(models.Model):
     ACTION_CHOICES = (("PTY", "PairsToday"), ("PTW", "PairsTomorrow"), ("NONE", "none"))
 
-    username = models.TextField()
+    username = models.TextField(default="Username doesn't exists")
     telegram_id = models.TextField(unique=True)
     is_moder = models.BooleanField(default=False)
     token = models.ForeignKey(
