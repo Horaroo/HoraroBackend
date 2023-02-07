@@ -19,7 +19,6 @@ class MessageUser:
         self.is_bot = telegram_user["is_bot"]
         self.user_id = telegram_user["id"]
         self.chat_id = message["chat"]["id"]
-        self.username = telegram_user["username"]
         self.message = None
         return self
 
@@ -42,7 +41,6 @@ class CallbackUser:
         self.type_ = callback["message"]["chat"]["type"]
         self.is_bot = telegram_user["is_bot"]
         self.user_id = telegram_user["id"]
-        self.username = telegram_user["username"]
         self.chat_id = callback["message"]["chat"]["id"]
         self.message_id = callback["message"]["message_id"]
         return self
@@ -66,7 +64,6 @@ class CommandUser:
         self.is_bot = telegram_user["is_bot"]
         self.user_id = telegram_user["id"]
         self.chat_id = message["chat"]["id"]
-        self.username = telegram_user["username"]
         self.message = None
         return self
 
