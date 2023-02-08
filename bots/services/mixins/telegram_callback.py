@@ -469,11 +469,8 @@ class TelegramCallbackSettings(BaseMixin):
                     first_day = s.day.name
                     result += f"\n{first_day}\n"
                 result += (
-                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience} "
+                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience}\n"
                 )
-                if s.start_time and s.end_time:
-                    result += f"{str(s.start_time)[11:16]} - {str(s.end_time)[11:16]}"
-                result += '\n'
             return result
         return "Нет данных :("
 
