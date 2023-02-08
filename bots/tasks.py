@@ -69,7 +69,10 @@ def _parse_data(not_data) -> dict:
 
     result = settings.MESSAGES["TITLE_NOTIFICATION_RU"].format(token=token)
     for pair in data:
-        result += f"{pair.number_pair}) {pair.subject} {pair.type_pair.name} {pair.audience}\n"
+        result += f"{pair.number_pair}) {pair.subject} {pair.type_pair.name} {pair.audience} "
+        if pair.start_time and pair.end_time:
+            result += f"{str(pair.start_time)[11:16]} - {str(pair.end_time)[11:16]}"
+        result += '\n'
 
     return {"telegram_id": not_data["telegram_id"], "text": result}
 
