@@ -413,7 +413,7 @@ class TelegramCallbackSettings(BaseMixin):
             group__username=token,
             week__name__startswith=week,
             day__name__iexact=day.name,
-        )
+        ).order_by("number_pair")
         result = f"{day.name.title()}\n\n"
         for inst in instances:
             result += (
@@ -469,8 +469,11 @@ class TelegramCallbackSettings(BaseMixin):
                     first_day = s.day.name
                     result += f"\n{first_day}\n"
                 result += (
-                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.audience}\n"
+                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience} "
                 )
+                if s.start_time and s.end_time:
+                    result += f"{str(s.start_time)[11:16]} - {str(s.end_time)[11:16]}"
+                result += '\n'
             return result
         return "Нет данных :("
 
