@@ -65,14 +65,23 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ["title", "description", "picture", "cover", "is_main", "created_at"]
 
 
-class ScheduleCopySerializer(serializers.ModelSerializer):
-    from_week = serializers.IntegerField()
-    to_week = serializers.IntegerField()
-    username = serializers.CharField(source="group__username")
+class ScheduleCopySerializer(serializers.Serializer):
+    source_week = serializers.IntegerField()
+    target_week = serializers.IntegerField()
+    source_day = serializers.CharField(default=None)
+    target_day = serializers.CharField(default=None)
+    source_pair = serializers.IntegerField(default=None)
+    target_pair = serializers.IntegerField(default=None)
 
     class Meta:
-        model = Schedule
-        fields = ["username", "from_week", "to_week"]
+        fields = [
+            "source_week",
+            "target_week",
+            "source_day",
+            "target_day",
+            "source_pair",
+            "target_pair",
+        ]
 
 
 class OneFieldSerializer(serializers.Serializer):

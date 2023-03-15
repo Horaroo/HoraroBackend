@@ -59,22 +59,24 @@ class ScheduleViewSet(
     @action(
         detail=False,
         methods=["post"],
-        url_path=r"copy-week",
+        url_path=r"copy",
         serializer_class=ScheduleCopySerializer,
-        permission_classes=[permissions.AllowAny],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def copy_schedule(self, request):
-        serializer = ScheduleCopySerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username = serializer.data["username"]
-        from_week = serializer.data["from_week"]
-        to_week = serializer.data["to_week"]
-        week = Week.objects.get(pk=to_week)
-        instances = self.queryset.filter(group__username=username, week_id=to_week)
-        if instances:
-            instances.delete()
-        services.copy_week(self.queryset, username, from_week, week)
+        services.Copywriter(
+            queryset=self.queryset,
+            user=request.user,
+            source_week=serializer.data["source_week"],
+            target_week=serializer.data["target_week"],
+            source_day=serializer.data["source_day"],
+            target_day=serializer.data["target_day"],
+            source_pair=serializer.data["source_pair"],
+            target_pair=serializer.data["target_pair"],
+        ).execute()
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -141,9 +143,9 @@ class ScheduleRetrieveOrDestroy(generics.GenericAPIView):
             username=self.request.query_params.get("token")
         ).first()
         instance = self.queryset.filter(
-            group=group.pk,
-            week=kwargs.get("week"),
-            day=kwargs.get("day"),
+            group_id=group.pk,
+            week__name=kwargs.get("week"),
+            day__name__exact=kwargs.get("day"),
             number_pair=kwargs.get("number"),
         ).first()
         return instance
