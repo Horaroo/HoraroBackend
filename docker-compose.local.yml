@@ -8,7 +8,7 @@ services:
         - DEV=true
     restart: unless-stopped
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "python manage.py wait_for_db &&
              python manage.py runserver 0.0.0.0:8000"
     ports:
       - "127.0.0.1:8000:8000"
@@ -25,8 +25,11 @@ services:
     restart: unless-stopped
     volumes:
        - staging_postgres_data:/var/lib/postgresql/data
+       - ./dump:/dump:ro
     env_file:
       - .env
+    ports:
+      - "5432:5432"
 
   redis:
     image: redis:7.0.5-alpine

@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -7,7 +7,9 @@ ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip && apk add build-base && pip3 install -r requirements.txt
+RUN apt-get update && apt-get install -y build-essential libpq-dev
+RUN pip install psycopg2-binary --no-binary psycopg2-binary
+RUN pip install --upgrade pip && pip3 install -r requirements.txt
 
 COPY . .
 

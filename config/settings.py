@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "users.apps.UsersConfig",
     "bots.apps.BotsConfig",
+    "core.apps.CoreConfig",
     "django_filters",
 ]
 SITE_ID = 1

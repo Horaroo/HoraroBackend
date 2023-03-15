@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from api import models as api_models
 from bots import services
 
-
 logging.basicConfig(
     filename="app.log",
     filemode="a",

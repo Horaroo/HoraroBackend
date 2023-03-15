@@ -10,8 +10,6 @@ from djoser import signals, utils
 from djoser.compat import get_user_email
 from djoser.conf import settings
 
-from .serializers import RegisterCustomUserSerializer
-
 User = get_user_model()
 
 

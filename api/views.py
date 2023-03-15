@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -162,23 +163,18 @@ class ScheduleRetrieveOrDestroy(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TelegramUserViewSet(viewsets.ModelViewSet):
+class TelegramUserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = TelegramUsersFilter
     lookup_field = "telegram_id"
     lookup_url_kwarg = "telegram_id"
-
-    @action(methods=["GET"], detail=False)
-    def notifications(self, request):
-        """query param - h (current hour)"""
-        hour = self.request.query_params.get("h")
-        minute = self.request.query_params.get("m")
-        result = services.NotificationGetter(hour=hour, minute=minute).execute()
-        serializer = NotificationSerializer(data=result, many=True)
-        serializer.is_valid()
-        return Response(serializer.data, status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(telegram_id=request.POST.get("telegram_id")):
