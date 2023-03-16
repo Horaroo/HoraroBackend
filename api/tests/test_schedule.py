@@ -99,6 +99,43 @@ def test_schedule_copy_day(logged_client, logged_user):
 
 
 @pytest.mark.django_db
+def test_schedule_copy_pair(logged_client, logged_user):
+    day_tuesday = factories.DayFactory(name="tuesday")
+    day_friday = factories.DayFactory(name="friday")
+    subject_monday = factories.ScheduleFactory(
+        subject="Subject for Monday", group=logged_user
+    )
+    factories.ScheduleFactory(
+        subject="Subject for Tuesday", group=logged_user, day=day_tuesday
+    )
+    subject_friday = factories.ScheduleFactory(
+        subject="Subject for Friday", group=logged_user, day=day_friday, number_pair=2
+    )
+    target_pair = 2
+    response = logged_client.post(
+        "/api/v1/schedule/copy/",
+        data={
+            "source_week": subject_monday.week.name,
+            "target_week": subject_monday.week.name,
+            "source_day": subject_monday.day.name,
+            "target_day": subject_friday.day.name,
+            "source_pair": subject_monday.number_pair,
+            "target_pair": target_pair,
+        },
+    )
+    result = logged_client.get(
+        f"/api/v1/get-pair/{subject_monday.week.name}/{subject_friday.day.name}/{target_pair}/?token={logged_user.username}"
+    )
+
+    assert response.status_code == 201
+
+    assert result.status_code == 200
+    data = result.json()
+
+    assert data["subject"] == subject_monday.subject
+
+
+@pytest.mark.django_db
 def test_schedule_detail_field(logged_user, logged_client):
     schedule = factories.ScheduleFactory(
         teacher="teacher",
