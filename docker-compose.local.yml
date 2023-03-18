@@ -1,5 +1,16 @@
 version: '3'
 
+x-common-variables: &common-variables
+   ALLOWED_HOSTS: "*"
+   DEBUG: True
+   POSTGRES_DB: postgres
+   POSTGRES_HOST: db
+   POSTGRES_NAME: postgres
+   POSTGRES_PASSWORD: postgres
+   POSTGRES_PORT: 5432
+   POSTGRES_USER: postgres
+   SECRET_KEY: django-insecure-b(=r+o15ecqk0yslac@*^@w^5a8#v8$u^^j#9p56slz*!o5gnk
+
 services:
   web:
     build:
@@ -14,8 +25,7 @@ services:
       - "127.0.0.1:8000:8000"
     depends_on:
       - db
-    env_file:
-      - .env
+    environment: *common-variables
     volumes:
       - ./HoraroBackend/media:/app/media/
       - .:/app/
@@ -26,8 +36,7 @@ services:
     volumes:
        - staging_postgres_data:/var/lib/postgresql/data
        - ./dump:/dump:ro
-    env_file:
-      - .env
+    environment: *common-variables
     ports:
       - "5432:5432"
 
