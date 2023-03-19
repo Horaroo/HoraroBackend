@@ -4,7 +4,7 @@ import factory.fuzzy
 from factory import faker
 from factory.django import DjangoModelFactory
 
-from api.models import Day, Event, Schedule, Type, Week
+from api.models import Day, Schedule, Type, Week
 from users.models import CustomUser, TelegramUser
 
 
@@ -29,14 +29,6 @@ class TypeFactory(DjangoModelFactory):
         model = Type
 
     name = "lc."
-
-
-class EventFactory(DjangoModelFactory):
-    class Meta:
-        model = Event
-
-    title = "Event title"
-    description = "Description for event"
 
 
 class DayFactory(DjangoModelFactory):

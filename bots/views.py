@@ -13,18 +13,18 @@ logging.basicConfig(
     level=logging.ERROR,
 )
 
+telegram_service = services.Telegram()
 
-class HoraroAPIView(GenericAPIView):
+
+class BotAPIView(GenericAPIView):
     queryset = api_models.Schedule.objects.all().select_related("group")
-
     schema = None
-    _telegram_service = services.Telegram()
 
     def post(self, request, *args, **kwargs):
         data = self.request.data
         try:
-            self._telegram_service.handle(data)
-        except Exception:
-            logging.exception("Exception occurred")  # write in the 'app.log' file
-            self._telegram_service.send_error_message(data)
+            telegram_service.handle(data)
+        except Exception as error:
+            logging.exception("Exception occurred:", error)  # write in the 'app.log' file
+            telegram_service.send_error_message(data)
         return Response("Ok", status=200)

@@ -1,4 +1,5 @@
 from django.db import models
+from .signals import send_event
 
 
 class EventCategory(models.Model):
@@ -17,3 +18,6 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+models.signals.post_save.connect(send_event, sender=Event)

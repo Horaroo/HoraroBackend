@@ -5,6 +5,7 @@ from django.conf import settings
 import requests
 
 from bots.services import mixins
+from users.models import TelegramUser
 
 from .telegram_dataclasses import *
 
@@ -17,7 +18,7 @@ class Telegram(
         self.lang = lang
 
     def _send(self, data, message):
-        r = requests.get(
+        requests.get(
             settings.API_URL_TELEGRAM + "/sendMessage",
             params={
                 "chat_id": message.chat_id,
@@ -39,3 +40,18 @@ class Telegram(
 
     def send_error_message(self, data):
         pass
+
+    def event_sender(self, instance):
+        telegram_users = TelegramUser.objects.all()
+        try:
+            for tg_user in telegram_users:
+                requests.get(
+                    settings.API_URL_TELEGRAM + "/sendMessage",
+                    params={
+                        "chat_id": tg_user.telegram_id,
+                        "text": f'{instance.title}\n\n{instance.body}'
+                    },
+                )
+        except:  # if bot has been blocked by user
+            pass
+
