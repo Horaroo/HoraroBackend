@@ -61,7 +61,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Event
+        model = ContentSlide
         fields = ["title", "description", "picture", "cover", "is_main", "created_at"]
 
 

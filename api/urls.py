@@ -8,7 +8,7 @@ from .views import *
 router = SimpleRouter()
 
 router.register("schedule", ScheduleViewSet)
-router.register("events", EventDetailOrList)
+router.register("events", ContentSlideDetailOrList)
 router.register("telegram/detail/user", TelegramUserViewSet)
 router.register("auth/detail", UserViewSet)
 
