@@ -18,10 +18,10 @@ def test_create_schedule(logged_user, logged_client):
             "subject": "test",
             "teacher": "teacher",
             "audience": "555 aud.",
-            "week": week.pk,
-            "group": logged_user.pk,
-            "type_pair": type_.pk,
-            "day": day.pk,
+            "week": week.name,
+            "group": logged_user.username,
+            "type_pair": type_.name,
+            "day": day.name,
         },
     )
 

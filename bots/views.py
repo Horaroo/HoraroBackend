@@ -25,6 +25,8 @@ class BotAPIView(GenericAPIView):
         try:
             telegram_service.handle(data)
         except Exception as error:
-            logging.exception("Exception occurred:", error)  # write in the 'app.log' file
+            logging.exception(
+                "Exception occurred:", error
+            )  # write in the 'app.log' file
             telegram_service.send_error_message(data)
         return Response("Ok", status=200)

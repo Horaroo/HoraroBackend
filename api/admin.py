@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Day, ContentSlide, Schedule, Type, Week
+from .models import ContentSlide, Day, Schedule, Type, Week
 
 
 @admin.register(Schedule)

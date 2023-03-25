@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0018_delete_numberweek'),
+        ("api", "0018_delete_numberweek"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Event',
-            new_name='ContentSlide',
+            old_name="Event",
+            new_name="ContentSlide",
         ),
     ]

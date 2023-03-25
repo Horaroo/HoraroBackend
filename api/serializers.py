@@ -7,6 +7,11 @@ from .models import *
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
+    group = serializers.CharField(source="group.username")
+    day = serializers.CharField(source="day.name")
+    week = serializers.CharField(source="week.name")
+    type_pair = serializers.CharField(source="type_pair.name")
+
     class Meta:
         model = Schedule
         fields = (

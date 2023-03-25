@@ -49,9 +49,8 @@ class Telegram(
                     settings.API_URL_TELEGRAM + "/sendMessage",
                     params={
                         "chat_id": tg_user.telegram_id,
-                        "text": f'{instance.title}\n\n{instance.body}'
+                        "text": f"{instance.title}\n\n{instance.body}",
                     },
                 )
         except:  # if bot has been blocked by user
             pass
-
