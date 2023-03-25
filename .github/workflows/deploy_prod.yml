@@ -102,5 +102,5 @@ jobs:
 
                   curl -XPOST \
                   -H 'Content-Type: application/json' \
-                  -d '{ "text": "*successfull back deployed to staging*" }' \
+                  -d '{ "text": "*successfull back deployed to prod*" }' \
                   'https://telepush.dev/api/messages/${{ secrets.TELEPUSH_TOKEN }}'

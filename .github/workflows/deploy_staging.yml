@@ -102,3 +102,8 @@ jobs:
                   docker-compose -f docker-compose.staging.yml pull &&\
                   make staging_up_and_build_one_service service=web &&\
                   make staging_up_and_build_one_service service=worker
+
+                  curl -XPOST \
+                  -H 'Content-Type: application/json' \
+                  -d '{ "text": "*successfull back deployed to staging*" }' \
+                  'https://telepush.dev/api/messages/${{ secrets.TELEPUSH_TOKEN }}'
