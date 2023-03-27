@@ -38,21 +38,24 @@ class ScheduleCreatorOrUpdater:
             )
 
     def _update(self):
-        group = self.data["group"]
+        group = self.data["group"].get("username")
         number = self.data["number_pair"]
-        week = self.data["week"]
-        day = self.data["day"]
-        obj = models.Schedule.objects.filter(
+        week = self.data["week"].get("name")
+        day = self.data["day"].get("name")
+        instance = models.Schedule.objects.filter(
             Q(number_pair=number)
             & Q(week__name=week)
             & Q(group__username=group)
             & Q(day__name=day)
-        )
-
-        if bool(obj):
-            instance = obj.first()
-            for attr, value in self.data.items():
-                setattr(instance, attr, value)
+        ).first()
+        if bool(instance):
+            type_pair = models.Type.objects.get(
+                name=self.data.get("type_pair").get("name")
+            )
+            instance.subject = self.data["subject"]
+            instance.teacher = self.data["teacher"]
+            instance.audience = self.data["audience"]
+            instance.type_pair = type_pair
             instance.save()
         else:
             instance = self._create()
