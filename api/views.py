@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -28,7 +29,10 @@ class ScheduleViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        services.ScheduleCreatorOrUpdater(serializer.validated_data).execute()
+        instance = services.ScheduleCreatorOrUpdater(
+            serializer.validated_data
+        ).execute()
+        serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
@@ -58,22 +62,24 @@ class ScheduleViewSet(
     @action(
         detail=False,
         methods=["post"],
-        url_path=r"copy-week",
+        url_path=r"copy",
         serializer_class=ScheduleCopySerializer,
-        permission_classes=[permissions.AllowAny],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def copy_schedule(self, request):
-        serializer = ScheduleCopySerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username = serializer.data["username"]
-        from_week = serializer.data["from_week"]
-        to_week = serializer.data["to_week"]
-        week = Week.objects.get(pk=to_week)
-        instances = self.queryset.filter(group__username=username, week_id=to_week)
-        if instances:
-            instances.delete()
-        services.copy_week(self.queryset, username, from_week, week)
+        services.Copywriter(
+            queryset=self.queryset,
+            user=request.user,
+            source_week=serializer.data["source_week"],
+            target_week=serializer.data["target_week"],
+            source_day=serializer.data["source_day"],
+            target_day=serializer.data["target_day"],
+            source_pair=serializer.data["source_pair"],
+            target_pair=serializer.data["target_pair"],
+        ).execute()
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -140,9 +146,9 @@ class ScheduleRetrieveOrDestroy(generics.GenericAPIView):
             username=self.request.query_params.get("token")
         ).first()
         instance = self.queryset.filter(
-            group=group.pk,
-            week=kwargs.get("week"),
-            day=kwargs.get("day"),
+            group_id=group.pk,
+            week__name=kwargs.get("week"),
+            day__name__exact=kwargs.get("day"),
             number_pair=kwargs.get("number"),
         ).first()
         return instance
@@ -162,7 +168,12 @@ class ScheduleRetrieveOrDestroy(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TelegramUserViewSet(viewsets.ModelViewSet):
+class TelegramUserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = TelegramUser.objects.all()
     serializer_class = TelegramUserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
@@ -170,24 +181,14 @@ class TelegramUserViewSet(viewsets.ModelViewSet):
     lookup_field = "telegram_id"
     lookup_url_kwarg = "telegram_id"
 
-    @action(methods=["GET"], detail=False)
-    def notifications(self, request):
-        """query param - h (current hour)"""
-        hour = self.request.query_params.get("h")
-        minute = self.request.query_params.get("m")
-        result = services.NotificationGetter(hour=hour, minute=minute).execute()
-        serializer = NotificationSerializer(data=result, many=True)
-        serializer.is_valid()
-        return Response(serializer.data, status.HTTP_200_OK)
-
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(telegram_id=request.POST.get("telegram_id")):
             return Response({"Message": "Already created"}, status=status.HTTP_200_OK)
         return super().create(request, *args, **kwargs)
 
 
-class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.all().order_by("-id")
+class ContentSlideDetailOrList(viewsets.ReadOnlyModelViewSet):
+    queryset = ContentSlide.objects.all().order_by("-id")
     serializer_class = EventSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EventFilter

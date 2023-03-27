@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Day, Event, Schedule, Type, Week
+from .models import ContentSlide, Day, Schedule, Type, Week
 
 
 @admin.register(Schedule)
@@ -24,6 +24,6 @@ class AdminType(admin.ModelAdmin):
     pass
 
 
-@admin.register(Event)
+@admin.register(ContentSlide)
 class AdminEvent(admin.ModelAdmin):
     list_display = ["title", "created_at"]

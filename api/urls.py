@@ -8,7 +8,7 @@ from .views import *
 router = SimpleRouter()
 
 router.register("schedule", ScheduleViewSet)
-router.register("events", EventDetailOrList)
+router.register("events", ContentSlideDetailOrList)
 router.register("telegram/detail/user", TelegramUserViewSet)
 router.register("auth/detail", UserViewSet)
 
@@ -20,7 +20,7 @@ urlpatterns = [
     path(r"list/group/", GroupApiView.as_view()),
     path("type-pair/", TypeListView.as_view()),
     path(
-        "get-pair/<int:week>/<int:day>/<int:number>/",
+        "get-pair/<int:week>/<str:day>/<int:number>/",
         ScheduleRetrieveOrDestroy.as_view(),
     ),
 ]

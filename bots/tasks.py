@@ -1,6 +1,5 @@
-from datetime import date, datetime
+from datetime import datetime
 from zoneinfo import ZoneInfo
-
 
 from django.conf import settings
 

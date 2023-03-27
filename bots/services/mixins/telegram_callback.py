@@ -36,7 +36,7 @@ class TelegramCallbackSettings(BaseMixin):
                 [
                     {
                         "text": "Обратная связь",
-                        "url": "tg://user?id=5710085464",
+                        "url": "tg://user?id=6201041495",
                         "callback_data": "---",
                     }
                 ],
@@ -468,9 +468,7 @@ class TelegramCallbackSettings(BaseMixin):
                 if s.day.name != first_day:
                     first_day = s.day.name
                     result += f"\n{first_day}\n"
-                result += (
-                    f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience}\n"
-                )
+                result += f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience}\n"
             return result
         return "Нет данных :("
 

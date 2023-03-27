@@ -41,7 +41,7 @@ class Schedule(models.Model):
         return f"{self.number_pair}: {self.subject} - {self.group.group}"
 
 
-class Event(models.Model):
+class ContentSlide(models.Model):
     title = models.TextField()
     description = models.TextField()
     image = models.ImageField(blank=True)
