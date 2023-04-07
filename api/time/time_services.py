@@ -30,13 +30,15 @@ class TimeServices:
                 week_day = WEEK_DAYS_EN[week_day_num]
             else:
                 week_day = WEEK_DAYS_RU[week_day_num]
+            week_day_rus = WEEK_DAYS_RU[week_day_num]
         else:
             if lang.lower() == "en":
                 week_day = WEEK_DAYS_TOMORROW_EN[week_day_num]
             else:
                 week_day = WEEK_DAYS_TOMORROW_RU[week_day_num]
+            week_day_rus = WEEK_DAYS_TOMORROW_RU[week_day_num]
 
-        return WeekDay(num=week_day_num, name=week_day)
+        return WeekDay(num=week_day_num, name=week_day, rus_name=week_day_rus)
 
     def get_current_time(self, tz=RU_MSC_TZ, second=False):
         if second:

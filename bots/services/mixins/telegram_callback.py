@@ -422,7 +422,7 @@ class TelegramCallbackSettings(BaseMixin):
             week__name__startswith=week,
             day__name__iexact=day.name,
         ).order_by("number_pair")
-        result = f"{day.name.title()}\n\n"
+        result = f"{day.rus_name.title()}\n\n"
         for inst in instances:
             result += (
                 f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.audience}\n"
@@ -439,7 +439,7 @@ class TelegramCallbackSettings(BaseMixin):
         if not is_today and day.num == 6:
             week = 0 if week + 1 == 4 else week + 1
         if not is_today:
-            day = self._time_service.get_week_day(is_today=False)
+            day = self._time_service.get_week_day(is_today=False, lang="en")
 
         return self._get_data_for_today_and_tomorrow_paris(
             callback_data, day, str(week)
