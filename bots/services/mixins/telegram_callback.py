@@ -390,9 +390,10 @@ class TelegramCallbackSettings(BaseMixin):
                 return self._get_about_token_data(callback_data, favorites_token=True)
             return self._get_about_token_data(callback_data)
 
-    def _get_data_for_buttons_of_menu(self, data, callback_data):
+    def _get_data_for_buttons_of_menu(self, data, callback_data, weeks=False):
         token = callback_data.call_data.split(":")[-1]
-        return ButtonsWithText(
+        data += f"\n\nПоследнее обновление: {self._time_service.get_current_time(second=True)}"
+        buttons = ButtonsWithText(
             text=data,
             buttons=[
                 [
@@ -403,6 +404,13 @@ class TelegramCallbackSettings(BaseMixin):
                 ]
             ],
         )
+        if not weeks:
+            buttons.buttons.insert(0, [{
+                "text": "Обновить 🔄",
+                "callback_data": callback_data.call_data
+            }])
+
+        return buttons
 
     def _get_number_week(self):
         return f"Номер недели - {self._time_service.get_week_number() + 1}"

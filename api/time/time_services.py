@@ -38,7 +38,9 @@ class TimeServices:
 
         return WeekDay(num=week_day_num, name=week_day)
 
-    def get_current_time(self, tz=RU_MSC_TZ) -> Time:
+    def get_current_time(self, tz=RU_MSC_TZ, second=False):
+        if second:
+            return str(datetime.now(tz=tz).time())[:8]
         cur_time = Time(
             hour=datetime.now(tz=tz).hour, minute=datetime.now(tz=tz).minute
         )
