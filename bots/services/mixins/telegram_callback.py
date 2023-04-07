@@ -430,7 +430,7 @@ class TelegramCallbackSettings(BaseMixin):
         return result
 
     def _get_pairs(self, callback_data, is_today=True):
-        day = self._time_service.get_week_day()
+        day = self._time_service.get_week_day(lang="en")
         week = self._time_service.get_week_number()
         if is_today and day.num == 6:
             return "Сегодня выходной :)"
