@@ -11,6 +11,7 @@ from api.time.time_services import TimeServices
 from users import models
 
 from ..telegram_dataclasses import ButtonsWithText
+from ..constants import DAYS_RU
 from .common import BaseMixin
 
 
@@ -405,10 +406,9 @@ class TelegramCallbackSettings(BaseMixin):
             ],
         )
         if not weeks:
-            buttons.buttons.insert(0, [{
-                "text": "Обновить 🔄",
-                "callback_data": callback_data.call_data
-            }])
+            buttons.buttons.insert(
+                0, [{"text": "Обновить 🔄", "callback_data": callback_data.call_data}]
+            )
 
         return buttons
 
@@ -468,13 +468,13 @@ class TelegramCallbackSettings(BaseMixin):
         week = str(self._time_service.get_week_number())
         instances = api_models.Schedule.objects.filter(
             group__username=token, week__name__startswith=week
-        ).order_by(*["day_id", "number_pair"])
+        ).order_by("day_id", "number_pair")
         if len(instances):
             first_day = instances[0].day.name
-            result = f"{first_day}\n"
+            result = f"{DAYS_RU[first_day]}\n"
             for s in instances:
-                if s.day.name != first_day:
-                    first_day = s.day.name
+                if DAYS_RU[s.day.name] != first_day:
+                    first_day = DAYS_RU[s.day.name]
                     result += f"\n{first_day}\n"
                 result += f"{s.number_pair}) {s.subject} {s.type_pair.name} {s.teacher} {s.audience}\n"
             return result
