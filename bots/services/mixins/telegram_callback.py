@@ -405,10 +405,9 @@ class TelegramCallbackSettings(BaseMixin):
             ],
         )
         if not weeks:
-            buttons.buttons.insert(0, [{
-                "text": "Обновить 🔄",
-                "callback_data": callback_data.call_data
-            }])
+            buttons.buttons.insert(
+                0, [{"text": "Обновить 🔄", "callback_data": callback_data.call_data}]
+            )
 
         return buttons
 

@@ -179,7 +179,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -250,6 +249,9 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 
 if DEBUG:
     BOT_TOKEN = os.getenv("TOKEN_BOT_STAGING")
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
 else:
     BOT_TOKEN = os.getenv("TOKEN_BOT_PROD")
 API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
