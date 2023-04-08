@@ -62,7 +62,7 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_favorites_data(self, callback_data, call_data):
         tokens = models.TelegramUserToken.objects.filter(
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         inline_buttons = [
             [],  # 2 rows button
@@ -92,7 +92,7 @@ class TelegramCallbackSettings(BaseMixin):
         token = models.CustomUser.objects.filter(username=token).first()
         is_added_token = models.TelegramUserToken.objects.filter(
             token__username=token.username,
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         total_added = models.TelegramUserToken.objects.filter(
             token__username=token
@@ -146,7 +146,7 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_tokens_for_notification_data(self, callback_data):
         added_tokens = models.TelegramUserToken.objects.filter(
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         if not added_tokens:
             return ButtonsWithText(
@@ -239,7 +239,7 @@ class TelegramCallbackSettings(BaseMixin):
         data = callback_data.call_data.split()[2:]
         hour, minute = data[0].split(":")[1].split("-")
         token = data[1].split(":")[-1]
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         user.token = models.CustomUser.objects.get(username=token)
         user.notification_time = datetime.time(
             hour=int(hour), minute=int(minute), second=0
@@ -257,7 +257,7 @@ class TelegramCallbackSettings(BaseMixin):
         )
 
     def _get_notification_data(self, callback_data):
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         if user.action == "NONE":
             return ButtonsWithText(
                 text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_UNPIN_RU"],
@@ -282,7 +282,7 @@ class TelegramCallbackSettings(BaseMixin):
         )
 
     def _get_confirm_delete_notification_data(self, callback_data):
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         user.action = "NONE"
         user.token = None
         user.notification_time = None
@@ -310,7 +310,7 @@ class TelegramCallbackSettings(BaseMixin):
         requests.get(
             settings.API_URL_TELEGRAM + "/editMessageText",
             params={
-                "chat_id": callback_data.user_id,
+                "chat_id": callback_data.chat_id,
                 "text": data.text,
                 "message_id": callback_data.message_id,
                 "reply_markup": json.dumps({"inline_keyboard": data.buttons}),
@@ -322,13 +322,13 @@ class TelegramCallbackSettings(BaseMixin):
         token = models.CustomUser.objects.filter(username=token).first()
         models.TelegramUserToken.objects.filter(
             token__username=token.username,
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         ).delete()
 
     def _add_token(self, callback_data):
         token = callback_data.call_data.split(":")[1]
         token = models.CustomUser.objects.get(username=token)
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         models.TelegramUserToken.objects.create(token=token, telegram_user=user)
 
     @staticmethod
