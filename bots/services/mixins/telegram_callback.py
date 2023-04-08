@@ -340,56 +340,10 @@ class TelegramCallbackSettings(BaseMixin):
             return False
 
     def _handle_callback(self, callback_data):
-        """The order of conditions is important"""
-
-        if callback_data.call_data.startswith("M"):
+        data = callback_data.call_data
+        if data.startswith("M"):  # M - Menu
             return self._handle_callback_for_menu(callback_data)
-        if callback_data.call_data == "menu":
-            return self.get_settings()
-        elif callback_data.call_data == "help":
-            return self._get_help_data()
-        elif callback_data.call_data in ("tokens", "menu-tokens"):
-            return self._get_tokens_data()
-        elif callback_data.call_data == "quickstart":
-            return self._get_quickstart_data()
-
-        elif callback_data.call_data == "add":
-            return self._get_add_data()
-
-        elif callback_data.call_data in ("favorites", "menu-favorites"):
-            return self._get_favorites_data(callback_data, call_data="about-token-self")
-
-        elif callback_data.call_data in ("pin", "menu-pin"):  # Choice group
-            return self._get_tokens_for_notification_data(callback_data)
-        elif callback_data.call_data.startswith("menu-time"):  # Choice group
-            return self._get_data_time_menu(callback_data)
-
-        elif callback_data.call_data.startswith("confirm-not"):  # Confirm notification
-            return self._get_confirm_notification_data(callback_data)
-        elif re.search("(minus|plus)", callback_data.call_data):  # Choice time
-            return self._change_time_for_notification_data(callback_data)
-        elif "pin-time" in callback_data.call_data:  # Choice action
-            return self._get_action_for_notification_data(callback_data)
-        elif "pin-token" in callback_data.call_data:  # Choice token
-            return self._get_time_for_notification_data(callback_data)
-
-        elif callback_data.call_data == "unpin":
-            return self._get_notification_data(callback_data)
-        elif callback_data.call_data == "confirm-delete":
-            return self._get_confirm_delete_notification_data(callback_data)
-
-        elif callback_data.call_data.startswith("about-token"):  # TODO: done
-            return self._get_about_token_data(callback_data)
-
-        elif re.match(r"(del-token|add-token)", callback_data.call_data):  # TODO: done
-            if callback_data.call_data.startswith("del"):
-                self._delete_token(callback_data)
-            else:
-                self._add_token(callback_data)
-
-            if "self" in callback_data.call_data:
-                return self._get_about_token_data(callback_data, favorites_token=True)
-            return self._get_about_token_data(callback_data)
+        return self._handle_callback_for_setting(callback_data)
 
     def _get_data_for_buttons_of_menu(self, data, callback_data, weeks=False):
         token = callback_data.call_data.split(":")[-1]
@@ -480,25 +434,77 @@ class TelegramCallbackSettings(BaseMixin):
             return result
         return "Нет данных :("
 
+    def _handle_callback_for_setting(self, callback_data):
+        """The order of conditions are important"""
+
+        data = callback_data.call_data
+        if data == "menu":
+            return self.get_settings()
+        elif data == "help":
+            return self._get_help_data()
+        elif data in ("tokens", "menu-tokens"):
+            return self._get_tokens_data()
+        elif data == "quickstart":
+            return self._get_quickstart_data()
+
+        elif data == "add":
+            return self._get_add_data()
+
+        elif data in ("favorites", "menu-favorites"):
+            return self._get_favorites_data(callback_data, call_data="about-token-self")
+
+        elif data in ("pin", "menu-pin"):  # Choice group
+            return self._get_tokens_for_notification_data(callback_data)
+        elif data.startswith("menu-time"):  # Choice group
+            return self._get_data_time_menu(callback_data)
+
+        elif data.startswith("confirm-not"):  # Confirm notification
+            return self._get_confirm_notification_data(callback_data)
+        elif re.search("(minus|plus)", data):  # Choice time
+            return self._change_time_for_notification_data(callback_data)
+        elif "pin-time" in data:  # Choice action
+            return self._get_action_for_notification_data(callback_data)
+        elif "pin-token" in data:  # Choice token
+            return self._get_time_for_notification_data(callback_data)
+
+        elif data == "unpin":
+            return self._get_notification_data(callback_data)
+        elif data == "confirm-delete":
+            return self._get_confirm_delete_notification_data(callback_data)
+
+        elif data.startswith("about-token"):
+            return self._get_about_token_data(callback_data)
+
+        elif re.match(r"(del-token|add-token)", data):
+            if callback_data.call_data.startswith("del"):
+                self._delete_token(callback_data)
+            else:
+                self._add_token(callback_data)
+
+            if "self" in data:
+                return self._get_about_token_data(callback_data, favorites_token=True)
+            return self._get_about_token_data(callback_data)
+
     def _handle_callback_for_menu(self, callback_data):
-        """The order of conditions is important"""
+        """The order of conditions are important"""
 
         data = None
-        if callback_data.call_data == "MainMenu":
+        call_data = callback_data.call_data
+        if call_data == "MainMenu":
             return self.get_menu(callback_data)
-        if callback_data.call_data.startswith("MainMenu:"):
+        if call_data.startswith("MainMenu:"):
             return self.get_menu_buttons(callback_data)
-        elif callback_data.call_data.startswith("MB-number-week"):
+        elif call_data.startswith("MB-number-week"):
             data = self._get_number_week()
-        elif callback_data.call_data.startswith("MB-pairs-today"):
+        elif call_data.startswith("MB-pairs-today"):
             data = self._get_pairs(callback_data)
-        elif callback_data.call_data.startswith("MB-pairs-tomorrow"):
+        elif call_data.startswith("MB-pairs-tomorrow"):
             data = self._get_pairs(callback_data, is_today=False)
-        elif callback_data.call_data.startswith("MB-teachers"):
+        elif call_data.startswith("MB-teachers"):
             data = self._get_teachers(callback_data)
-        elif callback_data.call_data.startswith("MB-subjects"):
+        elif call_data.startswith("MB-subjects"):
             data = self._get_subjects(callback_data)
-        elif callback_data.call_data.startswith("MB-schedule"):
+        elif call_data.startswith("MB-schedule"):
             data = self._get_schedule(callback_data)
         if data is not None:
             return self._get_data_for_buttons_of_menu(data, callback_data)
