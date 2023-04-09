@@ -7,7 +7,7 @@ import requests
 from celery import shared_task
 
 from api.models import Schedule
-from api.time.configs.constants import WEEK_DAYS_RU
+from api.time.configs.constants import WEEK_DAYS_EN
 from api.time.time_services import TimeServices
 from users.models import TelegramUser
 
@@ -36,7 +36,6 @@ def send_notification():
 
 
 def _get_data(qs_users) -> list[dict]:
-
     notification_data = []
     for user in qs_users:
         week_day, week_number = _get_week_data(user.action)
@@ -47,9 +46,10 @@ def _get_data(qs_users) -> list[dict]:
             "data": Schedule.objects.filter(
                 group=user.token.pk,
                 week__name__startswith=week_number,
-                day__name__icontains=week_day,
+                day__name__iexact=week_day,
             ).order_by("number_pair"),
         }
+        print("temp:", temp)
         notification_data.append(temp)
 
     result = []
@@ -81,4 +81,4 @@ def _get_week_data(action):
         week_day_num = (week_day_num + 1) % 7
         if week_day_num == 0:
             week_number = (week_number + 1) % 4
-    return WEEK_DAYS_RU[week_day_num], str(week_number)
+    return WEEK_DAYS_EN[week_day_num], str(week_number + 1)
