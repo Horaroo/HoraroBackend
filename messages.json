@@ -50,7 +50,7 @@
   "TITLE_MENU_RU": "Панель токенов.",
   "TITLE_MENU_EN": "",
 
-  "TITLE_NOTIFICATION_RU": "\uD83D\uDD14 <b>Уведомление.</b>\nТокен - {token}\n\n",
+  "TITLE_NOTIFICATION_RU": "\uD83D\uDD14 <b>Уведомление.</b>\nТокен - {token}\n",
   "TITLE_NOTIFICATION_EN": ""
 
 }

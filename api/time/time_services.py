@@ -42,7 +42,7 @@ class TimeServices:
 
     def get_current_time(self, tz=RU_MSC_TZ, second=False):
         if second:
-            return str(datetime.now(tz=tz).time())[:8]
+            return str(datetime.now(tz=tz))[:19]
         cur_time = Time(
             hour=datetime.now(tz=tz).hour, minute=datetime.now(tz=tz).minute
         )
