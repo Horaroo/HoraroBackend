@@ -27,12 +27,14 @@ class TelegramMessages:
             return False
 
     def send_message(self, message):
-        text = re.match(r"(@abulaysovBot|@horaroStagingBot|@horaroBot) .+", message.text)
-        if message.type_chat == "group" and not text:
+        text = re.match(
+            r"(@abulaysovBot|@horaroStagingBot|@horaroBot) .+", message.text
+        )
+
+        if message.type_chat in ("group", "supergroup") and not text:
             return
         if text:
-            message.text = message.text[message.text.find(' ') + 1:]
-        print(message.text)
+            message.text = message.text[message.text.find(" ") + 1 :]
         token = models.CustomUser.objects.filter(username=message.text).first()
         if token:
             exists = models.TelegramUserToken.objects.filter(

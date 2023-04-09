@@ -1,10 +1,12 @@
 import json
+import re
 
 from django.conf import settings
 
 import requests
 
 from users import models
+
 from ..telegram_dataclasses import ButtonsWithText
 from .common import BaseMixin
 
@@ -42,6 +44,11 @@ class TelegramCommands(BaseMixin):
         )
 
     def send_command(self, command_user):
+        if "@" in command_user.command:
+            command_user.command = re.search(
+                r"/(settings|menu|start)(?=@(horaroBot|abulaysovBot|horaroStagingBot))",
+                command_user.command,
+            ).group()
         if command_user.command == "/settings":
             self._send_command(command_user, self.get_settings())
         elif command_user.command == "/menu":

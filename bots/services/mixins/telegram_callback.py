@@ -10,8 +10,8 @@ from api import models as api_models
 from api.time.time_services import TimeServices
 from users import models
 
-from ..telegram_dataclasses import ButtonsWithText
 from ..constants import DAYS_RU
+from ..telegram_dataclasses import ButtonsWithText
 from .common import BaseMixin
 
 
@@ -265,10 +265,13 @@ class TelegramCallbackSettings(BaseMixin):
                     [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
                 ],
             )
-
+        action = "Занятия на сегодня"
+        if user.action == "PTW":
+            action = "Занятия на завтра"
         return ButtonsWithText(
             text=settings.MESSAGES["ABOUT_NOTIFICATION_RU"].format(
-                token=user.token.username, date=f"{str(user.notification_time)[:5]}"
+                token=user.token.username,
+                date=f"{str(user.notification_time)[:5]}\n{action}",
             ),
             buttons=[
                 [
@@ -369,34 +372,33 @@ class TelegramCallbackSettings(BaseMixin):
     def _get_number_week(self):
         return f"Номер недели - {self._time_service.get_week_number() + 1}"
 
-    def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week):
+    def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week, action):
         token = callback_data.call_data.split(":")[-1]
         instances = api_models.Schedule.objects.filter(
             group__username=token,
             week__name__startswith=week,
             day__name__iexact=day.name,
         ).order_by("number_pair")
-        result = f"{day.rus_name.title()}\n\n"
+        result = f"Занятия на {action} [{day.rus_name.title()}]: {week} - Неделя\n\n"
         for inst in instances:
-            result += (
-                f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.audience}\n"
-            )
+            result += f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.type_pair} {inst.audience}\n"
         return result
 
     def _get_pairs(self, callback_data, is_today=True):
         day = self._time_service.get_week_day(lang="en")
-        week = self._time_service.get_week_number()
+        week = self._time_service.get_week_number() + 1
+        action = "сегодня"
         if is_today and day.num == 6:
-            return "Сегодня выходной :)"
+            return f"Сегодня выходной :) {week} - Неделя"
         if not is_today and day.num == 5:
-            return "Завтра выходной :)"
+            return f"Завтра выходной :) {week} - Неделя"
         if not is_today and day.num == 6:
-            week = 0 if week + 1 == 4 else week + 1
+            week = 1 if week + 1 == 5 else week + 1
         if not is_today:
             day = self._time_service.get_week_day(is_today=False, lang="en")
-
+            action = "завтра"
         return self._get_data_for_today_and_tomorrow_paris(
-            callback_data, day, str(week)
+            callback_data, day, str(week), action
         )
 
     def _get_teachers(self, callback_data):
