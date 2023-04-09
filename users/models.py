@@ -46,6 +46,7 @@ class TelegramUser(models.Model):
         null=True,
         help_text="Token of notifications",
     )
+    type_chat = models.CharField(max_length=255, blank=True, null=True)
     action = models.CharField(max_length=4, choices=ACTION_CHOICES, default="NONE")
     notification_time = models.TimeField(null=True, blank=True)
 
