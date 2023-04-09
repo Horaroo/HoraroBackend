@@ -32,7 +32,7 @@ class BaseMixin:
     @staticmethod
     def get_menu(message):
         tokens = models.TelegramUserToken.objects.filter(
-            telegram_user__telegram_id=message.user_id
+            telegram_user__telegram_id=message.chat_id
         )
         if not tokens:
             return ButtonsWithText(

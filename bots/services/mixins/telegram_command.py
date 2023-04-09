@@ -4,6 +4,7 @@ from django.conf import settings
 
 import requests
 
+from users import models
 from ..telegram_dataclasses import ButtonsWithText
 from .common import BaseMixin
 
@@ -28,6 +29,10 @@ class TelegramCommands(BaseMixin):
             return False
 
     def _send_start(self, message):
+        try:
+            models.TelegramUser.objects.get(telegram_id=message.chat_id)
+        except:
+            models.TelegramUser.objects.create(telegram_id=message.chat_id)
         requests.get(
             settings.API_URL_TELEGRAM + "/sendMessage",
             params={
