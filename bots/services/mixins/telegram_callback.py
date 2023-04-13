@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+from typing import Union
 
 from django.conf import settings
 
@@ -18,44 +19,45 @@ from .common import BaseMixin
 class TelegramCallbackSettings(BaseMixin):
     _time_service = TimeServices()
 
+    @staticmethod
+    def _get_button(
+        text: Union[str, list], data: Union[str, list], multiple: bool = False
+    ) -> list:
+        if multiple:
+            return [
+                [{"text": text, "callback_data": call_data}]
+                for text, call_data in zip(text, data)
+            ]
+        return [[{"text": text, "callback_data": data}]]
+
     def _get_quickstart_data(self):
         return ButtonsWithText(
             text=settings.MESSAGES["QUICKSTART_RU"],
-            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
+            buttons=self._get_button(text=settings.MESSAGES["MENU_RU"], data="menu"),
         )
 
     def _get_add_data(self):
         return ButtonsWithText(
             text=settings.MESSAGES["ABOUT_ADD_TOKENS_RU"],
-            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
+            buttons=self._get_button(text=settings.MESSAGES["MENU_RU"], data="menu"),
         )
 
     def _get_help_data(self):
-        return ButtonsWithText(
-            text=settings.MESSAGES["HELP_RU"],
-            buttons=[
-                [
-                    {
-                        "text": "Обратная связь",
-                        "url": "tg://user?id=6201041495",
-                        "callback_data": "---",
-                    }
-                ],
-                [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
-            ],
+        buttons = self._get_button(
+            text=["Обратная связь", settings.MESSAGES["MENU_RU"]],
+            data=["---", "menu"],
+            multiple=True,
         )
+        buttons[0]["url"] = "tg://user?id=6201041495"
+        return ButtonsWithText(text=settings.MESSAGES["HELP_RU"], buttons=buttons)
 
     def _get_tokens_data(self):
         token = models.CustomUser.objects.filter(verified=True).first()
-        inline_buttons = [
-            [
-                {
-                    "text": f"{token.username}",
-                    "callback_data": f"about-token:{token.username}",
-                }
-            ],
-            [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
-        ]
+        inline_buttons = self._get_button(
+            text=[token.username, settings.MESSAGES["MENU_RU"]],
+            data=[f"about-token:{token.username}", "menu"],
+            multiple=True,
+        )
         return ButtonsWithText(
             text=settings.MESSAGES["ABOUT_TOKEN_RU"], buttons=inline_buttons
         )
@@ -85,6 +87,12 @@ class TelegramCallbackSettings(BaseMixin):
             text=settings.MESSAGES["MENU_FAVORITES_RU"], buttons=inline_buttons
         )
 
+    def _get_added_or_delete_button(self, action, token, text, is_favorites=False):
+        call_data = f"{action}-token:{token}"
+        if is_favorites:
+            call_data = f"{action}-token-self:{token.username}"
+        return self._get_button(text=text, data=call_data)
+
     def _get_about_token_data(self, callback_data, favorites_token=False):
         about_token, token = callback_data.call_data.split(":")
         if "self" in about_token:  # TODO: self token
@@ -101,43 +109,19 @@ class TelegramCallbackSettings(BaseMixin):
             text=f"Информация о токене:\n{'-' * 24}\n\nТокен - {token.username}\nГруппа - {token.group}\nДобавлено - {total_added}",
             buttons=[],
         )
+        data = "menu-tokens"
         if favorites_token:
-            menu = [
-                {
-                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
-                    "callback_data": "menu-favorites",
-                }
-            ]
-        else:
-            menu = [
-                {
-                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
-                    "callback_data": "menu-tokens",
-                }
-            ]
+            data = "menu-favorites"
+        menu = self._get_button(text=settings.MESSAGES["MENU_TOKENS_RU"], data=data)
 
         if is_added_token:
-            if favorites_token:
-                call_data = f"del-token-self:{token.username}"
-            else:
-                call_data = f"del-token:{token.username}"
-            button_added_or_delete = [
-                {
-                    "text": "Удалить токен",
-                    "callback_data": call_data,
-                }
-            ]
+            button_added_or_delete = self._get_added_or_delete_button(
+                "del", token.username, "Удалить токен", favorites_token
+            )
         else:
-            if favorites_token:
-                call_data = f"add-token-self:{token.username}"
-            else:
-                call_data = f"add-token:{token.username}"
-            button_added_or_delete = [
-                {
-                    "text": "Добавить токен",
-                    "callback_data": call_data,
-                }
-            ]
+            button_added_or_delete = self._get_added_or_delete_button(
+                "add", token.username, "Добавить токен", favorites_token
+            )
 
         result.buttons.append(menu)
         result.buttons.insert(0, button_added_or_delete)
@@ -151,9 +135,9 @@ class TelegramCallbackSettings(BaseMixin):
         if not added_tokens:
             return ButtonsWithText(
                 text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_PIN_RU"],
-                buttons=[
-                    [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
-                ],
+                buttons=self._get_button(
+                    text=settings.MESSAGES["MENU_RU"], data="menu"
+                ),
             )
         data = self._get_favorites_data(callback_data, call_data="pin-token")
         data.text = "Токены для уведомления:"
@@ -213,26 +197,20 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_action_for_notification_data(self, callback_data):
         data = callback_data
-        buttons = [
-            [
-                {
-                    "text": "Занятия на сегодня",
-                    "callback_data": f"confirm-not pin-action:pty {data.call_data}",
-                }
-            ],  # 2 rows button
-            [
-                {
-                    "text": "Занятия на завтра",
-                    "callback_data": f"confirm-not pin-action:ptw {data.call_data}",
-                }
+        buttons = self._get_button(
+            text=[
+                "Занятия на сегодня",
+                "Занятия на завтра",
+                settings.MESSAGES["MENU_TOKENS_RU"],
             ],
-            [
-                {
-                    "text": settings.MESSAGES["MENU_TOKENS_RU"],
-                    "callback_data": f"menu-time {callback_data.call_data}",
-                }
+            data=[
+                f"confirm-not pin-action:pty {data.call_data}",
+                f"confirm-not pin-action:ptw {data.call_data}",
+                f"menu-time {callback_data.call_data}",
             ],
-        ]
+            multiple=True,
+        )
+
         return ButtonsWithText(text="Выберите время:", buttons=buttons)
 
     def _get_confirm_notification_data(self, callback_data):
@@ -253,7 +231,7 @@ class TelegramCallbackSettings(BaseMixin):
             text=settings.MESSAGES["SUCCESS_ADDED_NOTIFICATION_RU"].format(
                 token=token, date=f"{hour}:{minute}"
             ),
-            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
+            buttons=self._get_button(text=settings.MESSAGES["MENU_RU"], data="menu"),
         )
 
     def _get_notification_data(self, callback_data):
@@ -261,9 +239,9 @@ class TelegramCallbackSettings(BaseMixin):
         if user.action == "NONE":
             return ButtonsWithText(
                 text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_UNPIN_RU"],
-                buttons=[
-                    [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
-                ],
+                buttons=self._get_button(
+                    text=settings.MESSAGES["MENU_RU"], data="menu"
+                ),
             )
         action = "Занятия на сегодня"
         if user.action == "PTW":
@@ -273,15 +251,14 @@ class TelegramCallbackSettings(BaseMixin):
                 token=user.token.username,
                 date=f"{str(user.notification_time)[:5]}\n{action}",
             ),
-            buttons=[
-                [
-                    {
-                        "text": settings.MESSAGES["CONFIRM_DELETE_NOTIFICATION_RU"],
-                        "callback_data": "confirm-delete",
-                    }
+            buttons=self._get_button(
+                text=[
+                    settings.MESSAGES["CONFIRM_DELETE_NOTIFICATION_RU"],
+                    settings.MESSAGES["MENU_RU"],
                 ],
-                [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}],
-            ],
+                data=["confirm-delete", "menu"],
+                multiple=True,
+            ),
         )
 
     def _get_confirm_delete_notification_data(self, callback_data):
@@ -292,7 +269,7 @@ class TelegramCallbackSettings(BaseMixin):
         user.save(update_fields=["action", "token", "notification_time"])
         return ButtonsWithText(
             text=settings.MESSAGES["SUCCESS_DELETE_NOTIFICATION_RU"],
-            buttons=[[{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]],
+            buttons=self._get_button(text=settings.MESSAGES["MENU_RU"], data="menu"),
         )
 
     def _get_data_time_menu(self, callback_data):
@@ -353,14 +330,9 @@ class TelegramCallbackSettings(BaseMixin):
         data += f"\n\nПоследнее обновление: {self._time_service.get_current_time(second=True)}"
         buttons = ButtonsWithText(
             text=data,
-            buttons=[
-                [
-                    {
-                        "text": settings.MESSAGES["MENU_TOKENS_RU"],
-                        "callback_data": f"MainMenu:{token}",
-                    }
-                ]
-            ],
+            buttons=self._get_button(
+                text=settings.MESSAGES["MENU_TOKENS_RU"], data=f"MainMenu:{token}"
+            ),
         )
         if not weeks:
             buttons.buttons.insert(
