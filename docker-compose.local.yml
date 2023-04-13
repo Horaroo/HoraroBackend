@@ -2,7 +2,7 @@ version: '3'
 
 x-common-variables: &common-variables
    ALLOWED_HOSTS: "*"
-   DEBUG: True
+   DEBUG: "True"
    POSTGRES_DB: postgres
    POSTGRES_HOST: db
    POSTGRES_NAME: postgres
