@@ -1,4 +1,6 @@
 import dataclasses
+import json
+from typing import Any
 
 
 @dataclasses.dataclass
@@ -82,3 +84,18 @@ class MessageWithButton:
 class ButtonsWithText:
     text: str
     buttons: list[list[dict[str, str]]]
+
+
+@dataclasses.dataclass
+class ResponseTelegram:
+    text: str = None
+    method: str = None
+    chat_id: str = None
+    message_id: str = None
+    reply_markup: list = None
+
+
+@dataclasses.dataclass
+class ResponseDecorator:
+    url: str
+    params: dict
