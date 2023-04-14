@@ -16,9 +16,7 @@ from .filters import *
 from .serializers import *
 
 
-class ScheduleViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class ScheduleViewSet(viewsets.GenericViewSet):
     queryset = Schedule.objects.all().select_related("group")
     serializer_class = ScheduleSerializer
     permission_classes = (permissions.IsAuthenticated,)
