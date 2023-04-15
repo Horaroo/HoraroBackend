@@ -1,19 +1,20 @@
 import datetime
-import json
 import re
 from typing import Union
 
 from django.conf import settings
-
-import requests
 
 from api import models as api_models
 from api.time.time_services import TimeServices
 from users import models
 
 from ..constants import DAYS_RU
-from ..telegram_dataclasses import ButtonsWithText, ResponseTelegram, ResponseDecorator
 from ..decorators import response_wrapper
+from ..telegram_dataclasses import (
+    ButtonsWithText,
+    ResponseDecorator,
+    ResponseTelegram,
+)
 from .common import BaseMixin
 
 
@@ -29,7 +30,7 @@ class TelegramCallbackSettings(BaseMixin):
             text=data.text,
             message_id=callback_data.message_id,
             reply_markup=data.buttons,
-            method="editMessageText"
+            method="editMessageText",
         )
 
     @staticmethod

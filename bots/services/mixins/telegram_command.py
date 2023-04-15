@@ -5,7 +5,7 @@ from django.conf import settings
 from users import models
 
 from ..decorators import response_wrapper
-from ..telegram_dataclasses import ButtonsWithText, ResponseTelegram, ResponseDecorator
+from ..telegram_dataclasses import ResponseTelegram
 from .common import BaseMixin
 
 

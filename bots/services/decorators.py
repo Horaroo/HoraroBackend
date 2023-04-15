@@ -5,7 +5,6 @@ from django.conf import settings
 
 from .telegram_dataclasses import ResponseDecorator, ResponseTelegram
 
-
 API_URL = settings.API_URL_TELEGRAM
 
 
@@ -26,10 +25,8 @@ def _get_response(data: ResponseTelegram) -> ResponseDecorator:
 
 
 def response_wrapper(method) -> Callable:
-
     def wrapper(self, *args, **kwargs) -> ResponseDecorator:
         data = method(self, *args, **kwargs)
         return _get_response(data)
 
     return wrapper
-

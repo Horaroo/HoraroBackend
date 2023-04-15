@@ -1,4 +1,3 @@
-
 import requests
 
 from bots.services import mixins

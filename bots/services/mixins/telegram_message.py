@@ -1,10 +1,9 @@
 import re
 
-
 from users import models
 
 from ..decorators import response_wrapper
-from ..telegram_dataclasses import ResponseTelegram, ResponseDecorator
+from ..telegram_dataclasses import ResponseTelegram
 
 
 class TelegramMessages:
@@ -19,7 +18,7 @@ class TelegramMessages:
             return False
 
     @response_wrapper
-    def get_message(self, message) -> ResponseDecorator | None:
+    def get_message(self, message) -> ResponseTelegram | None:
         text = re.match(
             r"(@abulaysovBot|@horaroStagingBot|@horaroBot) .+", message.text
         )
