@@ -3,8 +3,8 @@ import re
 
 from users import models
 
-from ..decorators import ResponseWrapper
-from ..telegram_dataclasses import ResponseTelegram
+from ..decorators import response_wrapper
+from ..telegram_dataclasses import ResponseTelegram, ResponseDecorator
 
 
 class TelegramMessages:
@@ -18,8 +18,8 @@ class TelegramMessages:
         except KeyError:
             return False
 
-    @ResponseWrapper
-    def get_message(self, message):
+    @response_wrapper
+    def get_message(self, message) -> ResponseDecorator | None:
         text = re.match(
             r"(@abulaysovBot|@horaroStagingBot|@horaroBot) .+", message.text
         )
@@ -34,10 +34,9 @@ class TelegramMessages:
             exists = models.TelegramUserToken.objects.filter(
                 telegram_user__telegram_id=message.chat_id, token_id=token
             ).exists()
+            text = "Токен уже добавлен."
             if not exists:
                 user = models.TelegramUser.objects.get(telegram_id=message.chat_id)
                 models.TelegramUserToken.objects.create(token=token, telegram_user=user)
                 text = "Токен успешно добавлен."
-            else:
-                text = "Токен уже добавлен."
         return ResponseTelegram(text=text, chat_id=message.chat_id, method=self.method)

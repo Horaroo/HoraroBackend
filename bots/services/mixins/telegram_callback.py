@@ -12,12 +12,25 @@ from api.time.time_services import TimeServices
 from users import models
 
 from ..constants import DAYS_RU
-from ..telegram_dataclasses import ButtonsWithText
+from ..telegram_dataclasses import ButtonsWithText, ResponseTelegram, ResponseDecorator
+from ..decorators import response_wrapper
 from .common import BaseMixin
 
 
 class TelegramCallbackSettings(BaseMixin):
     _time_service = TimeServices()
+
+    @response_wrapper
+    def get_callback(self, callback_data) -> ResponseTelegram:
+        data: ButtonsWithText
+        data = self._handle_callback(callback_data)
+        return ResponseTelegram(
+            chat_id=callback_data.chat_id,
+            text=data.text,
+            message_id=callback_data.message_id,
+            reply_markup=data.buttons,
+            method="editMessageText"
+        )
 
     @staticmethod
     def _get_button(
@@ -280,23 +293,6 @@ class TelegramCallbackSettings(BaseMixin):
     def _get_data(self, callback_data):
         return self._get_quickstart_data()
 
-    def _send_callback(self, callback_data, is_menu=False):
-        data: ButtonsWithText
-        if is_menu:
-            data = self._handle_callback_for_menu(callback_data)
-        else:
-            data = self._handle_callback(callback_data)
-
-        requests.get(
-            settings.API_URL_TELEGRAM + "/editMessageText",
-            params={
-                "chat_id": callback_data.chat_id,
-                "text": data.text,
-                "message_id": callback_data.message_id,
-                "reply_markup": json.dumps({"inline_keyboard": data.buttons}),
-            },
-        )
-
     def _delete_token(self, callback_data):
         token = callback_data.call_data.split(":")[1]
         token = models.CustomUser.objects.filter(username=token).first()
@@ -483,6 +479,3 @@ class TelegramCallbackSettings(BaseMixin):
             data = self._get_schedule(callback_data)
         if data is not None:
             return self._get_data_for_buttons_of_menu(data, callback_data)
-
-    def send_callback(self, callback_data):
-        self._send_callback(callback_data)

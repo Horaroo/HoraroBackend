@@ -4,16 +4,17 @@ from django.conf import settings
 
 from users import models
 
-from ..decorators import ResponseWrapper
-from ..telegram_dataclasses import ButtonsWithText, ResponseTelegram
+from ..decorators import response_wrapper
+from ..telegram_dataclasses import ButtonsWithText, ResponseTelegram, ResponseDecorator
 from .common import BaseMixin
 
 
 class TelegramCommands(BaseMixin):
     method = "sendMessage"
 
-    @ResponseWrapper
-    def _send_command(self, message, data: ButtonsWithText = None):
+    @response_wrapper
+    def get_command(self, command_user) -> ResponseTelegram:
+        message, data = self._handle_command(command_user)
         result = ResponseTelegram(
             chat_id=message.chat_id,
             text=data.text,
@@ -43,7 +44,7 @@ class TelegramCommands(BaseMixin):
                 telegram_id=message.chat_id, type_chat=message.type_chat
             )
 
-    def get_command(self, command_user):
+    def _handle_command(self, command_user) -> tuple | None:
         try:
             tg_chat = models.TelegramUser.objects.get(telegram_id=command_user.chat_id)
             tg_chat.type_chat = command_user.type_chat
@@ -58,8 +59,8 @@ class TelegramCommands(BaseMixin):
                 command_user.command,
             ).group()
         if command_user.command == "/settings":
-            return self._send_command(command_user, self.get_settings())
+            return command_user, self.get_settings()
         elif command_user.command == "/menu":
-            return self._send_command(command_user, self.get_menu(command_user))
+            return command_user, self.get_menu(command_user)
         elif command_user.command == "/start":
-            return self._send_command(command_user)
+            return command_user, None
