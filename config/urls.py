@@ -20,12 +20,14 @@ from django.urls import include, path, re_path
 from django.views.static import serve
 
 from .yasg import urlpatterns as doc_urls
+from website.urls import urlpatterns as website_urls
 
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include("api.urls")),
     path("webhook/", include("bots.urls")),
+    *website_urls,
 ] + doc_urls
 
 if settings.DEBUG:
