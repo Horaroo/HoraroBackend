@@ -35,15 +35,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG"))
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://horaro.net",
-    "https://www.horaro.net",
-    "https://api.horaro.net",
-    "https://www.api.horaro.net",
-    "https://staging.horaro.net",
-    "https://api.staging.horaro.net",
-    "https://www.api.staging.horaro.net",
-]
 
 ALLOWED_HOSTS = ["*"]
 
@@ -69,6 +60,12 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "django_filters",
     "website",
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.horaro.net',
+    'https://*.127.0.0.1'
 ]
 SITE_ID = 1
 
@@ -169,10 +166,14 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = "/img/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -237,7 +238,6 @@ Messages.INVALID_PASSWORD_ERROR = "Введен не правильный пар
 
 LOGOUT_REDIRECT_URL = "/"
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 AUTH_USER_MODEL = "users.CustomUser"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -262,5 +262,3 @@ API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
 
 with open("messages.json") as messages:
     MESSAGES = json.loads(messages.read())
-
-django.setup()
