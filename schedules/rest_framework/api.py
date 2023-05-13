@@ -45,10 +45,14 @@ class ScheduleViewSet(viewsets.GenericViewSet):
                 {"status": "need token"}, status=status.HTTP_400_BAD_REQUEST
             )
         h, m = request.GET.get("h"), request.GET.get("m")
-        current_pair = services.CurrentPairGetter(token=token, h=h, m=m).execute()
+        current_pair = services.CurrentPairGetter(
+            token=token, h=h, m=m
+        ).execute()
         return Response(current_pair)
 
-    @action(detail=False, methods=["get"], url_path=r"detail/(?P<username>\w+)")
+    @action(
+        detail=False, methods=["get"], url_path=r"detail/(?P<username>\w+)"
+    )
     def get_info(self, request, username):
         query = request.GET.get("q")
         result = services.AutofillGetter(
@@ -81,7 +85,9 @@ class ScheduleViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_201_CREATED)
 
     @action(
-        methods=["get"], detail=False, serializer_class=serializers.OneFieldSerializer
+        methods=["get"],
+        detail=False,
+        serializer_class=serializers.OneFieldSerializer,
     )
     def get_one_field(self, request):
         username = self.request.GET.get("token")
@@ -97,8 +103,12 @@ class ScheduleViewSet(viewsets.GenericViewSet):
     @swagger_auto_schema(
         method="GET",
         manual_parameters=[
-            openapi.Parameter("token", openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter("week", openapi.IN_QUERY, type=openapi.TYPE_STRING),
+            openapi.Parameter(
+                "token", openapi.IN_QUERY, type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                "week", openapi.IN_QUERY, type=openapi.TYPE_STRING
+            ),
         ],
     )
     @action(
@@ -181,7 +191,9 @@ class TelegramUserViewSet(
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(telegram_id=request.POST.get("telegram_id")):
-            return Response({"Message": "Already created"}, status=status.HTTP_200_OK)
+            return Response(
+                {"Message": "Already created"}, status=status.HTTP_200_OK
+            )
         return super().create(request, *args, **kwargs)
 
 

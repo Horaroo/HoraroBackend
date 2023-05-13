@@ -6,7 +6,6 @@ import pytest
 @patch("users.helpers.CustomActivationEmail.send")
 @pytest.mark.django_db
 def test_user_create(patched, not_logged_client):
-
     response = not_logged_client.post(
         path="/schedules/v1/auth/detail/",
         data={
@@ -40,7 +39,6 @@ def test_user_self_get(logged_client, logged_user):
 
 @pytest.mark.django_db
 def test_user_self_update_username(logged_client, logged_user):
-
     response = logged_client.patch(
         path=f"/schedules/v1/auth/detail/{logged_user.username}/",
         data={"username": "new_username"},
@@ -64,7 +62,6 @@ def test_user_delete_with_username(logged_client, logged_user):
 
 @pytest.mark.django_db
 def test_create_auth_token_and_destroy(logged_client, logged_user):
-
     logged_user.is_active = True
     logged_user.email = "client@email.ru"
     logged_user.set_password("test")

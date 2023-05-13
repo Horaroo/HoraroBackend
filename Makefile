@@ -84,3 +84,8 @@ test:
 format:
 	isort .
 	black .
+
+lint:
+	flake8 . --count --show-source --statistics --max-line-length 120
+	isort --check .
+	black --check

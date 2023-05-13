@@ -21,6 +21,8 @@ class ContentSlide(models.Model):
 
     def cover(self):
         if self.cover_image:
-            return Site.objects.get_current().domain + "/" + self.cover_image.name
+            return (
+                Site.objects.get_current().domain + "/" + self.cover_image.name
+            )
         else:
             return None

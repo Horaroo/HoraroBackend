@@ -109,7 +109,10 @@ def test_schedule_copy_pair(logged_client, logged_user):
         subject="Subject for Tuesday", group=logged_user, day=day_tuesday
     )
     subject_friday = factories.ScheduleFactory(
-        subject="Subject for Friday", group=logged_user, day=day_friday, number_pair=2
+        subject="Subject for Friday",
+        group=logged_user,
+        day=day_friday,
+        number_pair=2,
     )
     target_pair = 2
     response = logged_client.post(

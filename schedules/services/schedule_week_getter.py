@@ -12,7 +12,9 @@ class ScheduleWeekGetter:
         data = []
         for i in range(1, 7):
             qs = Schedule.objects.filter(
-                group__username=self.token, week__name__startswith=self.week, day_id=i
+                group__username=self.token,
+                week__name__startswith=self.week,
+                day_id=i,
             ).order_by("number_pair")
             if qs:
                 data.append(

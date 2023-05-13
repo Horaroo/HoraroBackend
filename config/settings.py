@@ -184,7 +184,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
@@ -255,7 +257,9 @@ if DEBUG:
     )
 else:
     BOT_TOKEN = os.getenv("TOKEN_BOT_PROD")
-API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(token=BOT_TOKEN)
+API_URL_TELEGRAM = "https://api.telegram.org/bot{token}".format(
+    token=BOT_TOKEN
+)
 
 with open("messages.json") as messages:
     MESSAGES = json.loads(messages.read())

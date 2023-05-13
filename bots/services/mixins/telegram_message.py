@@ -41,9 +41,15 @@ class TelegramMessages:
                 telegram_user__telegram_id=message.chat_id, token_id=token
             ).exists()
             if not exists:
-                user = models.TelegramUser.objects.get(telegram_id=message.chat_id)
-                models.TelegramUserToken.objects.create(token=token, telegram_user=user)
-                self._send_message(text="Токен успешно добавлен.", message=message)
+                user = models.TelegramUser.objects.get(
+                    telegram_id=message.chat_id
+                )
+                models.TelegramUserToken.objects.create(
+                    token=token, telegram_user=user
+                )
+                self._send_message(
+                    text="Токен успешно добавлен.", message=message
+                )
             else:
                 self._send_message(text="Токен уже добавлен.", message=message)
         else:

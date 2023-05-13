@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "horarobackend"
+version = "0.1.0"
+description = ""
+authors = ["abulaysov <abulaysovv@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "4.0.5"
+factory-boy = "^3.2.1"
+pillow = "9.1.0"
+flower = "1.2.0"
+celery = "^5.2.7"
+redis = "^4.5.5"
+djangorestframework = "^3.14.0"
+django-jazzmin = "^2.6.0"
+requests = "^2.30.0"
+drf-yasg = "^1.21.5"
+djoser = "^2.2.0"
+python-dotenv = "^1.0.0"
+whitenoise = "^6.4.0"
+django-cors-headers = "^4.0.0"
+django-filter = "^23.2"
+gunicorn = "^20.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+black = "^23.3.0"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+pytest-django = "^4.5.2"
+faker = "^18.7.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 79
+py36 = true
+skip-string-normalization = true
+exclude = '''
+  # Default exclude
+  \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+
+  # Custom excludes
+  | manage\.py
+  | \.pgdata
+  | migrations
+'''

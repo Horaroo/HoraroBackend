@@ -14,7 +14,9 @@ class ScheduleCreatorOrUpdater:
         week = models.Week.objects.filter(
             name=self.data.pop("week").get("name")
         ).first()
-        day = models.Day.objects.filter(name=self.data.pop("day").get("name")).first()
+        day = models.Day.objects.filter(
+            name=self.data.pop("day").get("name")
+        ).first()
         group = CustomUser.objects.filter(
             username=self.data.pop("group").get("username")
         ).first()
@@ -28,14 +30,14 @@ class ScheduleCreatorOrUpdater:
     def _update_time(self, number, group):
         if self.data.get("start_time"):
             new_time = self.data.get("start_time")
-            models.Schedule.objects.filter(number_pair=number, group=group).update(
-                start_time=new_time
-            )
+            models.Schedule.objects.filter(
+                number_pair=number, group=group
+            ).update(start_time=new_time)
         if self.data.get("end_time"):
             new_time = self.data.get("start_time")
-            models.Schedule.objects.filter(number_pair=number, group=group).update(
-                start_time=new_time
-            )
+            models.Schedule.objects.filter(
+                number_pair=number, group=group
+            ).update(start_time=new_time)
 
     def _update(self):
         group = self.data["group"].get("username")

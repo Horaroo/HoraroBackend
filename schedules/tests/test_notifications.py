@@ -8,7 +8,10 @@ from .factories import *
 @pytest.mark.django_db
 def test_telegram_notifications(logged_user, logged_client):
     user = CustomUser.objects.create(
-        username="test", password="password", email="test@example.com", group="test"
+        username="test",
+        password="password",
+        email="test@example.com",
+        group="test",
     )
 
     TelegramUser.objects.create(

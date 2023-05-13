@@ -54,7 +54,10 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
 @pytest.mark.django_db
 def test_telegram_detail_user_get_user_list(not_logged_client):
     user = CustomUser.objects.create(
-        username="test", password="password", email="test@example.com", group="test"
+        username="test",
+        password="password",
+        email="test@example.com",
+        group="test",
     )
     create_telegram_user(telegram_id="123", token=user)
     create_telegram_user(telegram_id="231", token=user)
@@ -70,7 +73,10 @@ def test_telegram_detail_user_get_user_list(not_logged_client):
 @pytest.mark.skip
 def test_add_token(not_logged_client):
     CustomUser.objects.create(
-        username="test", password="password", email="test@example.com", group="test"
+        username="test",
+        password="password",
+        email="test@example.com",
+        group="test",
     )
 
     TelegramUser.objects.create(telegram_id="11234567", username="test1")
@@ -86,10 +92,16 @@ def test_add_token(not_logged_client):
 @pytest.mark.django_db
 def test_get_all_group(not_logged_client):
     CustomUser.objects.create(
-        username="test1", password="passw", group="test1", email="test1@example.com"
+        username="test1",
+        password="passw",
+        group="test1",
+        email="test1@example.com",
     )
     CustomUser.objects.create(
-        username="test2", password="passw", group="test2", email="test2@example.com"
+        username="test2",
+        password="passw",
+        group="test2",
+        email="test2@example.com",
     )
 
     response = not_logged_client.get("/schedules/v1/list/group/")
@@ -102,10 +114,15 @@ def test_get_all_group(not_logged_client):
 @pytest.mark.django_db
 def test_telegram_detail_user_update(logged_user, logged_client):
     user = CustomUser.objects.create(
-        username="test", password="password", email="test@example.com", group="test"
+        username="test",
+        password="password",
+        email="test@example.com",
+        group="test",
     )
 
-    user_telegram = TelegramUser.objects.create(telegram_id="1234567", username="test")
+    user_telegram = TelegramUser.objects.create(
+        telegram_id="1234567", username="test"
+    )
 
     payload = {
         "token": user.username,
@@ -115,13 +132,17 @@ def test_telegram_detail_user_update(logged_user, logged_client):
     }
 
     response = logged_client.patch(
-        "/schedules/v1/telegram/detail/user/{}/".format(user_telegram.telegram_id),
+        "/schedules/v1/telegram/detail/user/{}/".format(
+            user_telegram.telegram_id
+        ),
         data=payload,
     )
     user_telegram.refresh_from_db()
 
     assert response.status_code == 200
     assert user_telegram.notification_time == payload.get("notification_time")
-    assert user_telegram.notification_time_min == payload.get("notification_time_min")
+    assert user_telegram.notification_time_min == payload.get(
+        "notification_time_min"
+    )
     assert user_telegram.token.username == payload.get("token")
     assert user_telegram.action == payload.get("action")

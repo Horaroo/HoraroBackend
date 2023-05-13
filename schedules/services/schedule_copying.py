@@ -114,7 +114,14 @@ class Copywriter:
             )
 
     def execute(self):
-        if all((self.source_pair, self.target_pair, self.target_day, self.source_day)):
+        if all(
+            (
+                self.source_pair,
+                self.target_pair,
+                self.target_day,
+                self.source_day,
+            )
+        ):
             self._copy_pair()
         elif all((self.source_day, self.target_day)):
             self._copy_day()

@@ -68,7 +68,14 @@ class TelegramUserSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ContentSlide
-        fields = ["title", "description", "picture", "cover", "is_main", "created_at"]
+        fields = [
+            "title",
+            "description",
+            "picture",
+            "cover",
+            "is_main",
+            "created_at",
+        ]
 
 
 class ScheduleCopySerializer(serializers.Serializer):  # noqa

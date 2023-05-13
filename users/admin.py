@@ -19,7 +19,13 @@ class AdminCustomUser(UserAdmin):
         (
             None,
             {
-                "fields": ("username", "password1", "password2", "group", "email"),
+                "fields": (
+                    "username",
+                    "password1",
+                    "password2",
+                    "group",
+                    "email",
+                ),
             },
         ),
     )

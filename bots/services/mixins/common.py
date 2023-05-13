@@ -23,7 +23,9 @@ class BaseMixin:
             if ind == 3:
                 ind = -1
             ind += 1
-            inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
+            inline_buttons[ind].append(
+                {"text": f"{name}", "callback_data": call_data}
+            )
 
         return ButtonsWithText(
             text=settings.MESSAGES["TITLE_SETTINGS_RU"], buttons=inline_buttons
@@ -76,7 +78,9 @@ class BaseMixin:
             if ind == 3:
                 ind = -1
             ind += 1
-            inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
+            inline_buttons[ind].append(
+                {"text": f"{name}", "callback_data": call_data}
+            )
 
         return ButtonsWithText(
             text=settings.MESSAGES["TITLE_MENU_RU"], buttons=inline_buttons

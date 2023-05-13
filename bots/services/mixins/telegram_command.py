@@ -45,12 +45,15 @@ class TelegramCommands(BaseMixin):
 
     def send_command(self, command_user):
         try:
-            tg_chat = models.TelegramUser.objects.get(telegram_id=command_user.chat_id)
+            tg_chat = models.TelegramUser.objects.get(
+                telegram_id=command_user.chat_id
+            )
             tg_chat.type_chat = command_user.type_chat
             tg_chat.save(update_fields=["type_chat"])
         except:
             models.TelegramUser.objects.create(
-                telegram_id=command_user.chat_id, type_chat=command_user.type_chat
+                telegram_id=command_user.chat_id,
+                type_chat=command_user.type_chat,
             )
         if "@" in command_user.command:
             command_user.command = re.search(

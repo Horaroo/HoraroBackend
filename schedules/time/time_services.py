@@ -20,12 +20,22 @@ from schedules.time.configs.dataclasses import (
 
 
 def _pair_model_to_dict(pair: Schedule) -> dict:
-    fields = ["subject", "teacher", "audience", "week", "group", "type_pair", "day"]
+    fields = [
+        "subject",
+        "teacher",
+        "audience",
+        "week",
+        "group",
+        "type_pair",
+        "day",
+    ]
     return model_to_dict(pair, fields=fields)
 
 
 class TimeServices:
-    def get_week_day(self, lang: str = "ru", tz=RU_MSC_TZ, is_today=True) -> WeekDay:
+    def get_week_day(
+        self, lang: str = "ru", tz=RU_MSC_TZ, is_today=True
+    ) -> WeekDay:
         if lang not in ["ru", "en"]:
             raise ValueError(f"This language is not provided: {lang}")
 
@@ -80,11 +90,15 @@ class TimeServices:
         pairs = list(schedule.values())
 
         if time < pairs[0].start:
-            return PairStatus(status="early", pair_num=0, time_range=schedule[0])
+            return PairStatus(
+                status="early", pair_num=0, time_range=schedule[0]
+            )
         for pair_num, time_range in enumerate(pairs):
             if time in time_range:
                 return PairStatus(
-                    status="pair", pair_num=pair_num, time_range=schedule[pair_num]
+                    status="pair",
+                    pair_num=pair_num,
+                    time_range=schedule[pair_num],
                 )
 
         breaks = [

@@ -34,7 +34,11 @@ class CustomUser(AbstractUser):
 
 
 class TelegramUser(models.Model):
-    ACTION_CHOICES = (("PTY", "PairsToday"), ("PTW", "PairsTomorrow"), ("NONE", "none"))
+    ACTION_CHOICES = (
+        ("PTY", "PairsToday"),
+        ("PTW", "PairsTomorrow"),
+        ("NONE", "none"),
+    )
 
     username = models.TextField(default="Username doesn't exists")
     telegram_id = models.TextField(unique=True)
@@ -47,7 +51,9 @@ class TelegramUser(models.Model):
         help_text="Token of notifications",
     )
     type_chat = models.CharField(max_length=255, blank=True, null=True)
-    action = models.CharField(max_length=4, choices=ACTION_CHOICES, default="NONE")
+    action = models.CharField(
+        max_length=4, choices=ACTION_CHOICES, default="NONE"
+    )
     notification_time = models.TimeField(null=True, blank=True)
 
     def __str__(self):

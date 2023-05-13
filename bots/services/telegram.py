@@ -11,7 +11,9 @@ from .telegram_dataclasses import *
 
 
 class Telegram(
-    mixins.TelegramMessages, mixins.TelegramCallbackSettings, mixins.TelegramCommands
+    mixins.TelegramMessages,
+    mixins.TelegramCallbackSettings,
+    mixins.TelegramCommands,
 ):
     def __init__(self, token="token", lang="ru"):
         self.token = token
