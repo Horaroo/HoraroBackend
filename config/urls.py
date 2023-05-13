@@ -16,8 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path, re_path
-from django.views.static import serve
+from django.urls import include, path
 
 from website.urls import urlpatterns as website_urls
 
@@ -26,7 +25,7 @@ from .yasg import urlpatterns as doc_urls
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include("schedules.urls")),
+    path("api/v1/", include("schedules.rest_framework.urls")),
     path("webhook/", include("bots.urls")),
     # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),

@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from users.views import UserViewSet
 
-from .views import *
+from .api import *
 
 router = SimpleRouter()
 
