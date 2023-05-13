@@ -2,7 +2,7 @@ from rest_framework.test import APIClient
 
 import pytest
 
-from api.tests import factories
+from schedules.tests import factories
 
 
 @pytest.fixture

@@ -18,6 +18,8 @@ import rest_framework.permissions
 
 from djoser.constants import Messages
 from dotenv import load_dotenv
+import django
+
 
 load_dotenv()
 
@@ -33,15 +35,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG"))
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://horaro.net",
-    "https://www.horaro.net",
-    "https://api.horaro.net",
-    "https://www.api.horaro.net",
-    "https://staging.horaro.net",
-    "https://api.staging.horaro.net",
-    "https://www.api.staging.horaro.net",
-]
 
 ALLOWED_HOSTS = ["*"]
 
@@ -61,11 +54,18 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "drf_yasg",
-    "api.apps.ApiConfig",
+    "schedules.apps.SchedulesConfig",
     "users.apps.UsersConfig",
     "bots.apps.BotsConfig",
     "core.apps.CoreConfig",
     "django_filters",
+    "website",
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.horaro.net',
+    'https://*.127.0.0.1'
 ]
 SITE_ID = 1
 
@@ -164,11 +164,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -233,7 +238,6 @@ Messages.INVALID_PASSWORD_ERROR = "Введен не правильный пар
 
 LOGOUT_REDIRECT_URL = "/"
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 AUTH_USER_MODEL = "users.CustomUser"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

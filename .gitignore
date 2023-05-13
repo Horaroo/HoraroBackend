@@ -2,9 +2,9 @@ venv
 .pytest_cache
 .idea
 front/migrations/__pycache__
-api/__pycache__
+schedules/__pycache__
 front/__pycache__
-api/migrations/__pycache__
+schedules/migrations/__pycache__
 config/__pycache__
 __pycache__
 .env*

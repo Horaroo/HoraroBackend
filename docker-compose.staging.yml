@@ -9,7 +9,7 @@ services:
     environment:
       - WDS_SOCKET_HOST=0.0.0.0
       - WDS_SOCKET_PORT=443
-      - REACT_APP_API_URL=https://api.horaro.net/api/v1/
+      - REACT_APP_API_URL=https://api.staging.horaro.net/api/v1/
       - REACT_APP_NAME=Horaro
     depends_on:
       - web
