@@ -23,5 +23,9 @@ jobs:
           envkey_POSTGRES_PORT: 5432
           envkey_POSTGRES_NAME: postgres
           envkey_SECRET_KEY: django-insecure-b(=r+o15ecqk0yslac@*^@w^5a
+      - name: Lint
+        run: docker-compose -f docker-compose.local.yml run --rm web sh -c "flake8 . --count --show-source --statistics --max-line-length 120"
+
       - name: Test
         run: docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"
+
