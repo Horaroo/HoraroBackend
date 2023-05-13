@@ -19,8 +19,9 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.static import serve
 
-from .yasg import urlpatterns as doc_urls
 from website.urls import urlpatterns as website_urls
+
+from .yasg import urlpatterns as doc_urls
 
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [

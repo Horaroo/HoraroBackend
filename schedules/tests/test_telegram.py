@@ -27,7 +27,9 @@ def test_telegram_detail_user_get_user_moder(not_logged_client):
     create_telegram_user(is_moder=True, telegram_id="231")
     create_telegram_user(is_moder=False, telegram_id="321")
 
-    response = not_logged_client.get("/schedules/v1/telegram/detail/user/?is_moder=true")
+    response = not_logged_client.get(
+        "/schedules/v1/telegram/detail/user/?is_moder=true"
+    )
 
     assert response.status_code == 200
     assert len(response.json()) == 2
@@ -40,7 +42,9 @@ def test_telegram_detail_user_get_user_not_moder(not_logged_client):
     create_telegram_user(is_moder=True, telegram_id="231")
     create_telegram_user(is_moder=False, telegram_id="321")
 
-    response = not_logged_client.get("/schedules/v1/telegram/detail/user/?is_moder=false")
+    response = not_logged_client.get(
+        "/schedules/v1/telegram/detail/user/?is_moder=false"
+    )
 
     assert response.status_code == 200
     assert len(response.json()) == 1

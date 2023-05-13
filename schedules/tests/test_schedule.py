@@ -142,7 +142,9 @@ def test_schedule_detail_field(logged_user, logged_client):
         group=logged_user,
     )
     response = logged_client.get(
-        "/schedules/v1/schedule/detail/{}/?teacher=true&q=tea".format(logged_user.username)
+        "/schedules/v1/schedule/detail/{}/?teacher=true&q=tea".format(
+            logged_user.username
+        )
     )
 
     assert response.status_code == 200
