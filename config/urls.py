@@ -25,7 +25,7 @@ from website.urls import urlpatterns as website_urls
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("schedules/v1/", include("schedules.urls")),
+    path("api/v1/", include("schedules.urls")),
     path("webhook/", include("bots.urls")),
     # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
