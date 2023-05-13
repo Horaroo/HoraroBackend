@@ -1,4 +1,4 @@
-"""api URL Configuration
+"""schedules URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -25,7 +25,7 @@ from website.urls import urlpatterns as website_urls
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include("api.urls")),
+    path("schedules/v1/", include("schedules.urls")),
     path("webhook/", include("bots.urls")),
     # re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     # re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),

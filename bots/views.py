@@ -3,7 +3,7 @@ import logging
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from api import models as api_models
+from schedules import models as api_models
 from bots import services
 
 logging.basicConfig(
