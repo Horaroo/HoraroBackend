@@ -18,7 +18,8 @@ services:
     image: ivan556/horaro-backend
     restart: unless-stopped
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:

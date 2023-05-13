@@ -14,12 +14,12 @@ RUN pip install --upgrade pip && pip3 install -r requirements.txt
 COPY . .
 
 
-#RUN #find . -type f -exec chmod 644 {} \; && \
-##    adduser --disabled-password --no-create-home john-doe && chmod 755 manage.py && \
-##    find . -type d -exec chmod 755 {} \;
+RUN find . -type f -exec chmod 644 {} \; && \
+    adduser --disabled-password --no-create-home john-doe && chmod 755 manage.py && \
+    find . -type d -exec chmod 755 {} \;
 
 RUN python /app/manage.py collectstatic --noinput
 
-RUN touch app.log # && chown john-doe:john-doe app.log
+RUN touch app.log && chown john-doe:john-doe app.log
 
-#USER john-doe
+USER john-doe
