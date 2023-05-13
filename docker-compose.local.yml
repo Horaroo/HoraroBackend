@@ -6,7 +6,7 @@ x-common-variables: &common-variables
    POSTGRES_DB: postgres
    POSTGRES_HOST: db
    POSTGRES_NAME: postgres
-   POSTGRES_PASSWORD: postgres
+   POSTGRES_PASSWORD: awdj9%@01723l^*wad0
    POSTGRES_PORT: 5432
    POSTGRES_USER: postgres
    SECRET_KEY: django-insecure-b(=r+o15ecqk0yslac@*^@w^5a8#v8$u^^j#9p56slz*!o5gnk
