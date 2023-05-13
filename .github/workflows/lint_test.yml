@@ -16,18 +16,12 @@ jobs:
       - name: Make envfile
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          envkey_POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          envkey_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          envkey_POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          envkey_POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          envkey_POSTGRES_NAME: ${{ secrets.POSTGRES_NAME }}
-          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          envkey_debug: ${{ secrets.debug }}
-          envkey_ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-          envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-          envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-          envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+          envkey_POSTGRES_DB: postgres
+          envkey_POSTGRES_USER: postgres
+          envkey_POSTGRES_PASSWORD: postgres
+          envkey_POSTGRES_HOST: db
+          envkey_POSTGRES_PORT: 5432
+          envkey_POSTGRES_NAME: postgres
+          envkey_SECRET_KEY: django-insecure-b(=r+o15ecqk0yslac@*^@w^5a
       - name: Test
         run: docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"
