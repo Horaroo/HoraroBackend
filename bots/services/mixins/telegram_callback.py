@@ -36,7 +36,7 @@ class TelegramCallbackSettings(BaseMixin):
                 [
                     {
                         "text": "Обратная связь",
-                        "url": "tg://user?id=5710085464",
+                        "url": "tg://user?id=6201041495",
                         "callback_data": "---",
                     }
                 ],
