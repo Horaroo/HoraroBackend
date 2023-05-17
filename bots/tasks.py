@@ -65,9 +65,9 @@ def _get_data(qs_users) -> list[dict]:
 def _parse_data(not_data, day_num) -> dict:
     data = not_data["data"]
     token = not_data["token"]
-    action = f"Занятия на сегодня [{WEEK_DAYS_RU[day_num].title()}]. {not_data['week_number']} Неделя."
+    action = f"Занятия на сегодня [{WEEK_DAYS_RU[day_num].title()}]: {not_data['week_number']} Неделя."
     if not_data["action"] == "PTW":
-        action = f"Занятия на завтра [{WEEK_DAYS_RU[day_num].title()}]. {not_data['week_number']} Неделя."
+        action = f"Занятия на завтра [{WEEK_DAYS_RU[day_num].title()}]: {not_data['week_number']} Неделя."
     result = settings.MESSAGES["TITLE_NOTIFICATION_RU"].format(token=token)
     result += f"{action}\n\n"
 
