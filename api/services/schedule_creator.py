@@ -1,4 +1,5 @@
 import dataclasses
+from typing import Any
 
 from django.db.models import Q
 
@@ -8,9 +9,10 @@ from api import models
 @dataclasses.dataclass
 class ScheduleCreatorOrUpdater:
     data: dict
+    serializer: Any
 
     def _create(self):
-        return models.Schedule.objects.create(**self.data)
+        return self.serializer.save()
 
     def _update(self):
         group = self.data["group"]
@@ -18,30 +20,25 @@ class ScheduleCreatorOrUpdater:
         week = self.data["week"]
         day = self.data["day"]
         obj = models.Schedule.objects.filter(
-            Q(number_pair=number) & Q(week=week) & Q(group=group) & Q(day=day)
+            Q(number_pair=number)
+            & Q(week__name=week)
+            & Q(group__username=group)
+            & Q(day__name=day)
         )
+        if obj.exists():
+            instance = obj.update(**self.data)
+            schedules = models.Schedule.objects.filter(
+                Q(number_pair=number) & Q(group__username=group)
+            )
+            new_time = self.data.get("start_time")
+            end_time = self.data.get("end_time")
 
-        if bool(obj):
-            instance = obj.first()
-            for attr, value in self.data.items():
-                setattr(instance, attr, value)
+            if new_time:
+                schedules.update(start_time=new_time)
+            if end_time:
+                schedules.update(end_time=end_time)
 
-            if self.data.get("start_time"):
-                new_time = self.data.get("start_time")
-                for inst in models.Schedule.objects.filter(
-                    number_pair=number, group=group
-                ):
-                    inst.start_time = new_time
-                    inst.save()
-            if self.data.get("end_time"):
-                new_time = self.data.get("end_time")
-                for inst in models.Schedule.objects.filter(
-                    number_pair=number, group=group
-                ):
-                    inst.end_time = new_time
-                    inst.save()
-            instance.save()
-            return instance
+            return instance.first()
         return self._create()
 
     def execute(self):
