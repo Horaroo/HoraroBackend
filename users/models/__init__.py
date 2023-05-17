@@ -1,4 +1,4 @@
-from .telegram_user import TelegramUser  # noqa
-from .user import CustomUser  # noqa
-from .telegram_token_user import TelegramUserToken  # noqa
+from .telegram_user import *  # noqa
+from .user import *  # noqa
+from .telegram_token_user import *  # noqa
 
