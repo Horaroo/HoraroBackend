@@ -7,6 +7,15 @@ from .models import *
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
+    group = serializers.SlugRelatedField(
+        slug_field="username", queryset=CustomUser.objects.all()
+    )
+    day = serializers.SlugRelatedField(slug_field="name", queryset=Day.objects.all())
+    week = serializers.SlugRelatedField(slug_field="name", queryset=Week.objects.all())
+    type_pair = serializers.SlugRelatedField(
+        slug_field="name", queryset=Type.objects.all()
+    )
+
     class Meta:
         model = Schedule
         fields = (
