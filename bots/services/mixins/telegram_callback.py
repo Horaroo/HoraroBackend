@@ -474,7 +474,8 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_schedule(self, callback_data):
         token = callback_data.call_data.split(":")[-1]
-        week = str(self._time_service.get_week_number())
+        week = self._time_service.get_week_number()
+        week = str(1 if week + 1 > 4 else week + 1)
         instances = api_models.Schedule.objects.filter(
             group__username=token, week__name__startswith=week
         ).order_by("day_id", "number_pair")
