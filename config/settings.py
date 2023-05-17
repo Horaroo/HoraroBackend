@@ -43,6 +43,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.api.staging.horaro.net",
 ]
 
+
+
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
