@@ -10,6 +10,7 @@ def logged_user(db):
     return factories.ActiveUserFactory()
 
 
+
 @pytest.fixture
 def logged_client(logged_user):
     client = APIClient()
