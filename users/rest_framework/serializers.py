@@ -7,7 +7,7 @@ from djoser.serializers import UserFunctionsMixin
 
 from users.services import UserCreator
 
-from .models import CustomUser
+from users.models import CustomUser
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):

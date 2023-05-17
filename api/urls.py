@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from users.views import UserViewSet
+from users.rest_framework.api import UserViewSet
 
 from .views import *
 
