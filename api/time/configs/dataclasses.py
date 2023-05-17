@@ -29,6 +29,7 @@ class Time:
 class WeekDay:
     num: int
     name: str
+    rus_name: str
 
 
 @dataclass
