@@ -195,9 +195,9 @@ DJOSER = {
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "users.serializers.RegisterCustomUserSerializer",
-        "token": "users.serializers.TokenSerializer",
-        "password_reset": "users.serializers.CustomSendEmailResetSerializer",
+        "user_create": "users.rest_framework.serializers.RegisterCustomUserSerializer",
+        "token": "users.rest_framework.serializers.TokenSerializer",
+        "password_reset": "users.rest_framework.serializers.CustomSendEmailResetSerializer",
     },
     "PERMISSIONS": {
         "activation": ["rest_framework.permissions.AllowAny"],
