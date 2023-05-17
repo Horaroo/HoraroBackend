@@ -44,6 +44,11 @@ class TelegramCommands(BaseMixin):
         )
 
     def send_command(self, command_user):
+        try:
+            models.TelegramUser.objects.get(telegram_id=command_user.chat_id)
+        except models.TelegramUser.DoesNotExist:
+            models.TelegramUser.objects.create(telegram_id=command_user.chat_id, type_chat=command_user.type_chat)
+
         if "@" in command_user.command:
             command_user.command = re.search(
                 r"/(settings|menu|start)(?=@(horaroBot|abulaysovBot|horaroStagingBot))",
