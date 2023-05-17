@@ -6,6 +6,7 @@ from api.tests import factories
 
 
 
+
 @pytest.fixture
 def logged_user(db):
     return factories.ActiveUserFactory()
