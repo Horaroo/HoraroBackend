@@ -41,7 +41,7 @@
   "SUCCESS_DELETE_NOTIFICATION_RU": "Уведомление успешно удалено.",
   "SUCCESS_DELETE_NOTIFICATION_EN": "",
 
-  "ABOUT_ADD_TOKENS_RU": "Что бы добавить токен, необходимо отправить боту текстовым сообщением название токена.",
+  "ABOUT_ADD_TOKENS_RU": "Что бы добавить токен, необходимо отправить боту текстовым сообщением название токена.\n\nПримечание: Для добавления токена в группе, необходимо отметить бота, а затем написать токен.",
   "ABOUT_ADD_TOKENS_EN": "",
 
   "TITLE_SETTINGS_RU": "Настройки",
@@ -50,7 +50,7 @@
   "TITLE_MENU_RU": "Панель токенов.",
   "TITLE_MENU_EN": "",
 
-  "TITLE_NOTIFICATION_RU": "\uD83D\uDD14 <b>Уведомление.</b>\nТокен - {token}\n\n",
+  "TITLE_NOTIFICATION_RU": "\uD83D\uDD14 <b>Уведомление.</b>\nТокен - {token}\n",
   "TITLE_NOTIFICATION_EN": ""
 
 }

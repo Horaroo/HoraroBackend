@@ -38,8 +38,8 @@ class AdminCustomUser(UserAdmin):
 
 @admin.register(TelegramUser)
 class AdminTelegramUser(admin.ModelAdmin):
-    list_display = ["id", "telegram_id", "username", "is_moder"]
-
+    list_display = ["id", "telegram_id", "username", "type_chat"]
+    list_filter = ["type_chat"]
 
 @admin.register(TelegramUserToken)
 class AdminTelegramUserToken(admin.ModelAdmin):

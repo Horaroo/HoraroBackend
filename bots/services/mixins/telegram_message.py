@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.conf import settings
 
@@ -26,13 +27,21 @@ class TelegramMessages:
             return False
 
     def send_message(self, message):
+        text = re.match(
+            r"(@horaroStagingBot|@horaroBot) .+", message.text
+        )
+        if message.type_chat in ("group", "supergroup") and not text:
+            return
+        if text:
+            message.text = message.text[message.text.find(" ") + 1 :]
+
         token = models.CustomUser.objects.filter(username=message.text).first()
         if token:
             exists = models.TelegramUserToken.objects.filter(
-                telegram_user__telegram_id=message.user_id, token_id=token
+                telegram_user__telegram_id=message.chat_id, token_id=token
             ).exists()
             if not exists:
-                user = models.TelegramUser.objects.get(telegram_id=message.user_id)
+                user = models.TelegramUser.objects.get(telegram_id=message.chat_id)
                 models.TelegramUserToken.objects.create(token=token, telegram_user=user)
                 self._send_message(text="Токен успешно добавлен.", message=message)
             else:

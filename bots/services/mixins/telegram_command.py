@@ -1,10 +1,13 @@
 import json
+import re
 
 from django.conf import settings
 
 import requests
 
 from ..telegram_dataclasses import ButtonsWithText
+from users import models
+
 from .common import BaseMixin
 
 
@@ -28,6 +31,10 @@ class TelegramCommands(BaseMixin):
             return False
 
     def _send_start(self, message):
+        try:
+            models.TelegramUser.objects.get(telegram_id=message.chat_id)
+        except:
+            models.TelegramUser.objects.create(telegram_id=message.chat_id)
         requests.get(
             settings.API_URL_TELEGRAM + "/sendMessage",
             params={
@@ -37,6 +44,18 @@ class TelegramCommands(BaseMixin):
         )
 
     def send_command(self, command_user):
+        try:
+            tg_chat = models.TelegramUser.objects.get(telegram_id=command_user.chat_id)
+            tg_chat.type_chat = command_user.type_chat
+            tg_chat.save(update_fields=["type_chat"])
+        except models.TelegramUser.DoesNotExist:
+            models.TelegramUser.objects.create(telegram_id=command_user.chat_id, type_chat=command_user.type_chat)
+
+        if "@" in command_user.command:
+            command_user.command = re.search(
+                r"/(settings|menu|start)(?=@(horaroBot|abulaysovBot|horaroStagingBot))",
+                command_user.command,
+            ).group()
         if command_user.command == "/settings":
             self._send_command(command_user, self.get_settings())
         elif command_user.command == "/menu":

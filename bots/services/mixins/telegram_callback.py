@@ -62,7 +62,7 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_favorites_data(self, callback_data, call_data):
         tokens = models.TelegramUserToken.objects.filter(
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         inline_buttons = [
             [],  # 2 rows button
@@ -92,7 +92,7 @@ class TelegramCallbackSettings(BaseMixin):
         token = models.CustomUser.objects.filter(username=token).first()
         is_added_token = models.TelegramUserToken.objects.filter(
             token__username=token.username,
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         total_added = models.TelegramUserToken.objects.filter(
             token__username=token
@@ -146,7 +146,7 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_tokens_for_notification_data(self, callback_data):
         added_tokens = models.TelegramUserToken.objects.filter(
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         )
         if not added_tokens:
             return ButtonsWithText(
@@ -239,7 +239,7 @@ class TelegramCallbackSettings(BaseMixin):
         data = callback_data.call_data.split()[2:]
         hour, minute = data[0].split(":")[1].split("-")
         token = data[1].split(":")[-1]
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         user.token = models.CustomUser.objects.get(username=token)
         user.notification_time = datetime.time(
             hour=int(hour), minute=int(minute), second=0
@@ -257,7 +257,7 @@ class TelegramCallbackSettings(BaseMixin):
         )
 
     def _get_notification_data(self, callback_data):
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         if user.action == "NONE":
             return ButtonsWithText(
                 text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_UNPIN_RU"],
@@ -265,10 +265,12 @@ class TelegramCallbackSettings(BaseMixin):
                     [{"text": settings.MESSAGES["MENU_RU"], "callback_data": "menu"}]
                 ],
             )
-
+        action = "Занятия на сегодня"
+        if user.action == "PTW":
+            action = "Занятия на завтра"
         return ButtonsWithText(
             text=settings.MESSAGES["ABOUT_NOTIFICATION_RU"].format(
-                token=user.token.username, date=f"{str(user.notification_time)[:5]}"
+                token=user.token.username, date=f"{str(user.notification_time)[:5]}\n{action}"
             ),
             buttons=[
                 [
@@ -282,7 +284,7 @@ class TelegramCallbackSettings(BaseMixin):
         )
 
     def _get_confirm_delete_notification_data(self, callback_data):
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         user.action = "NONE"
         user.token = None
         user.notification_time = None
@@ -310,7 +312,7 @@ class TelegramCallbackSettings(BaseMixin):
         requests.get(
             settings.API_URL_TELEGRAM + "/editMessageText",
             params={
-                "chat_id": callback_data.user_id,
+                "chat_id": callback_data.chat_id,
                 "text": data.text,
                 "message_id": callback_data.message_id,
                 "reply_markup": json.dumps({"inline_keyboard": data.buttons}),
@@ -322,13 +324,13 @@ class TelegramCallbackSettings(BaseMixin):
         token = models.CustomUser.objects.filter(username=token).first()
         models.TelegramUserToken.objects.filter(
             token__username=token.username,
-            telegram_user__telegram_id=callback_data.user_id,
+            telegram_user__telegram_id=callback_data.chat_id,
         ).delete()
 
     def _add_token(self, callback_data):
         token = callback_data.call_data.split(":")[1]
         token = models.CustomUser.objects.get(username=token)
-        user = models.TelegramUser.objects.get(telegram_id=callback_data.user_id)
+        user = models.TelegramUser.objects.get(telegram_id=callback_data.chat_id)
         models.TelegramUserToken.objects.create(token=token, telegram_user=user)
 
     @staticmethod
@@ -422,34 +424,34 @@ class TelegramCallbackSettings(BaseMixin):
     def _get_number_week(self):
         return f"Номер недели - {self._time_service.get_week_number() + 1}"
 
-    def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week):
+    def _get_data_for_today_and_tomorrow_paris(self, callback_data, day, week, action):
         token = callback_data.call_data.split(":")[-1]
         instances = api_models.Schedule.objects.filter(
             group__username=token,
             week__name__startswith=week,
             day__name__iexact=day.name,
         ).order_by("number_pair")
-        result = f"{day.rus_name.title()}\n\n"
+        result = f"Занятия на {action} [{day.rus_name.title()}]: {week} - Неделя\n\n"
         for inst in instances:
-            result += (
-                f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.audience}\n"
-            )
+            result += f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.type_pair} {inst.audience}\n"
         return result
 
     def _get_pairs(self, callback_data, is_today=True):
         day = self._time_service.get_week_day(lang="en")
-        week = self._time_service.get_week_number()
+        week = self._time_service.get_week_number() + 1
+        action = "сегодня"
         if is_today and day.num == 6:
-            return "Сегодня выходной :)"
+            return f"Сегодня выходной :) {week} - Неделя"
         if not is_today and day.num == 5:
-            return "Завтра выходной :)"
+            return f"Завтра выходной :) {week} - Неделя"
         if not is_today and day.num == 6:
-            week = 0 if week + 1 == 4 else week + 1
+            week = 1 if week + 1 == 5 else week + 1
         if not is_today:
             day = self._time_service.get_week_day(is_today=False, lang="en")
+            action = "завтра"
 
         return self._get_data_for_today_and_tomorrow_paris(
-            callback_data, day, str(week)
+            callback_data, day, str(week), action
         )
 
     def _get_teachers(self, callback_data):
@@ -472,7 +474,8 @@ class TelegramCallbackSettings(BaseMixin):
 
     def _get_schedule(self, callback_data):
         token = callback_data.call_data.split(":")[-1]
-        week = str(self._time_service.get_week_number())
+        week = self._time_service.get_week_number()
+        week = str(1 if week + 1 > 4 else week + 1)
         instances = api_models.Schedule.objects.filter(
             group__username=token, week__name__startswith=week
         ).order_by("day_id", "number_pair")
