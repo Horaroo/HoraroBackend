@@ -214,3 +214,37 @@ def test_schedule_copy_pair(logged_client, logged_user):
     data = result.json()
 
     assert data["subject"] == subject_monday.subject
+
+
+@pytest.mark.django_db
+def test_update_schedule(logged_user, logged_client):
+    type_ = factories.TypeFactory(name="lc")
+    day = factories.DayFactory(name="monday")
+    week = factories.WeekFactory(name="1 week")
+    schedule = factories.ScheduleFactory(
+        subject="chemistry",
+        teacher="same teacher",
+        group=logged_user,
+        day=day,
+        week=week,
+        type_pair=type_,
+    )
+    response = logged_client.post(
+        path="/api/v1/schedule/",
+        data={
+            "number_pair": 1,
+            "subject": "biology",
+            "teacher": "same teacher",
+            "audience": "555 aud.",
+            "week": week.name,
+            "group": logged_user.username,
+            "type_pair": type_.name,
+            "day": day.name,
+        },
+    )
+
+    assert response.status_code == 201
+    assert len(response.json()) == 10
+
+    assert response.json()["teacher"] == schedule.teacher
+    assert response.json()["subject"] == "biology"
