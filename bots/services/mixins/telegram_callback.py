@@ -390,9 +390,10 @@ class TelegramCallbackSettings(BaseMixin):
                 return self._get_about_token_data(callback_data, favorites_token=True)
             return self._get_about_token_data(callback_data)
 
-    def _get_data_for_buttons_of_menu(self, data, callback_data):
+    def _get_data_for_buttons_of_menu(self, data, callback_data, weeks=False):
         token = callback_data.call_data.split(":")[-1]
-        return ButtonsWithText(
+        data += f"\n\nПоследнее обновление: {self._time_service.get_current_time(second=True)}"
+        buttons = ButtonsWithText(
             text=data,
             buttons=[
                 [
@@ -404,6 +405,14 @@ class TelegramCallbackSettings(BaseMixin):
             ],
         )
 
+        if not weeks:
+            buttons.buttons.insert(0, [{
+                "text": "Обновить 🔄",
+                "callback_data": callback_data.call_data
+            }])
+
+        return buttons
+
     def _get_number_week(self):
         return f"Номер недели - {self._time_service.get_week_number() + 1}"
 
@@ -414,7 +423,7 @@ class TelegramCallbackSettings(BaseMixin):
             week__name__startswith=week,
             day__name__iexact=day.name,
         ).order_by("number_pair")
-        result = f"{day.name.title()}\n\n"
+        result = f"{day.rus_name.title()}\n\n"
         for inst in instances:
             result += (
                 f"{inst.number_pair}) {inst.subject} {inst.teacher} {inst.audience}\n"
@@ -422,7 +431,7 @@ class TelegramCallbackSettings(BaseMixin):
         return result
 
     def _get_pairs(self, callback_data, is_today=True):
-        day = self._time_service.get_week_day()
+        day = self._time_service.get_week_day(lang="en")
         week = self._time_service.get_week_number()
         if is_today and day.num == 6:
             return "Сегодня выходной :)"
@@ -431,7 +440,7 @@ class TelegramCallbackSettings(BaseMixin):
         if not is_today and day.num == 6:
             week = 0 if week + 1 == 4 else week + 1
         if not is_today:
-            day = self._time_service.get_week_day(is_today=False)
+            day = self._time_service.get_week_day(is_today=False, lang="en")
 
         return self._get_data_for_today_and_tomorrow_paris(
             callback_data, day, str(week)
