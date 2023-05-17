@@ -21,24 +21,24 @@ class ScheduleCreatorOrUpdater:
         day = self.data["day"]
         obj = models.Schedule.objects.filter(
             Q(number_pair=number)
-            & Q(week__name=week)
-            & Q(group__username=group)
-            & Q(day__name=day)
+            & Q(week=week)
+            & Q(group=group)
+            & Q(day=day)
         )
         if obj.exists():
-            instance = obj.update(**self.data)
-            schedules = models.Schedule.objects.filter(
-                Q(number_pair=number) & Q(group__username=group)
-            )
+            obj.update(**self.data)
             new_time = self.data.get("start_time")
             end_time = self.data.get("end_time")
+            if new_time or end_time:
+                schedules = models.Schedule.objects.filter(
+                    Q(number_pair=number) & Q(group__username=group)
+                )
+                if new_time:
+                    schedules.update(start_time=new_time)
+                if end_time:
+                    schedules.update(end_time=end_time)
 
-            if new_time:
-                schedules.update(start_time=new_time)
-            if end_time:
-                schedules.update(end_time=end_time)
-
-            return instance.first()
+            return obj.first()
         return self._create()
 
     def execute(self):
