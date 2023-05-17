@@ -1,23 +1,22 @@
 from rest_framework import serializers
 
-from api import services
-from users.models import TelegramUser
 
-from .models import *
+from api import models
+from users import models as user_models
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
     group = serializers.SlugRelatedField(
-        slug_field="username", queryset=CustomUser.objects.all()
+        slug_field="username", queryset=user_models.CustomUser.objects.all()
     )
-    day = serializers.SlugRelatedField(slug_field="name", queryset=Day.objects.all())
-    week = serializers.SlugRelatedField(slug_field="name", queryset=Week.objects.all())
+    day = serializers.SlugRelatedField(slug_field="name", queryset=models.Day.objects.all())
+    week = serializers.SlugRelatedField(slug_field="name", queryset=models.Week.objects.all())
     type_pair = serializers.SlugRelatedField(
-        slug_field="name", queryset=Type.objects.all()
+        slug_field="name", queryset=models.Type.objects.all()
     )
 
     class Meta:
-        model = Schedule
+        model = models.Schedule
         fields = (
             "number_pair",
             "subject",
@@ -34,7 +33,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Type
+        model = models.Type
         fields = "__all__"
 
 
@@ -42,7 +41,7 @@ class TelegramUserSerializer(serializers.ModelSerializer):
     group = serializers.CharField(source="token.group", read_only=True)
 
     class Meta:
-        model = TelegramUser
+        model = user_models.TelegramUser
         fields = [
             "telegram_id",
             "username",
@@ -63,14 +62,14 @@ class TelegramUserSerializer(serializers.ModelSerializer):
     def is_valid(self, raise_exception=False):
         data = self.initial_data.dict()
         if data.get("token"):
-            data["token"] = CustomUser.objects.get(username=data["token"]).pk
+            data["token"] = user_models.CustomUser.objects.get(username=data["token"]).pk
             self.initial_data = data
         return super().is_valid()
 
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Event
+        model = models.Event
         fields = ["title", "description", "picture", "cover", "is_main", "created_at"]
 
 
@@ -99,7 +98,7 @@ class OneFieldSerializer(serializers.Serializer):
     subject = serializers.CharField(required=False)
 
     class Meta:
-        model = Schedule
+        model = models.Schedule
         fields = ["select_field", "subject", "teacher"]
 
 
@@ -108,5 +107,5 @@ class NotificationSerializer(serializers.ModelSerializer):
     group = serializers.CharField(max_length=255)
 
     class Meta:
-        model = TelegramUser
+        model = user_models.TelegramUser
         fields = ["telegram_id", "action", "data", "group"]

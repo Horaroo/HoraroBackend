@@ -12,19 +12,20 @@ from drf_yasg.utils import swagger_auto_schema
 
 from api.time.time_services import TimeServices
 
-from .filters import *
-from .serializers import *
+from api.rest_framework import serializers
+from api import models, services
+from api.rest_framework import filters
+from users import models as user_models
 
 
 class ScheduleViewSet(
     mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    queryset = Schedule.objects.all().select_related("group")
-    serializer_class = ScheduleSerializer
+    queryset = models.Schedule.objects.all().select_related("group")
+    serializer_class = serializers.ScheduleSerializer
     permission_classes = (permissions.IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = GetScheduleFilter
+    filterset_class = filters.GetScheduleFilter
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -36,7 +37,7 @@ class ScheduleViewSet(
         detail=False,
         methods=["get"],
         url_path=r"where-are-pairs",
-        filterset_class=WhereArePairsFilter,
+        filterset_class=filters.WhereArePairsFilter,
     )
     def where_are_pairs(self, request):
         token = request.GET.get("token")
@@ -60,7 +61,7 @@ class ScheduleViewSet(
         detail=False,
         methods=["post"],
         url_path=r"copy",
-        serializer_class=ScheduleCopySerializer,
+        serializer_class=serializers.ScheduleCopySerializer,
         permission_classes=[permissions.IsAuthenticated],
     )
     def copy_schedule(self, request):
@@ -80,7 +81,7 @@ class ScheduleViewSet(
 
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(methods=["get"], detail=False, serializer_class=OneFieldSerializer)
+    @action(methods=["get"], detail=False, serializer_class=serializers.OneFieldSerializer)
     def get_one_field(self, request):
         username = self.request.GET.get("token")
         instances = (
@@ -88,7 +89,7 @@ class ScheduleViewSet(
             .distinct()
             .values(request.GET.get("select_field"))
         )
-        serializer = OneFieldSerializer(data=instances, many=True)
+        serializer = serializers.OneFieldSerializer(data=instances, many=True)
         serializer.is_valid(raise_exception=False)
         return Response({"data": serializer.data})
 
@@ -121,25 +122,25 @@ class NumberWeekAPI(APIView):
 
 class GroupApiView(APIView):
     def get(self, request):  # noqa
-        q = CustomUser.objects.filter(~Q(username="root")).values(
+        q = user_models.CustomUser.objects.filter(~Q(username="root")).values(
             "username", "group", "verified"
         )
         return Response(q)
 
 
 class TypeListView(generics.ListAPIView):
-    queryset = Type.objects.all()
-    serializer_class = TypeSerializer
+    queryset = models.Type.objects.all()
+    serializer_class = serializers.TypeSerializer
 
 
 class ScheduleRetrieveOrDestroy(generics.GenericAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
+    serializer_class = serializers.ScheduleSerializer
+    queryset = models.Schedule.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
     authentication_classes = [TokenAuthentication]
 
     def get_instance(self, request, *args, **kwargs):
-        group = CustomUser.objects.filter(
+        group = user_models.CustomUser.objects.filter(
             username=self.request.query_params.get("token")
         ).first()
         instance = self.queryset.filter(
@@ -171,10 +172,9 @@ class TelegramUserViewSet(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
-    queryset = TelegramUser.objects.all()
-    serializer_class = TelegramUserSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = TelegramUsersFilter
+    queryset = user_models.TelegramUser.objects.all()
+    serializer_class = serializers.TelegramUserSerializer
+    filterset_class = filters.TelegramUsersFilter
     lookup_field = "telegram_id"
     lookup_url_kwarg = "telegram_id"
 
@@ -185,7 +185,6 @@ class TelegramUserViewSet(
 
 
 class EventDetailOrList(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.all().order_by("-id")
-    serializer_class = EventSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = EventFilter
+    queryset = models.Event.objects.all().order_by("-id")
+    serializer_class = serializers.EventSerializer
+    filterset_class = filters.EventFilter
