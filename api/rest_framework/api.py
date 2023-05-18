@@ -10,16 +10,16 @@ from rest_framework.viewsets import GenericViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
-from api.time.time_services import TimeServices
-
-from api.rest_framework import serializers
 from api import models, services
-from api.rest_framework import filters
+from api.rest_framework import filters, serializers
+from api.time.time_services import TimeServices
 from users import models as user_models
 
 
 class ScheduleViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
 ):
     queryset = models.Schedule.objects.all().select_related("group")
     serializer_class = serializers.ScheduleSerializer
@@ -30,7 +30,9 @@ class ScheduleViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        services.ScheduleCreatorOrUpdater(serializer.validated_data, serializer=serializer).execute()
+        services.ScheduleCreatorOrUpdater(
+            serializer.validated_data, serializer=serializer
+        ).execute()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
@@ -43,13 +45,20 @@ class ScheduleViewSet(
         token = request.GET.get("token")
         if token is None:
             return Response(
-                {"status": "need token"}, status=status.HTTP_400_BAD_REQUEST
+                {"status": "need token"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         h, m = request.GET.get("h"), request.GET.get("m")
-        current_pair = services.CurrentPairGetter(token=token, h=h, m=m).execute()
+        current_pair = services.CurrentPairGetter(
+            token=token, h=h, m=m
+        ).execute()
         return Response(current_pair)
 
-    @action(detail=False, methods=["get"], url_path=r"detail/(?P<username>\w+)")
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path=r"detail/(?P<username>\w+)",
+    )
     def get_info(self, request, username):
         query = request.GET.get("q")
         result = services.AutofillGetter(
@@ -81,7 +90,11 @@ class ScheduleViewSet(
 
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(methods=["get"], detail=False, serializer_class=serializers.OneFieldSerializer)
+    @action(
+        methods=["get"],
+        detail=False,
+        serializer_class=serializers.OneFieldSerializer,
+    )
     def get_one_field(self, request):
         username = self.request.GET.get("token")
         instances = (
@@ -96,8 +109,12 @@ class ScheduleViewSet(
     @swagger_auto_schema(
         method="GET",
         manual_parameters=[
-            openapi.Parameter("token", openapi.IN_QUERY, type=openapi.TYPE_STRING),
-            openapi.Parameter("week", openapi.IN_QUERY, type=openapi.TYPE_STRING),
+            openapi.Parameter(
+                "token", openapi.IN_QUERY, type=openapi.TYPE_STRING
+            ),
+            openapi.Parameter(
+                "week", openapi.IN_QUERY, type=openapi.TYPE_STRING
+            ),
         ],
     )
     @action(
@@ -180,7 +197,10 @@ class TelegramUserViewSet(
 
     def create(self, request, *args, **kwargs):
         if self.queryset.filter(telegram_id=request.POST.get("telegram_id")):
-            return Response({"Message": "Already created"}, status=status.HTTP_200_OK)
+            return Response(
+                {"Message": "Already created"},
+                status=status.HTTP_200_OK,
+            )
         return super().create(request, *args, **kwargs)
 
 

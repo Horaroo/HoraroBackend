@@ -25,16 +25,22 @@ class GetScheduleFilter(filters.FilterSet):
     week = filters.CharFilter(field_name="week", method="get_week")
 
     def get_day(self, queryset, name, value):
-        token = get_object_or_404(CustomUser, username=self.request.GET.get("token"))
+        token = get_object_or_404(
+            CustomUser, username=self.request.GET.get("token")
+        )
         instances = queryset.filter(
-            group=token.pk, week=self.request.GET.get("week"), day=value
+            group=token.pk,
+            week=self.request.GET.get("week"),
+            day=value,
         )
         if instances:
             return instances
         raise Http404
 
     def get_week(self, queryset, name, value):
-        token = get_object_or_404(CustomUser, username=self.request.GET.get("token"))
+        token = get_object_or_404(
+            CustomUser, username=self.request.GET.get("token")
+        )
         instances = queryset.filter(group=token.pk, week=value).order_by("day")
         if instances:
             return instances

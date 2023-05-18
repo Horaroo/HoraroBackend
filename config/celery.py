@@ -15,6 +15,9 @@ CELERY_IMPORTS = ("tasks",)
 
 
 app.conf.beat_schedule = {
-    "add-every-60-seconds": {"task": "bots.tasks.send_notification", "schedule": 60.0},
+    "add-every-60-seconds": {
+        "task": "bots.tasks.send_notification",
+        "schedule": 60.0,
+    },
 }
 app.conf.timezone = "UTC"

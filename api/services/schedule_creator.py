@@ -20,10 +20,7 @@ class ScheduleCreatorOrUpdater:
         week = self.data["week"]
         day = self.data["day"]
         obj = models.Schedule.objects.filter(
-            Q(number_pair=number)
-            & Q(week=week)
-            & Q(group=group)
-            & Q(day=day)
+            Q(number_pair=number) & Q(week=week) & Q(group=group) & Q(day=day)
         )
         if obj.exists():
             obj.update(**self.data)

@@ -8,16 +8,24 @@ BUTTONS = (
     "Преподаватели",
 )
 
-CMD = ("/quickstart", "/add", "/del", "/help", "/token", "/pin", "/unpin", "/profile")
+CMD = (
+    "/quickstart",
+    "/add",
+    "/del",
+    "/help",
+    "/token",
+    "/pin",
+    "/unpin",
+    "/profile",
+)
 CMD_MODER = ("/update",)
 
 
 DAYS_RU = {
-     "monday": "Понедельник",
-     "tuesday": "Вторник",
-     "wednesday": "Среда",
-     "thursday": "Четверг",
-     "friday": "Пятница",
-     "saturday": "Суббота",
- }
-
+    "monday": "Понедельник",
+    "tuesday": "Вторник",
+    "wednesday": "Среда",
+    "thursday": "Четверг",
+    "friday": "Пятница",
+    "saturday": "Суббота",
+}

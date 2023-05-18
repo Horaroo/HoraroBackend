@@ -1,16 +1,20 @@
 from rest_framework import serializers
 
-
 from api import models
 from users import models as user_models
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
     group = serializers.SlugRelatedField(
-        slug_field="username", queryset=user_models.CustomUser.objects.all()
+        slug_field="username",
+        queryset=user_models.CustomUser.objects.all(),
     )
-    day = serializers.SlugRelatedField(slug_field="name", queryset=models.Day.objects.all())
-    week = serializers.SlugRelatedField(slug_field="name", queryset=models.Week.objects.all())
+    day = serializers.SlugRelatedField(
+        slug_field="name", queryset=models.Day.objects.all()
+    )
+    week = serializers.SlugRelatedField(
+        slug_field="name", queryset=models.Week.objects.all()
+    )
     type_pair = serializers.SlugRelatedField(
         slug_field="name", queryset=models.Type.objects.all()
     )
@@ -62,7 +66,9 @@ class TelegramUserSerializer(serializers.ModelSerializer):
     def is_valid(self, raise_exception=False):
         data = self.initial_data.dict()
         if data.get("token"):
-            data["token"] = user_models.CustomUser.objects.get(username=data["token"]).pk
+            data["token"] = user_models.CustomUser.objects.get(
+                username=data["token"]
+            ).pk
             self.initial_data = data
         return super().is_valid()
 
@@ -70,7 +76,14 @@ class TelegramUserSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Event
-        fields = ["title", "description", "picture", "cover", "is_main", "created_at"]
+        fields = [
+            "title",
+            "description",
+            "picture",
+            "cover",
+            "is_main",
+            "created_at",
+        ]
 
 
 class ScheduleCopySerializer(serializers.Serializer):

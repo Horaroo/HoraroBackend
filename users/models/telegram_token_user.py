@@ -1,6 +1,7 @@
 from django.db import models
-from .user import CustomUser
+
 from .telegram_user import TelegramUser
+from .user import CustomUser
 
 
 class TelegramUserToken(models.Model):

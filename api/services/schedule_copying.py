@@ -31,14 +31,16 @@ class Copywriter:
 
     def _copy_week(self):
         instances = self.queryset.filter(
-            group__username=self.user.username, week__name=self.target_week
+            group__username=self.user.username,
+            week__name=self.target_week,
         )
 
         self._delete_instances(instances)
         target_week = self._get_target_week()
 
         for data in self.queryset.filter(
-            group__username=self.user.username, week__name=self.source_week
+            group__username=self.user.username,
+            week__name=self.source_week,
         ).all():
             self.queryset.create(
                 number_pair=data.number_pair,
@@ -114,7 +116,14 @@ class Copywriter:
             )
 
     def execute(self):
-        if all((self.source_pair, self.target_pair, self.target_day, self.source_day)):
+        if all(
+            (
+                self.source_pair,
+                self.target_pair,
+                self.target_day,
+                self.source_day,
+            )
+        ):
             self._copy_pair()
         elif all((self.source_day, self.target_day)):
             self._copy_day()

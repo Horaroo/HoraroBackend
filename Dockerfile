@@ -9,7 +9,8 @@ ARG DEV=false
 
 RUN pip install --upgrade pip && pip install "poetry==1.4.1"
 
-RUN apt-get update && apt-get install -y build-essential libpq-dev
+RUN apt-get update && apt-get install -y build-essential libpq-dev curl make git
+
 RUN pip install psycopg2-binary --no-binary psycopg2-binary
 
 COPY pyproject.toml poetry.lock ./
