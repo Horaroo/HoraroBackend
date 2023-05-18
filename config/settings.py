@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "drf_yasg",
-    "api.apps.ApiConfig",
+    "schedules.apps.SchedulesConfig",
     "users.apps.UsersConfig",
     "bots.apps.BotsConfig",
     "core.apps.CoreConfig",

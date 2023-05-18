@@ -3,8 +3,8 @@ import logging
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from api import models as api_models
 from bots import services
+from schedules import models as api_models
 
 logging.basicConfig(
     filename="app.log",
