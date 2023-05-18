@@ -11,7 +11,12 @@ from schedules.time.configs.constants import (
     WEEK_DAYS_TOMORROW_EN,
     WEEK_DAYS_TOMORROW_RU,
 )
-from schedules.time.configs.dataclasses import PairStatus, Time, TimeRange, WeekDay
+from schedules.time.configs.dataclasses import (
+    PairStatus,
+    Time,
+    TimeRange,
+    WeekDay,
+)
 
 
 def _pair_model_to_dict(pair: Schedule) -> dict:
