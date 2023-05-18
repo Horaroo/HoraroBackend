@@ -1,4 +1,4 @@
-"""api URL Configuration
+"""schedules URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -24,7 +24,7 @@ from .yasg import urlpatterns as doc_urls
 # xS3V47fVuiVV/hA489EiW2Zet/cT858wTgX4kz/
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include("api.rest_framework.router")),
+    path("api/v1/", include("schedules.rest_framework.router")),
     path("api/v1/", include("users.rest_framework.router")),
     path("webhook/", include("bots.urls")),
 ] + doc_urls

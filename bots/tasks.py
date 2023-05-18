@@ -6,9 +6,9 @@ from django.conf import settings
 import requests
 from celery import shared_task
 
-from api.models import Schedule
-from api.time.configs.constants import WEEK_DAYS_EN, WEEK_DAYS_RU
-from api.time.time_services import TimeServices
+from schedules.models import Schedule
+from schedules.time.configs.constants import WEEK_DAYS_EN, WEEK_DAYS_RU
+from schedules.time.time_services import TimeServices
 from users.models import TelegramUser
 
 tz = ZoneInfo("Europe/Moscow")

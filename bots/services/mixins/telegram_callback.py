@@ -6,8 +6,8 @@ from django.conf import settings
 
 import requests
 
-from api import models as api_models
-from api.time.time_services import TimeServices
+from schedules import models as api_models
+from schedules.time.time_services import TimeServices
 from users import models
 
 from ..constants import DAYS_RU
