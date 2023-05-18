@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.sites.models import Site
+from django.db import models
 
 
 class Event(models.Model):
@@ -21,6 +21,8 @@ class Event(models.Model):
 
     def cover(self):
         if self.cover_image:
-            return Site.objects.get_current().domain + "/" + self.cover_image.name
+            return (
+                Site.objects.get_current().domain + "/" + self.cover_image.name
+            )
         else:
             return None

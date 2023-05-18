@@ -28,5 +28,9 @@ jobs:
           envkey_EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
           envkey_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
           envkey_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+
+      - name: Lint
+        run: docker-compose -f docker-compose.local.yml run --rm web sh -c "make lint"
+
       - name: Test
         run: docker-compose -f docker-compose.local.yml run --rm web sh -c "pytest"

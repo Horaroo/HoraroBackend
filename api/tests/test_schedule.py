@@ -42,7 +42,9 @@ def test_schedule_copy_week(logged_client, logged_user):
         group=logged_user,
     )
     target_day = factories.ScheduleFactory(
-        subject="Subject for week 2", week=target_week, group=logged_user
+        subject="Subject for week 2",
+        week=target_week,
+        group=logged_user,
     )
 
     response = logged_client.post(
@@ -71,10 +73,14 @@ def test_schedule_copy_day(logged_client, logged_user):
         subject="Subject for Monday", group=logged_user
     )
     factories.ScheduleFactory(
-        subject="Subject for Tuesday", group=logged_user, day=day_tuesday
+        subject="Subject for Tuesday",
+        group=logged_user,
+        day=day_tuesday,
     )
     subject_friday = factories.ScheduleFactory(
-        subject="Subject for Friday", group=logged_user, day=day_friday
+        subject="Subject for Friday",
+        group=logged_user,
+        day=day_friday,
     )
 
     response = logged_client.post(
@@ -105,7 +111,9 @@ def test_schedule_detail_field(logged_user, logged_client):
         group=logged_user,
     )
     response = logged_client.get(
-        "/api/v1/schedule/detail/{}/?teacher=true&q=tea".format(logged_user.username)
+        "/api/v1/schedule/detail/{}/?teacher=true&q=tea".format(
+            logged_user.username
+        )
     )
 
     assert response.status_code == 200
@@ -187,10 +195,15 @@ def test_schedule_copy_pair(logged_client, logged_user):
         subject="Subject for Monday", group=logged_user
     )
     factories.ScheduleFactory(
-        subject="Subject for Tuesday", group=logged_user, day=day_tuesday
+        subject="Subject for Tuesday",
+        group=logged_user,
+        day=day_tuesday,
     )
     subject_friday = factories.ScheduleFactory(
-        subject="Subject for Friday", group=logged_user, day=day_friday, number_pair=2
+        subject="Subject for Friday",
+        group=logged_user,
+        day=day_friday,
+        number_pair=2,
     )
     target_pair = 2
     response = logged_client.post(
@@ -204,8 +217,10 @@ def test_schedule_copy_pair(logged_client, logged_user):
             "target_pair": target_pair,
         },
     )
+    week_name = subject_monday.week.name
+    day_name = subject_friday.day.name
     result = logged_client.get(
-        f"/api/v1/get-pair/{subject_monday.week.name}/{subject_friday.day.name}/{target_pair}/?token={logged_user.username}"
+        f"/api/v1/get-pair/{week_name}/{day_name}/{target_pair}/?token={logged_user.username}"
     )
 
     assert response.status_code == 201

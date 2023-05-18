@@ -2,7 +2,11 @@ from django.db import models
 
 
 class TelegramUser(models.Model):
-    ACTION_CHOICES = (("PTY", "PairsToday"), ("PTW", "PairsTomorrow"), ("NONE", "none"))
+    ACTION_CHOICES = (
+        ("PTY", "PairsToday"),
+        ("PTW", "PairsTomorrow"),
+        ("NONE", "none"),
+    )
 
     username = models.TextField(default="Username doesn't exists")
     telegram_id = models.TextField(unique=True)
@@ -15,7 +19,9 @@ class TelegramUser(models.Model):
         null=True,
         help_text="Token of notifications",
     )
-    action = models.CharField(max_length=4, choices=ACTION_CHOICES, default="NONE")
+    action = models.CharField(
+        max_length=4, choices=ACTION_CHOICES, default="NONE"
+    )
     notification_time = models.TimeField(null=True, blank=True)
 
     def __str__(self):

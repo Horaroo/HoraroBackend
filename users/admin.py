@@ -7,11 +7,19 @@ from .models import CustomUser, TelegramUser, TelegramUserToken
 @admin.register(CustomUser)
 class AdminCustomUser(UserAdmin):
     fieldsets = (
-        (None, {"fields": ("username", "password", "group", "email")}),
+        (
+            None,
+            {"fields": ("username", "password", "group", "email")},
+        ),
         (
             "Advanced options",
             {
-                "fields": ("is_staff", "groups", "verified", "is_active"),
+                "fields": (
+                    "is_staff",
+                    "groups",
+                    "verified",
+                    "is_active",
+                ),
             },
         ),
     )
@@ -19,7 +27,13 @@ class AdminCustomUser(UserAdmin):
         (
             None,
             {
-                "fields": ("username", "password1", "password2", "group", "email"),
+                "fields": (
+                    "username",
+                    "password1",
+                    "password2",
+                    "group",
+                    "email",
+                ),
             },
         ),
     )
@@ -40,6 +54,7 @@ class AdminCustomUser(UserAdmin):
 class AdminTelegramUser(admin.ModelAdmin):
     list_display = ["id", "telegram_id", "username", "type_chat"]
     list_filter = ["type_chat"]
+
 
 @admin.register(TelegramUserToken)
 class AdminTelegramUserToken(admin.ModelAdmin):

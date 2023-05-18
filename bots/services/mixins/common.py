@@ -23,10 +23,13 @@ class BaseMixin:
             if ind == 3:
                 ind = -1
             ind += 1
-            inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
+            inline_buttons[ind].append(
+                {"text": f"{name}", "callback_data": call_data}
+            )
 
         return ButtonsWithText(
-            text=settings.MESSAGES["TITLE_SETTINGS_RU"], buttons=inline_buttons
+            text=settings.MESSAGES["TITLE_SETTINGS_RU"],
+            buttons=inline_buttons,
         )
 
     @staticmethod
@@ -37,7 +40,14 @@ class BaseMixin:
         if not tokens:
             return ButtonsWithText(
                 text=settings.MESSAGES["NOT_ADDED_TOKEN_FOR_MENU_RU"],
-                buttons=[[{"text": "Добавить токен", "callback_data": "add"}]],
+                buttons=[
+                    [
+                        {
+                            "text": "Добавить токен",
+                            "callback_data": "add",
+                        }
+                    ]
+                ],
             )
         inline_buttons = [[], [], [], []]
         ind = -1
@@ -54,7 +64,8 @@ class BaseMixin:
             )
 
         return ButtonsWithText(
-            text=settings.MESSAGES["TITLE_MENU_RU"], buttons=inline_buttons
+            text=settings.MESSAGES["TITLE_MENU_RU"],
+            buttons=inline_buttons,
         )
 
     @staticmethod
@@ -76,8 +87,11 @@ class BaseMixin:
             if ind == 3:
                 ind = -1
             ind += 1
-            inline_buttons[ind].append({"text": f"{name}", "callback_data": call_data})
+            inline_buttons[ind].append(
+                {"text": f"{name}", "callback_data": call_data}
+            )
 
         return ButtonsWithText(
-            text=settings.MESSAGES["TITLE_MENU_RU"], buttons=inline_buttons
+            text=settings.MESSAGES["TITLE_MENU_RU"],
+            buttons=inline_buttons,
         )

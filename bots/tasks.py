@@ -17,7 +17,10 @@ time_service = TimeServices()
 
 @shared_task
 def send_notification():
-    current_time = datetime.now(tz=tz).hour, datetime.now(tz=tz).minute
+    current_time = (
+        datetime.now(tz=tz).hour,
+        datetime.now(tz=tz).minute,
+    )
     if current_time[1] % 5 == 0:
         telegram_users = TelegramUser.objects.filter(
             notification_time__hour=current_time[0],
@@ -36,7 +39,6 @@ def send_notification():
 
 
 def _get_data(qs_users) -> list[dict]:
-
     notification_data = []
     week_day_num = time_service.get_week_day().num
 

@@ -5,9 +5,8 @@ from djoser.compat import get_user_email_field_name
 from djoser.conf import settings as djoser_settings
 from djoser.serializers import UserFunctionsMixin
 
-from users.services import UserCreator
-
 from users.models import CustomUser
+from users.services import UserCreator
 
 
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
@@ -30,7 +29,9 @@ class TokenSerializer(serializers.ModelSerializer):
         fields = ("auth_token", "id", "username", "group")
 
 
-class CustomSendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin):
+class CustomSendEmailResetSerializer(
+    serializers.Serializer, UserFunctionsMixin
+):
     default_error_messages = {
         "email_not_found": djoser_settings.CONSTANTS.messages.EMAIL_NOT_FOUND
     }
@@ -40,7 +41,8 @@ class CustomSendEmailResetSerializer(serializers.Serializer, UserFunctionsMixin)
             email=kwargs["data"]["email"]
         ):
             raise serializers.ValidationError(
-                {"email": ["Почта не зарегистрирована."]}, code=HTTP_400_BAD_REQUEST
+                {"email": ["Почта не зарегистрирована."]},
+                code=HTTP_400_BAD_REQUEST,
             )
 
         super().__init__(*args, **kwargs)

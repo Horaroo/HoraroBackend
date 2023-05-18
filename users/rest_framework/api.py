@@ -48,11 +48,15 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action == "reset_password":
             self.permission_classes = settings.PERMISSIONS.password_reset
         elif self.action == "reset_password_confirm":
-            self.permission_classes = settings.PERMISSIONS.password_reset_confirm
+            self.permission_classes = (
+                settings.PERMISSIONS.password_reset_confirm
+            )
         elif self.action == "set_password":
             self.permission_classes = settings.PERMISSIONS.set_password
         elif self.action == "destroy" or (
-            self.action == "me" and self.request and self.request.method == "DELETE"
+            self.action == "me"
+            and self.request
+            and self.request.method == "DELETE"
         ):
             self.permission_classes = settings.PERMISSIONS.user_delete
         return super().get_permissions()
@@ -63,7 +67,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 return settings.SERIALIZERS.user_create_password_retype
             return settings.SERIALIZERS.user_create
         elif self.action == "destroy" or (
-            self.action == "me" and self.request and self.request.method == "DELETE"
+            self.action == "me"
+            and self.request
+            and self.request.method == "DELETE"
         ):
             return settings.SERIALIZERS.user_delete
         elif self.action == "activation":
@@ -173,7 +179,9 @@ class UserViewSet(viewsets.ModelViewSet):
         if settings.PASSWORD_CHANGED_EMAIL_CONFIRMATION:
             context = {"user": self.request.user}
             to = [get_user_email(self.request.user)]
-            settings.EMAIL.password_changed_confirmation(self.request, context).send(to)
+            settings.EMAIL.password_changed_confirmation(
+                self.request, context
+            ).send(to)
 
         if settings.LOGOUT_ON_PASSWORD_CHANGE:
             utils.logout_user(self.request)
@@ -207,5 +215,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if settings.PASSWORD_CHANGED_EMAIL_CONFIRMATION:
             context = {"user": serializer.user}
             to = [get_user_email(serializer.user)]
-            settings.EMAIL.password_changed_confirmation(self.request, context).send(to)
+            settings.EMAIL.password_changed_confirmation(
+                self.request, context
+            ).send(to)
         return Response(status=status.HTTP_204_NO_CONTENT)

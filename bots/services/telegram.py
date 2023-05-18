@@ -6,18 +6,20 @@ import requests
 
 from bots.services import mixins
 
-from .telegram_dataclasses import *
+from .telegram_dataclasses import CallbackUser, CommandUser, MessageUser
 
 
 class Telegram(
-    mixins.TelegramMessages, mixins.TelegramCallbackSettings, mixins.TelegramCommands
+    mixins.TelegramMessages,
+    mixins.TelegramCallbackSettings,
+    mixins.TelegramCommands,
 ):
     def __init__(self, token="token", lang="ru"):
         self.token = token
         self.lang = lang
 
     def _send(self, data, message):
-        r = requests.get(
+        requests.get(
             settings.API_URL_TELEGRAM + "/sendMessage",
             params={
                 "chat_id": message.chat_id,
