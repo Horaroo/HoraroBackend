@@ -1,6 +1,5 @@
 import dataclasses
-from typing import Any
-
+from schedules.rest_framework.serializers import ScheduleSerializer
 from django.db.models import Q
 
 from schedules import models
@@ -9,7 +8,7 @@ from schedules import models
 @dataclasses.dataclass
 class ScheduleCreatorOrUpdater:
     data: dict
-    serializer: Any
+    serializer: ScheduleSerializer
 
     def _create(self):
         return self.serializer.save()
