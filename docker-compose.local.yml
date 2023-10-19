@@ -61,8 +61,7 @@ services:
     depends_on:
       - redis
       - db
-    env_file:
-      - .env
+    environment: *common-variables
 
   flower:
     build:
@@ -79,6 +78,7 @@ services:
       - redis
     ports:
       - "5555:5555"
+    environment: *common-variables
 
 volumes:
   staging_postgres_data:
